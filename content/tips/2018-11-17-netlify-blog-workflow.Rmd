@@ -7,13 +7,37 @@ categories: []
 tags: []
 ---
 
-Netlify 를 이용한 블로그 개설/관리 과정을 여기에 기록해 둠
+R package blogdown과 Netlify를 이용한 블로그 개설/관리 과정을 여기에 기록해 둠
 
-1. github.com/junglee0713/netlify 
+How to create a blog using blogdown and Netlify
 
-2. 
+1. Create a new repository: https://github.com/junglee0713/netlify 
+
+2. Clone the repository, e.g.
 
 ```{bash, eval = F}
-echo $?
+cd /Users/leej39/Dropbox/GitHub
+git clone git@github.com:junglee0713/netlify.git 
 ```
+
+3. (optional) Create an R project, say `/Users/leej39/Dropbox/GitHub/netlify/netlify.Rproj`.
+
+4. Open RStudio and install necessary packages, following instruction in https://bookdown.org/yihui/blogdown/installation.html
+
+```{r, eval = F}
+install.packages("blogdown")
+blogdown::install_hugo()
+```
+
+5. If you are okay with the default theme (I am), run the following 
+
+```{r, eval = F}
+blogdown::serve_site() 
+blogdown::hugo_build()
+```
+
+6. Change the configuration file `/Users/leej39/Dropbox/GitHub/netlify/config.toml` as appropriate.
+
+7. If you want to delete example or unnecessary posts that come with the default theme, you can do so by deleting the correspondign .md or .html files under `/Users/leej39/Dropbox/GitHub/netlify/content`
+
 
