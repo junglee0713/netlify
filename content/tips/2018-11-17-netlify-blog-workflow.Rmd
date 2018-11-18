@@ -38,6 +38,12 @@ blogdown::hugo_build()
 
 6. Change the configuration file `/Users/leej39/Dropbox/GitHub/netlify/config.toml` as appropriate.
 
-7. If you want to delete example or unnecessary posts that come with the default theme, you can do so by deleting the correspondign .md or .html files under `/Users/leej39/Dropbox/GitHub/netlify/content`
+7. If you want to delete example or unnecessary posts that came with the default theme, you can do so by deleting the corresponding `.md` or `.html` files under `/Users/leej39/Dropbox/GitHub/netlify/content`.
+
+8. Stage changes in `/Users/leej39/Dropbox/GitHub/netlify`, commit, and push. 
+
+9. Go to `https://www.netlify.com/` and link the GitHub reposititory https://github.com/junglee0713/netlify so that Netlify can sync with GitHub and deploy any changes in the repository real time. 
+
+10. To create a new post, click on **Addins** in R Studio and use **New Post**. Use **Update Metadata** to update the metadata associated with the post.
 
 

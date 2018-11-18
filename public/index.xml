@@ -27,25 +27,6 @@ Create a new repository: https://github.com/junglee0713/netlify
     </item>
     
     <item>
-      <title>Test1</title>
-      <link>/2018/11/17/test1/</link>
-      <pubDate>Sat, 17 Nov 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/2018/11/17/test1/</guid>
-      <description>\[\lim_{n \to \infty} \left(1+\frac{1}{n}\right)^n =e \]</description>
-    </item>
-    
-    <item>
-      <title>한글사용 테스트</title>
-      <link>/2018/11/17/%ED%95%9C%EA%B8%80%EC%82%AC%EC%9A%A9-%ED%85%8C%EC%8A%A4%ED%8A%B8/</link>
-      <pubDate>Sat, 17 Nov 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/2018/11/17/%ED%95%9C%EA%B8%80%EC%82%AC%EC%9A%A9-%ED%85%8C%EC%8A%A4%ED%8A%B8/</guid>
-      <description> check if I can use Some  한글 Does it work? Yes it does!
-  </description>
-    </item>
-    
-    <item>
       <title>About</title>
       <link>/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
