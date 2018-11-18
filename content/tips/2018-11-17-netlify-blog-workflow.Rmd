@@ -46,6 +46,6 @@ blogdown::hugo_build()
 
 9. Go to https://www.netlify.com/ and link the GitHub reposititory https://github.com/junglee0713/netlify so that Netlify can sync with GitHub and deploy any changes in the repository real time. 
 
-10. To create a new post, click on **Addins** in R Studio and use **New Post**. Use **Update Metadata** to update the metadata associated with the post.
+10. To create a new post, click on **Addins** in RStudio and use **New Post**. Use **Update Metadata** to update the metadata associated with the post.
 
 
