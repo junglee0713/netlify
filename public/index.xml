@@ -12,6 +12,17 @@
     
     
     <item>
+      <title>Netlify blog workflow</title>
+      <link>/tips/netlify-blog-workflow/</link>
+      <pubDate>Sat, 17 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tips/netlify-blog-workflow/</guid>
+      <description> Netlify 를 이용한 블로그 개설/관리 과정을 여기에 기록해 둠
+github.com/junglee0713/netlify
+   echo $? </description>
+    </item>
+    
+    <item>
       <title>Test1</title>
       <link>/2018/11/17/test1/</link>
       <pubDate>Sat, 17 Nov 2018 00:00:00 +0000</pubDate>
