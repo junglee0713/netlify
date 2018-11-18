@@ -1,0 +1,391 @@
+---
+title: "Lecture 1"
+author: "Jung-Jin Lee"
+date: "Jan 7, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Cabrini.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(DT)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 3,
+  fig.height = 3
+  )
+```
+
+## Installing R/RStudio
+
+- To install R, go to https://www.r-project.org/ and follow instruction there
+    - Click on CRAN under Download on the left
+    - Choose the closest mirror site (e.g. http://lib.stat.cmu.edu/R/CRAN/)
+    - Download R for your platform (Windows/Mac/Linux)
+    
+- To install RStudio (an integrated development environment for R), go to https://www.rstudio.com/ and follow instruction
+
+---
+
+## Why R? 
+
+- Specialized for data analysis
+
+- Many packages have been developed and are available
+
+- Excellent graphics
+
+- Free!
+
+---
+
+## R as a calculator
+
+```{r}
+5 + 3
+```
+
+```{r}
+# everything after # (pound sign) is ignored
+# useful for comments
+2 * 5 # product of 2 and 5
+```
+
+```{r}
+3^2
+```
+
+```{r}
+3**2
+```
+
+---
+
+## Variables
+
+Variables can be used to store numerical values. 
+
+- A variable can be a combination of letters (case sensitive), digits, period (.) and underscore (_).
+- It must start with a letter or a period. If it starts with a period, it cannot be followed by a digit.
+- Reserved words in R, such as `TRUE`, cannot be used as variables.
+
+```{r}
+Num1 <- 5; Num2 <- 3 # semicolon (;) can be used to separate lines
+sum_num <- Num1 + Num2
+prod.num <- Num1 * Num2
+print(sum_num) 
+print(prod.num)
+```
+
+---
+
+## Characters
+
+Variables can also be used to store character values.
+
+```{r}
+first_name <- "John" # use quotation marks for character strings
+last_name <- 'Smith' # single quotation also works
+print(first_name)
+print(last_name)
+```
+
+---
+
+## Functions
+
+One or more values can produce new one using R functions.
+
+```{r}
+a <- 1; b <- 3
+s <- sum(a, b) # sum() is a function that computes the sum
+print(s)
+```
+
+```{r}
+first_name <- "John" 
+last_name <- "Smith"
+# paste() puts together multiple character strings
+full_name <- paste(first_name, last_name) 
+print(full_name)
+```
+
+For detailed usage of a function, type `help(function_name)`, e.g. `help(paste)` or `?function_name`, e.g. `?paste`.
+
+---
+
+## Vectors
+
+Multiple numerical values or characters can be saved as a single variable using an R function `c()`.
+
+```{r}
+vec1 <- c(2, 3, 5, 7, 1, 4)
+print(vec1)
+```
+
+```{r}
+vec2 <- c("Drexel", "Univ", "School", "of", "Medicine")
+print(vec2)
+```
+
+---
+
+## Functions applied to a vector
+
+```{r}
+length(vec1)
+```
+
+```{r}
+sum(vec1)
+```
+
+```{r}
+DUSoM <- paste(vec2, collapse = " ")
+print(DUSoM)
+```
+
+```{r}
+DUSoM2 <- paste(vec2, collapse = "_")
+print(DUSoM2)
+```
+
+---
+
+## Vector manipulation
+
+Use brackets `[]` to extract components of a vector.
+
+```{r}
+a <- vec1[3]
+print(a)
+```
+
+```{r}
+dm <- vec2[c(1, 5)]
+print(dm)
+```
+
+---
+
+## Special vectors -- part I
+
+Exercise: compute the sum $1 + 2 + 3 + \cdots + 10$.
+
+```{r}
+w1 <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+sum(w1)
+```
+
+```{r}
+# colon (:) can be used to generate a vector consisting of 
+# consecutive numbers
+w2 <- 1:10
+print(w2)
+sum(w2) 
+```
+
+---
+
+## Special vectors -- part II
+
+Exercise: compute the sum $2 + 4 + 6 +\cdots + 20$.
+
+```{r}
+# one can use a function seq()
+# type ?seq to get help
+w3 <- seq(2, 20, by = 2)
+sum(w3)
+```
+
+Alternatively, one can use the previous vector:
+
+```{r}
+w4 <- 2*w1 # product of a single number and a vector
+print(w4)
+sum(w4)
+```
+
+---
+
+## Data frame
+
+Vectors of an equal length can be combined to form a data frame.
+
+```{r}
+# use of the function data.frame()
+first_name <- c("Lisa", "John", "Chuck", "Matt")
+last_name <- c("Simpson", "Smith", "Williams", "June")
+age_yrs <- c(8, 42, 81, 23)
+book <- data.frame(first = first_name,
+                        last = last_name,
+                        age = age_yrs)
+print(book)
+dim(book) # dimensions of a data frame: dim()
+```
+
+---
+
+## Handling data frames
+
+```{r}
+# extract a single element from a data frame
+book[2, 3]
+# extract a column: use $
+age_extracted <- book$age
+print(age_extracted)
+# extract a row
+book[4, ]
+```
+
+---
+
+## Reading a data file 
+
+```{r}
+# heights.txt is a space-delimited file 
+# consisting of 1375 observations
+# of mom/daughter age height pairs
+d <- read.table(file = "heights.txt", header = TRUE, sep = " ")
+```
+
+A glance at a data frame:
+
+```{r}
+dim(d) # dimension
+names(d) # variable(column) names
+```
+
+---
+
+## Inspecting a data frame
+
+```{r}
+head(d) # first few rows (6 rows by default)
+tail(d) # last few rows
+```
+
+---
+
+## A closer look at the data
+
+```{r, echo = FALSE}
+d %>% datatable(fillContainer = FALSE, options = list(pageLength = 8)) %>%
+  formatStyle(columns = 0:2, fontSize = '80%')
+```
+
+---
+
+## Example: find the sample mean of mom's heights
+
+Recall that the sample mean is given by sum of samples divided by the number of samples:
+$$\bar{x} = \frac{x_1+x_2+\cdots+x_n}{n}$$
+
+```{r}
+mom <- d$Mheight
+s <- sum(mom)
+n <- length(mom)
+mom_height_mean <- s/n
+print(mom_height_mean)
+```
+
+R has a built in function to compute the mean:
+
+```{r}
+mean(mom) # mean() gives the mean of a vector
+```
+
+---
+
+## Sample variance
+
+The sample variance measures spread of given data:
+$$s^2 =\frac{(x_1-\bar{x})^2+(x_2-\bar{x})^2+\cdots+(x_n-\bar{x})^2}{n-1}.$$
+Note that the denominator is $n-1$, not $n$.
+
+R has a built in function to compute the sample variance:
+
+```{r}
+var(mom) # var() gives the sample variance of a vector
+```
+
+One could also compute the sample variance using the definition:
+
+```{r}
+v1 <- mom-mean(mom); v2 <- v1^2
+sum(v2)/(length(mom)-1)
+```
+
+---
+
+## Sample standard deviation
+
+The sample standard deviation also measurs spread of given data -- it is simply the square root of the sample variance:
+$$s = \sqrt{s^2} = \sqrt{\frac{(x_1-\bar{x})^2+(x_2-\bar{x})^2+\cdots+(x_n-\bar{x})^2}{n-1}}.$$
+
+R has a built in function to compute the sample standard deviation:
+
+```{r}
+sd(mom) # sd() gives the sample standard deviation of a vector
+```
+
+---
+
+## Histogram
+
+The first step of data analysis is often data visualization. A histogram is a good tool to understand the range and frequency of given data.
+
+```{r, out.height = "40%", out.width = '40%'}
+library(tidyverse)
+g1 <- ggplot(d, aes(x = Mheight)) + geom_histogram()
+print(g1)
+```
+
+---
+
+## Box plot
+
+Box plots are great to quickly check the range and outliers of numerical data.
+
+```{r, out.width = "40%"}
+# you don't need to worry about the code below for now
+g2 <- d %>% gather(key = MomDaughter, value = Height) %>%
+  ggplot(aes(x = MomDaughter, y = Height)) +
+  geom_boxplot()
+print(g2)
+```
+
+---
+
+## Scatter plot
+
+Scatter plots are useful when finding the association of two sets of numerical data.
+
+```{r, out.width = "45%"}
+g3 <- ggplot(d, aes(x = Mheight, y = Dheight)) + geom_point()
+print(g3)
+```
+
+---
+
+## Even more fun stuff with R!
+
+```{r out.width='100%', out.height='60%'}
+library(leaflet)
+leaflet() %>% addTiles() %>% setView(-75.3757, 40.0550, zoom = 15)
+```
+
+

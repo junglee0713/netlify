@@ -1,0 +1,51 @@
+---
+title: "Lecture 2"
+author: "Jung-Jin Lee"
+date: "Jan 14, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Cabrini.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      
+---
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(DT)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 3,
+  fig.height = 3
+  )
+```
+
+## Normal distribution
+
+- A continuous random variable $X$ is said to follow a _normal distribution_ $N(\mu, \sigma^2)$ if the probability $P(a\leq X \leq b)$ that $X$ is between $a$ and $b$ is given by 
+$$P(a\leq X \leq b) = \int_a^b \phi_{\mu,\sigma}(x)\,dx,$$
+where $$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.$$
+- $\phi_{\mu,\sigma}(x)$ is a bell-shaped funcition called the probability distribution function (pdf) of $X$. $\mu$ is called the _mean_ and $\sigma$ is called the _standard deviaition_.
+
+- In particular, if $\mu = 0$ and $\sigma =1$, $X$ is said to follow the _standard_ normal distribution.
+
+---
+
+## Normal pdf
+
+```{python}
+# some python example
+x = ['a', 'b', 'c']
+print(len(x))
+```
+
+
