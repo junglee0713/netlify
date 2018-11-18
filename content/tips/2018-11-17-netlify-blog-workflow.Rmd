@@ -2,9 +2,11 @@
 title: Netlify blog workflow
 author: Jung-Jin Lee
 date: '2018-11-17'
+categories:
+  - Netlify
+tags:
+  - GitHub
 slug: netlify-blog-workflow
-categories: []
-tags: []
 ---
 
 R package blogdown과 Netlify를 이용한 블로그 개설/관리 과정을 여기에 기록해 둠
