@@ -137,7 +137,7 @@ print(vec1)
 ```
 
 ```{r}
-vec2 <- c("Drexel", "Univ", "School", "of", "Medicine")
+vec2 <- c("Cabrini", "Univ", "MBIO", "612", "Spring", "2019")
 print(vec2)
 ```
 
@@ -154,13 +154,13 @@ sum(vec1)
 ```
 
 ```{r}
-DUSoM <- paste(vec2, collapse = " ")
-print(DUSoM)
+CU <- paste(vec2, collapse = " ")
+print(CU)
 ```
 
 ```{r}
-DUSoM2 <- paste(vec2, collapse = "_")
-print(DUSoM2)
+CU2 <- paste(vec2, collapse = "_")
+print(CU2)
 ```
 
 ---
