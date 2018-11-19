@@ -333,7 +333,7 @@ sum(v2)/(length(mom)-1)
 
 ## Sample standard deviation
 
-The sample standard deviation also measurs spread of given data -- it is simply the square root of the sample variance:
+The sample standard deviation also measures spread of given data -- it is simply the square root of the sample variance:
 $$s = \sqrt{s^2} = \sqrt{\frac{(x_1-\bar{x})^2+(x_2-\bar{x})^2+\cdots+(x_n-\bar{x})^2}{n-1}}.$$
 
 R has a built in function to compute the sample standard deviation:

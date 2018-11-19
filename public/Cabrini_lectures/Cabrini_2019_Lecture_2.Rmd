@@ -14,6 +14,7 @@ output:
 ---
 ```{r, message = F, echo = F, warning = F}
 library(tidyverse) 
+library(gridExtra)
 library(DT)
 library(knitr) 
 opts_chunk$set(
@@ -34,7 +35,7 @@ opts_chunk$set(
 - A continuous random variable $X$ is said to follow a _normal distribution_ $N(\mu, \sigma^2)$ if the probability $P(a\leq X \leq b)$ that $X$ is between $a$ and $b$ is given by 
 $$P(a\leq X \leq b) = \int_a^b \phi_{\mu,\sigma}(x)\,dx,$$
 where $$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.$$
-- $\phi_{\mu,\sigma}(x)$ is a bell-shaped funcition called the probability distribution function (pdf) of $X$. $\mu$ is called the _mean_ and $\sigma$ is called the _standard deviaition_.
+- $\phi_{\mu,\sigma}(x)$ is a bell-shaped function called the probability distribution function (pdf) of $X$. $\mu$ is called the _mean_ and $\sigma$ is called the _standard deviation_.
 
 - In particular, if $\mu = 0$ and $\sigma =1$, $X$ is said to follow the _standard_ normal distribution.
 
@@ -42,10 +43,32 @@ where $$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{
 
 ## Normal pdf
 
-```{python}
-# some python example
-x = ['a', 'b', 'c']
-print(len(x))
+```{r, echo = FALSE, fig.width = 5, fig.height = 2.5}
+g <- ggplot(data = data.frame(x = 0), mapping = aes(x = x))
+fun.1 <- function(x) dnorm(x, mean = 3, sd = 2)
+fun.2 <- function(x) dnorm(x, mean = 0, sd = 1)
+
+g1 <- g + 
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.1) + xlim(-3, 9) + ylim(0, 0.4) +
+  theme(aspect.ratio = 1) +
+  geom_segment(x = 3, y = 0, xend = 3, yend = 0.2, lty = "dashed", color = "red") +
+  ggtitle(bquote('N(3,'~2^2~')'))
+
+g2 <- g + 
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.2) + xlim(-2.5, 2.5) + ylim(0, 0.4) +
+  theme(aspect.ratio = 1) +
+  geom_segment(x = 0, y = 0, xend = 0, yend = 0.4, lty = "dashed", color = "red") +
+  ggtitle(bquote('N(0,'~1^2~')'))
+
+grid.arrange(g1, g2, ncol = 2)
 ```
+
+_mean_ determines the center of the bell shape, while _standard deviation_ measures the spread.
+
+
 
 

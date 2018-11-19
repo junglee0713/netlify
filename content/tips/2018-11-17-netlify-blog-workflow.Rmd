@@ -44,7 +44,7 @@ blogdown::hugo_build()
 
 8. Stage changes in `/Users/leej39/Dropbox/GitHub/netlify`, commit, and push. 
 
-9. Go to https://www.netlify.com/ and link the GitHub reposititory https://github.com/junglee0713/netlify so that Netlify can sync with GitHub and deploy any changes in the repository real time. 
+9. Go to https://www.netlify.com/ and link the GitHub repository https://github.com/junglee0713/netlify so that Netlify can sync with GitHub and deploy any changes in the repository real time. 
 
 10. To create a new post, click on **Addins** in RStudio and use **New Post**. Use **Update Metadata** to update the metadata associated with the post.
 

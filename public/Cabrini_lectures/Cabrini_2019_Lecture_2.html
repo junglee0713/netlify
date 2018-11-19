@@ -25,7 +25,7 @@ class: center, middle, inverse, title-slide
 - A continuous random variable `\(X\)` is said to follow a _normal distribution_ `\(N(\mu, \sigma^2)\)` if the probability `\(P(a\leq X \leq b)\)` that `\(X\)` is between `\(a\)` and `\(b\)` is given by 
 `$$P(a\leq X \leq b) = \int_a^b \phi_{\mu,\sigma}(x)\,dx,$$`
 where `$$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.$$`
-- `\(\phi_{\mu,\sigma}(x)\)` is a bell-shaped funcition called the probability distribution function (pdf) of `\(X\)`. `\(\mu\)` is called the _mean_ and `\(\sigma\)` is called the _standard deviaition_.
+- `\(\phi_{\mu,\sigma}(x)\)` is a bell-shaped function called the probability distribution function (pdf) of `\(X\)`. `\(\mu\)` is called the _mean_ and `\(\sigma\)` is called the _standard deviation_.
 
 - In particular, if `\(\mu = 0\)` and `\(\sigma =1\)`, `\(X\)` is said to follow the _standard_ normal distribution.
 
@@ -33,16 +33,9 @@ where `$$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}
 
 ## Normal pdf
 
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
 
-```python
-# some python example
-x = ['a', 'b', 'c']
-print(len(x))
-```
-
-```
-## 3
-```
+_mean_ determines the center of the bell shape, while _standard deviation_ measures the spread.
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
