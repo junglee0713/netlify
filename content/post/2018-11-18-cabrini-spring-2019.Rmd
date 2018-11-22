@@ -9,4 +9,4 @@ tags: []
 
 [Lecture 1](/Cabrini_lectures/Cabrini_2019_Lecture_1.html)
 
-[Lecture 2](/Cabrini_lectures/Cabrini_2019_Lecture_2.html)
+[Lecture 2 - incomplete](/Cabrini_lectures/Cabrini_2019_Lecture_2.html)
