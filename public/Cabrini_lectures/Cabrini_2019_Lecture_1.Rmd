@@ -29,14 +29,15 @@ opts_chunk$set(
   )
 ```
 
-## Installing R/RStudio
+## What is statistics?
 
-- To install R, go to https://www.r-project.org/ and follow instruction there
-    - Click on CRAN under Download on the left
-    - Choose the closest mirror site (e.g. http://lib.stat.cmu.edu/R/CRAN/)
-    - Download R for your platform (Windows/Mac/Linux)
-    
-- To install RStudio (an integrated development environment for R), go to https://www.rstudio.com/ and follow instruction
+- Statistics is the science of learning from data
+
+- The goal of statistics is to summarize data in a way that allows for
+easy descriptions or inferences of the data
+  - Data visualization and computing are important parts of statistics
+
+- R, a language and environment for statistical computing and graphics, will be used as a main tool throuout the course
 
 ---
 
@@ -49,6 +50,23 @@ opts_chunk$set(
 - Excellent graphics
 
 - Free!
+
+---
+
+## Installing R/RStudio
+
+- To install R, go to https://www.r-project.org/ and follow instruction there
+    - Click on CRAN under Download on the left
+    - Choose the closest mirror site (e.g. http://lib.stat.cmu.edu/R/CRAN/)
+    - Download R for your platform (Windows/Mac/Linux)
+    
+- To install RStudio (an integrated development environment for R), go to https://www.rstudio.com/ and follow instruction
+
+---
+
+## RStudio IDE overview
+
+![RStudio screen](rstudio.png)
 
 ---
 
@@ -255,7 +273,7 @@ book[4, ]
 
 ## Reading a data file 
 
-Download a [file](heights.txt) to be used in an example (Chrome users: Menu $\rightarrow$ More Tools $\rightarrow$ Save Page As)
+Download a [file](heights.txt) to be used in an example (Chrome users: Menu $\rightarrow$ More Tools $\rightarrow$ Save Page As).
 
 ```{r}
 # heights.txt is a space-delimited file 

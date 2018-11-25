@@ -30,15 +30,6 @@ opts_chunk$set(
   )
 ```
 
-## What is statistics?
-
-- Statistics is the science of learning from data
-
-- The goal of statistics is to summarize data in a way that allows for
-easy descriptions or inferences of the data
-
----
-
 ## Type of data
 
 - Categorical Data - consist of qualitative values
