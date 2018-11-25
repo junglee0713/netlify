@@ -255,7 +255,7 @@ book[4, ]
 
 ## Reading a data file 
 
-Download a [file](heights.txt)
+Download a [file](heights.txt) to be used in an example (Chrome users: Menu $\rightarrow$ More Tools $\rightarrow$ Save Page As)
 
 ```{r}
 # heights.txt is a space-delimited file 
