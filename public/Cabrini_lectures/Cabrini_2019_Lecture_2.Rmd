@@ -57,7 +57,6 @@ easy descriptions or inferences of the data
 df <- diamonds ## diamonds is a data set that comes with base R
 ```
 
-
 ---
 
 ## Normal distribution

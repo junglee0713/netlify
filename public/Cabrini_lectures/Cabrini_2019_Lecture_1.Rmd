@@ -255,6 +255,8 @@ book[4, ]
 
 ## Reading a data file 
 
+Download a [file](heights.txt)
+
 ```{r}
 # heights.txt is a space-delimited file 
 # consisting of 1375 observations
