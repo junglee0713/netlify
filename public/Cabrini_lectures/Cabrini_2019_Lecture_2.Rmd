@@ -1,7 +1,7 @@
 ---
 title: "Lecture 2"
 author: "Jung-Jin Lee"
-date: "Jan 14, 2019"
+date: "Jan 23, 2019"
 output:
   xaringan::moon_reader:
     css: ["default", "default-fonts", "Cabrini.css"] 
@@ -30,14 +30,45 @@ opts_chunk$set(
   )
 ```
 
+## What is statistics?
+
+- Statistics is the science of learning from data
+
+- The goal of statistics is to summarize data in a way that allows for
+easy descriptions or inferences of the data
+
+---
+
+## Type of data
+
+- Categorical Data - consist of qualitative values
+  - Nominal values: gender, coat colors
+  - Ordinal values: body conditions, age groups
+  
+- Numerical Data - consist of quantitative values
+  - Discrete values: litter size, parity
+  - Continuous values: height, weight, temperature
+  
+---
+
+## Description of categorial data
+
+```{r}
+df <- diamonds ## diamonds is a data set that comes with base R
+```
+
+
+---
+
 ## Normal distribution
 
 - A continuous random variable $X$ is said to follow a _normal distribution_ $N(\mu, \sigma^2)$ if the probability $P(a\leq X \leq b)$ that $X$ is between $a$ and $b$ is given by 
 $$P(a\leq X \leq b) = \int_a^b \phi_{\mu,\sigma}(x)\,dx,$$
 where $$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.$$
+
 - $\phi_{\mu,\sigma}(x)$ is a bell-shaped function called the probability distribution function (pdf) of $X$. $\mu$ is called the _mean_ and $\sigma$ is called the _standard deviation_.
 
-- In particular, if $\mu = 0$ and $\sigma =1$, $X$ is said to follow the _standard_ normal distribution.
+- In particular, if $\mu = 0$ and $\sigma = 1$, $X$ is said to follow the _standard_ normal distribution.
 
 ---
 

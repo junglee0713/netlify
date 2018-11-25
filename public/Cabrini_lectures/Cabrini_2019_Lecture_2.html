@@ -14,26 +14,58 @@ class: center, middle, inverse, title-slide
 
 # Lecture 2
 ### Jung-Jin Lee
-### Jan 14, 2019
+### Jan 23, 2019
 
 ---
 
 
+
+## What is statistics?
+
+- Statistics is the science of learning from data
+
+- The goal of statistics is to summarize data in a way that allows for
+easy descriptions or inferences of the data
+
+---
+
+## Type of data
+
+- Categorical Data - consist of qualitative values
+  - Nominal values: gender, coat colors
+  - Ordinal values: body conditions, age groups
+  
+- Numerical Data - consist of quantitative values
+  - Discrete values: litter size, parity
+  - Continuous values: height, weight, temperature
+  
+---
+
+## Description of categorial data
+
+
+```r
+df &lt;- diamonds ## diamonds is a data set that comes with base R
+```
+
+
+---
 
 ## Normal distribution
 
 - A continuous random variable `\(X\)` is said to follow a _normal distribution_ `\(N(\mu, \sigma^2)\)` if the probability `\(P(a\leq X \leq b)\)` that `\(X\)` is between `\(a\)` and `\(b\)` is given by 
 `$$P(a\leq X \leq b) = \int_a^b \phi_{\mu,\sigma}(x)\,dx,$$`
 where `$$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.$$`
+
 - `\(\phi_{\mu,\sigma}(x)\)` is a bell-shaped function called the probability distribution function (pdf) of `\(X\)`. `\(\mu\)` is called the _mean_ and `\(\sigma\)` is called the _standard deviation_.
 
-- In particular, if `\(\mu = 0\)` and `\(\sigma =1\)`, `\(X\)` is said to follow the _standard_ normal distribution.
+- In particular, if `\(\mu = 0\)` and `\(\sigma = 1\)`, `\(X\)` is said to follow the _standard_ normal distribution.
 
 ---
 
 ## Normal pdf
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
 
 _mean_ determines the center of the bell shape, while _standard deviation_ measures the spread.
     </textarea>
