@@ -19,3 +19,15 @@
   font-size: 70%; }
 
 .large { font-size: 140%; }
+
+.pull-left-code {
+  float: left;
+  width: 57%;
+}
+
+.pull-right-plot {
+  float: right;
+  width: 37%;
+}
+
+

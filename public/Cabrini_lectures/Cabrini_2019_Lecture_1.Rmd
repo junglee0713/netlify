@@ -37,7 +37,7 @@ opts_chunk$set(
 easy descriptions or inferences of the data
   - Data visualization and computing are important parts of statistics
 
-- R, a language and environment for statistical computing and graphics, will be used as a main tool throuout the course
+- R, a language and environment for statistical computing and graphics, will be used as a main tool throughout the course
 
 ---
 
@@ -324,12 +324,28 @@ tail(d) # last few rows
 
 The first step of data analysis is often data visualization. A histogram is a good tool to understand the range and frequency of given data.
 
-```{r, out.height = "40%", out.width = '40%'}
+.pull-left-code[
+
+Instead of using graphic feature from base R, we will use a package developed especially for visualization.
+
+```{r, eval = F}
+install.packages("tidyverse")
 library(tidyverse)
+```
+
+In fact, we need only `ggplot2`, which is one of packages contained in `tidyverse`.
+
+```{r, eval = F}
 g1 <- ggplot(d, aes(x = Mheight)) + 
   geom_histogram()
 print(g1)
 ```
+]
 
+.pull-right-plot[
+```{r, echo = F}
+print(g1)
+```
+]
 
 
