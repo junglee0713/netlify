@@ -14,7 +14,6 @@ output:
 
 ```{r, message = F, echo = F, warning = F}
 library(tidyverse) 
-library(DT)
 library(knitr) 
 opts_chunk$set(
   tidy = FALSE,
@@ -28,6 +27,12 @@ opts_chunk$set(
   fig.height = 3
   )
 ```
+
+## Help on slides
+
+At any time, press `h` to open `Help`.
+
+---
 
 ## What is statistics?
 
@@ -105,7 +110,8 @@ Variables can be used to store numerical values.
 - Reserved words in R, such as `TRUE`, cannot be used as variables.
 
 ```{r}
-Num1 <- 5; Num2 <- 3 # semicolon (;) can be used to separate lines
+Num1 <- 5 
+Num2 <- 3 
 sum_num <- Num1 + Num2
 prod.num <- Num1 * Num2
 print(sum_num) 
@@ -132,7 +138,7 @@ print(last_name)
 One or more values can produce new one using R functions.
 
 ```{r}
-a <- 1; b <- 3
+a <- 1; b <- 3 # semicolon (;) can be used to separate lines
 s <- sum(a, b) # sum() is a function that computes the sum
 print(s)
 ```
@@ -165,24 +171,53 @@ print(vec2)
 
 ---
 
-## Functions applied to a vector
+## Functions applied to a vector -- part I
 
 ```{r}
 length(vec1)
-```
-
-```{r}
 sum(vec1)
 ```
 
+--
+
+**Exercise**: sort the numbers 2, 3, 5, 7, 1, 4 from the smallest to the largest and vice versa. 
+
+--
+
 ```{r}
-collapse1 <- paste(vec2, collapse = " ")
-print(collapse1)
+sort(vec1)
+```
+
+--
+
+```{r}
+sort(vec1, decreasing = F)
+```
+
+---
+
+## Functions applied to a vector -- part II
+
+```{r}
+collapse1 <- paste(vec2, collapse = " "); print(collapse1)
 ```
 
 ```{r}
-collapse2 <- paste(vec2, collapse = "_")
-print(collapse2)
+collapse2 <- paste(vec2, collapse = "_"); print(collapse2)
+```
+
+--
+
+**Exercise**: produce the following output
+
+```{r, echo = F}
+paste(vec2, collapse = "")
+```
+
+--
+
+```{r}
+collapse3 <- paste(vec2, collapse = ""); print(collapse3)
 ```
 
 ---
@@ -205,16 +240,21 @@ print(dm)
 
 ## Special vectors -- part I
 
-Exercise: compute the sum $1 + 2 + 3 + \cdots + 10$.
+**Exercise**: compute the sum $1 + 2 + 3 + \cdots + 10$.
+
+--
 
 ```{r}
 w1 <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 sum(w1)
 ```
 
+--
+
+Colon (:) can be used to generate a vector consisting of consecutive numbers.
+
 ```{r}
-# colon (:) can be used to generate a vector consisting of 
-# consecutive numbers
+# 
 w2 <- 1:10
 print(w2)
 sum(w2) 
@@ -224,7 +264,9 @@ sum(w2)
 
 ## Special vectors -- part II
 
-Exercise: compute the sum $2 + 4 + 6 +\cdots + 20$.
+**Exercise**: compute the sum $2 + 4 + 6 +\cdots + 20$.
+
+--
 
 ```{r}
 # one can use a function seq()
@@ -232,6 +274,8 @@ Exercise: compute the sum $2 + 4 + 6 +\cdots + 20$.
 w3 <- seq(2, 20, by = 2)
 sum(w3)
 ```
+
+--
 
 Alternatively, one can use the previous vector:
 

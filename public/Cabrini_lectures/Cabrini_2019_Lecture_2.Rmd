@@ -15,7 +15,6 @@ output:
 ```{r, message = F, echo = F, warning = F}
 library(tidyverse) 
 library(gridExtra)
-library(DT)
 library(knitr) 
 opts_chunk$set(
   tidy = FALSE,
@@ -45,8 +44,103 @@ opts_chunk$set(
 ## Description of categorial data
 
 ```{r}
-df <- diamonds ## diamonds is a data set that comes with base R
+df <- diamonds ## diamonds is a built-in data set
+dim(df)
+head(df)
 ```
+
+---
+
+## Example: explore data
+
+How many distinct values are there in the variable `cut`?
+
+```{r}
+DiaCut <- df$cut
+unique(DiaCut)
+```
+
+What is the frequency of each value?
+
+```{r}
+table(DiaCut)
+```
+
+---
+
+## Bar graph
+
+One way to visualize categorical data is to use a bar graph
+
+```{r, out.width = "50%"}
+g <- ggplot(data = df, aes(x = cut)) + 
+  geom_bar() 
+print(g)
+```
+
+---
+
+## Exercise
+
+- How many distinct values are there in the variable `color`?
+- What is the frequency of each value in `color`?
+- Draw a bar graph showing the frequency
+
+--
+
+```{r}
+unique(df$color)
+```
+
+--
+
+```{r}
+table(df$color)
+```
+
+---
+
+## Exercise, continued
+
+```{r, out.width = "50%"}
+ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
+  geom_bar()
+```
+
+---
+
+## Two-way table
+
+Frequency of color for each cut
+
+```{r}
+table(df$cut, df$color)
+```
+
+---
+
+## Graphs using facets
+
+```{r, out.width = "50%"}
+ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
+  geom_bar() +
+  facet_wrap(~cut) #<<
+```
+
+---
+
+## Colored bar graphs
+
+```{r, fig.width = 8, fig.height = 4}
+ggplot(df, aes(color, fill = clarity)) + #<<
+  geom_bar() +
+  theme(aspect.ratio = 1) + #<<
+  facet_wrap(~cut) 
+```
+
+---
+
+## To be continued ...
 
 ---
 

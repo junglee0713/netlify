@@ -36,8 +36,171 @@ class: center, middle, inverse, title-slide
 
 
 ```r
-df &lt;- diamonds ## diamonds is a data set that comes with base R
+df &lt;- diamonds ## diamonds is a built-in data set
+dim(df)
 ```
+
+```
+## [1] 53940    10
+```
+
+```r
+head(df)
+```
+
+```
+## # A tibble: 6 x 10
+##   carat cut       color clarity depth table price     x     y     z
+##   &lt;dbl&gt; &lt;ord&gt;     &lt;ord&gt; &lt;ord&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.23  Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43
+## 2 0.21  Premium   E     SI1      59.8    61   326  3.89  3.84  2.31
+## 3 0.23  Good      E     VS1      56.9    65   327  4.05  4.07  2.31
+## 4 0.290 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63
+## 5 0.31  Good      J     SI2      63.3    58   335  4.34  4.35  2.75
+## 6 0.24  Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48
+```
+
+---
+
+## Example: explore data
+
+How many distinct values are there in the variable `cut`?
+
+
+```r
+DiaCut &lt;- df$cut
+unique(DiaCut)
+```
+
+```
+## [1] Ideal     Premium   Good      Very Good Fair     
+## Levels: Fair &lt; Good &lt; Very Good &lt; Premium &lt; Ideal
+```
+
+What is the frequency of each value?
+
+
+```r
+table(DiaCut)
+```
+
+```
+## DiaCut
+##      Fair      Good Very Good   Premium     Ideal 
+##      1610      4906     12082     13791     21551
+```
+
+---
+
+## Bar graph
+
+One way to visualize categorical data is to use a bar graph
+
+
+```r
+g &lt;- ggplot(data = df, aes(x = cut)) + 
+  geom_bar() 
+print(g)
+```
+
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Exercise
+
+- How many distinct values are there in the variable `color`?
+- What is the frequency of each value in `color`?
+- Draw a bar graph showing the frequency
+
+--
+
+
+```r
+unique(df$color)
+```
+
+```
+## [1] E I J H F G D
+## Levels: D &lt; E &lt; F &lt; G &lt; H &lt; I &lt; J
+```
+
+--
+
+
+```r
+table(df$color)
+```
+
+```
+## 
+##     D     E     F     G     H     I     J 
+##  6775  9797  9542 11292  8304  5422  2808
+```
+
+---
+
+## Exercise, continued
+
+
+```r
+ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
+  geom_bar()
+```
+
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-8-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Two-way table
+
+Frequency of color for each cut
+
+
+```r
+table(df$cut, df$color)
+```
+
+```
+##            
+##                D    E    F    G    H    I    J
+##   Fair       163  224  312  314  303  175  119
+##   Good       662  933  909  871  702  522  307
+##   Very Good 1513 2400 2164 2299 1824 1204  678
+##   Premium   1603 2337 2331 2924 2360 1428  808
+##   Ideal     2834 3903 3826 4884 3115 2093  896
+```
+
+---
+
+## Graphs using facets
+
+
+```r
+ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
+  geom_bar() +
+* facet_wrap(~cut)
+```
+
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-10-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Colored bar graphs
+
+
+```r
+*ggplot(df, aes(color, fill = clarity)) +
+  geom_bar() +
+* theme(aspect.ratio = 1) +
+  facet_wrap(~cut) 
+```
+
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+## To be continued ...
 
 ---
 
@@ -135,7 +298,7 @@ where `$$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}
 
 ## Normal pdf
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
 
 _mean_ determines the center of the bell shape, while _standard deviation_ measures the spread.
     </textarea>
