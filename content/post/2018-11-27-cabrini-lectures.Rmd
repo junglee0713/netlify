@@ -1,10 +1,8 @@
 ---
-title: Cabrini Spring 2019
+title: Cabrini lectures
 author: Jung-Jin Lee
-date: '2018-11-18'
-slug: cabrini-spring-2019
-categories: []
-tags: []
+date: '2018-11-27'
+slug: cabrini-lectures
 ---
 
 [Lecture 1](/Cabrini_lectures/Cabrini_2019_Lecture_1.html)
