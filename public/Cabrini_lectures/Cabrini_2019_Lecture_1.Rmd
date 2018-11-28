@@ -388,6 +388,8 @@ print(g1)
 
 .pull-right-plot[
 ```{r, echo = F}
+g1 <- ggplot(d, aes(x = Mheight)) + 
+  geom_histogram()
 print(g1)
 ```
 ]
