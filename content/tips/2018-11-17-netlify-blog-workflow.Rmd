@@ -48,6 +48,11 @@ blogdown::hugo_build()
 
 10. To create a new post, click on **Addins** in RStudio and use **New Post**. Use **Update Metadata** to update the metadata associated with the post.
 
-11. As noted in https://bookdown.org/yihui/blogdown/static-files.html, all files under the `static/` directory are copied to `public/` when Hugo renders a website. Therefore one needs to be cautious about files under `static/`
+11. As noted in https://bookdown.org/yihui/blogdown/static-files.html, all files under the `static/` directory are copied to `public/` when Hugo renders a website. Therefore one needs to be cautious about files under `static/`. Also to build `.Rmd` documents with custom output formats, i.e., `.Rmd` documents not using the `blogdown::html_page()` format, a custom build script `R/build.R` must be provided with a single line of code in it:
+
+```{r, eval = F}
+blogdown::build_dir("static")
+```
+
 
 
