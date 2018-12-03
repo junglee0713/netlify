@@ -140,7 +140,7 @@ ggplot(df, aes(color, fill = clarity)) + #<<
 
 ---
 
-## To be continued ...
+## To be continued (To be saved under "static" folder) ...
 
 ---
 
