@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lecture 1</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Jung-Jin Lee" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Cabrini.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 1
+### Jung-Jin Lee
+### Jan 16, 2019
+
+---
+
+
+
+
+## Help on slides
+
+At any time, press `h` to open `Help`.
+
+---
+
+## What is statistics?
+
+- Statistics is the science of learning from data
+
+- The goal of statistics is to summarize data in a way that allows for
+easy descriptions or inferences of the data
+  - Data visualization and computing are important parts of statistics
+
+- R, a language and environment for statistical computing and graphics, will be used as a main tool throughout the course
+
+---
+
+## Why R? 
+
+- Specialized for data analysis
+
+- Many packages have been developed and are available
+
+- Excellent graphics
+
+- Free!
+
+---
+
+## Installing R/RStudio
+
+- To install R, go to https://www.r-project.org/ and follow instruction there
+    - Click on CRAN under Download on the left
+    - Choose the closest mirror site (e.g. http://lib.stat.cmu.edu/R/CRAN/)
+    - Download R for your platform (Windows/Mac/Linux)
+    
+- To install RStudio (an integrated development environment for R), go to https://www.rstudio.com/ and follow instruction
+
+---
+
+## RStudio IDE overview
+
+&lt;p align = "center"&gt; 
+  &lt;img src = rstudio.png&gt;
+&lt;/p&gt;
+
+---
+
+## R as a calculator
+
+Use R console:
+
+
+```r
+5 + 3
+```
+
+```
+## [1] 8
+```
+
+
+```r
+# everything after # (pound sign) is ignored
+# useful for comments
+2 * 5 # product of 2 and 5
+```
+
+```
+## [1] 10
+```
+
+
+```r
+3^2
+```
+
+```
+## [1] 9
+```
+
+
+```r
+3**2
+```
+
+```
+## [1] 9
+```
+
+---
+
+## Variables
+
+Variables can be used to store numerical values. 
+
+- A variable can be a combination of letters (case sensitive), digits, period (.) and underscore (_).
+- It must start with a letter or a period. If it starts with a period, it cannot be followed by a digit.
+- Reserved words in R, such as `TRUE`, cannot be used as variables.
+
+
+```r
+Num1 &lt;- 5 
+Num2 &lt;- 3 
+sum_num &lt;- Num1 + Num2
+prod.num &lt;- Num1 * Num2
+print(sum_num) 
+```
+
+```
+## [1] 8
+```
+
+```r
+print(prod.num)
+```
+
+```
+## [1] 15
+```
+
+---
+
+## Characters
+
+Variables can also be used to store character values.
+
+
+```r
+first_name &lt;- "John" # use quotation marks for character strings
+last_name &lt;- 'Smith' # single quotation also works
+print(first_name)
+```
+
+```
+## [1] "John"
+```
+
+```r
+print(last_name)
+```
+
+```
+## [1] "Smith"
+```
+
+---
+
+## Functions
+
+One or more values can produce new one using R functions.
+
+
+```r
+a &lt;- 1; b &lt;- 3 # semicolon (;) can be used to separate lines
+s &lt;- sum(a, b) # sum() is a function that computes the sum
+print(s)
+```
+
+```
+## [1] 4
+```
+
+
+```r
+first_name &lt;- "John" 
+last_name &lt;- "Smith"
+# paste() puts together multiple character strings
+full_name &lt;- paste(first_name, last_name) 
+print(full_name)
+```
+
+```
+## [1] "John Smith"
+```
+
+For detailed usage of a function, type `help(function_name)`, e.g. `help(paste)` or `?function_name`, e.g. `?paste`.
+
+---
+
+## Vectors
+
+Multiple numerical values or characters can be saved as a single variable using an R function `c()`.
+
+
+```r
+vec1 &lt;- c(2, 3, 5, 7, 1, 4)
+print(vec1)
+```
+
+```
+## [1] 2 3 5 7 1 4
+```
+
+
+```r
+vec2 &lt;- c("Joe", "waited", "for", "the", "train")
+print(vec2)
+```
+
+```
+## [1] "Joe"    "waited" "for"    "the"    "train"
+```
+
+---
+
+## Functions applied to a vector -- part I
+
+
+```r
+length(vec1)
+```
+
+```
+## [1] 6
+```
+
+```r
+sum(vec1)
+```
+
+```
+## [1] 22
+```
+
+--
+
+**Exercise**: sort the numbers 2, 3, 5, 7, 1, 4 from the smallest to the largest and vice versa. 
+
+--
+
+
+```r
+sort(vec1)
+```
+
+```
+## [1] 1 2 3 4 5 7
+```
+
+--
+
+
+```r
+sort(vec1, decreasing = F)
+```
+
+```
+## [1] 1 2 3 4 5 7
+```
+
+---
+
+## Functions applied to a vector -- part II
+
+
+```r
+collapse1 &lt;- paste(vec2, collapse = " "); print(collapse1)
+```
+
+```
+## [1] "Joe waited for the train"
+```
+
+
+```r
+collapse2 &lt;- paste(vec2, collapse = "_"); print(collapse2)
+```
+
+```
+## [1] "Joe_waited_for_the_train"
+```
+
+--
+
+**Exercise**: produce the following output
+
+
+```
+## [1] "Joewaitedforthetrain"
+```
+
+--
+
+
+```r
+collapse3 &lt;- paste(vec2, collapse = ""); print(collapse3)
+```
+
+```
+## [1] "Joewaitedforthetrain"
+```
+
+---
+
+## Vector manipulation
+
+Use brackets `[]` to extract components of a vector.
+
+
+```r
+a &lt;- vec1[3]
+print(a)
+```
+
+```
+## [1] 5
+```
+
+
+```r
+dm &lt;- vec2[c(1, 5)]
+print(dm)
+```
+
+```
+## [1] "Joe"   "train"
+```
+
+---
+
+## Special vectors -- part I
+
+**Exercise**: compute the sum `\(1 + 2 + 3 + \cdots + 10\)`.
+
+--
+
+
+```r
+w1 &lt;- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+sum(w1)
+```
+
+```
+## [1] 55
+```
+
+--
+
+Colon (:) can be used to generate a vector consisting of consecutive numbers.
+
+
+```r
+# 
+w2 &lt;- 1:10
+print(w2)
+```
+
+```
+##  [1]  1  2  3  4  5  6  7  8  9 10
+```
+
+```r
+sum(w2) 
+```
+
+```
+## [1] 55
+```
+
+---
+
+## Special vectors -- part II
+
+**Exercise**: compute the sum `\(2 + 4 + 6 +\cdots + 20\)`.
+
+--
+
+
+```r
+# one can use a function seq()
+# type ?seq to get help
+w3 &lt;- seq(2, 20, by = 2)
+sum(w3)
+```
+
+```
+## [1] 110
+```
+
+--
+
+Alternatively, one can use the previous vector:
+
+
+```r
+w4 &lt;- 2*w1 # product of a single number and a vector
+print(w4)
+```
+
+```
+##  [1]  2  4  6  8 10 12 14 16 18 20
+```
+
+```r
+sum(w4)
+```
+
+```
+## [1] 110
+```
+
+---
+
+## Data frame
+
+Vectors of an equal length can be combined to form a data frame.
+
+
+```r
+# use of the function data.frame()
+first_name &lt;- c("Lisa", "John", "Chuck", "Matt")
+last_name &lt;- c("Simpson", "Smith", "Williams", "June")
+age_yrs &lt;- c(8, 42, 81, 23)
+book &lt;- data.frame(first = first_name,
+                   last = last_name,
+                   age = age_yrs)
+print(book)
+```
+
+```
+##   first     last age
+## 1  Lisa  Simpson   8
+## 2  John    Smith  42
+## 3 Chuck Williams  81
+## 4  Matt     June  23
+```
+
+```r
+dim(book) # dimensions of a data frame: dim()
+```
+
+```
+## [1] 4 3
+```
+
+---
+
+## Handling data frames
+
+
+```r
+# extract a single element from a data frame
+book[2, 3]
+```
+
+```
+## [1] 42
+```
+
+```r
+# extract a column: use $
+age_extracted &lt;- book$age
+print(age_extracted)
+```
+
+```
+## [1]  8 42 81 23
+```
+
+```r
+# extract a row
+book[4, ]
+```
+
+```
+##   first last age
+## 4  Matt June  23
+```
+
+---
+
+## Retrieving a column from a data frame
+
+
+```r
+# use column number
+method1 &lt;- book[,1]
+print(method1)
+```
+
+```
+## [1] Lisa  John  Chuck Matt 
+## Levels: Chuck John Lisa Matt
+```
+
+
+```r
+# use "$" to extract a column
+method2 &lt;- book$first
+print(method2)
+```
+
+```
+## [1] Lisa  John  Chuck Matt 
+## Levels: Chuck John Lisa Matt
+```
+
+---
+
+## Reading a data file 
+
+Download a [file](heights.txt) to be used in an example (Chrome users: Menu `\(\rightarrow\)` More Tools `\(\rightarrow\)` Save Page As).
+
+
+```r
+# heights.txt is a space-delimited file 
+# consisting of 1375 observations of mom/daughter age height pairs
+# file path `file = "heights.txt"` below should be adjusted!
+d &lt;- read.table(file = "heights.txt", header = TRUE, sep = " ")
+```
+
+A glance at a data frame:
+
+
+```r
+dim(d) # dimension
+```
+
+```
+## [1] 1375    2
+```
+
+```r
+names(d) # variable(column) names
+```
+
+```
+## [1] "Mheight" "Dheight"
+```
+
+---
+
+## Inspecting a data frame
+
+
+```r
+head(d) # first few rows (6 rows by default)
+```
+
+```
+##   Mheight Dheight
+## 1    59.7    55.1
+## 2    58.2    56.5
+## 3    60.6    56.0
+## 4    60.7    56.8
+## 5    61.8    56.0
+## 6    55.5    57.9
+```
+
+```r
+tail(d) # last few rows
+```
+
+```
+##      Mheight Dheight
+## 1370    69.5    70.4
+## 1371    69.1    70.1
+## 1372    65.0    71.6
+## 1373    66.3    71.4
+## 1374    70.8    71.0
+## 1375    63.0    73.1
+```
+
+---
+
+## Histogram
+
+The first step of data analysis is often data visualization. A histogram is a good tool to understand the range and frequency of given data.
+
+.pull-left-code[
+
+Instead of using graphic feature from base R, we will use a package developed especially for visualization.
+
+
+```r
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+In fact, we need only `ggplot2`, which is one of packages contained in `tidyverse`.
+
+
+```r
+g1 &lt;- ggplot(d, aes(x = Mheight)) + 
+  geom_histogram()
+print(g1)
+```
+]
+
+.pull-right-plot[
+&lt;img src="Cabrini_2019_Lecture_1_files/figure-html/unnamed-chunk-34-1.png" style="display: block; margin: auto;" /&gt;
+]
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

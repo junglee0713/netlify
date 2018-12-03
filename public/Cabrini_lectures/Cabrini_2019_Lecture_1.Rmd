@@ -1,0 +1,397 @@
+---
+title: "Lecture 1"
+author: "Jung-Jin Lee"
+date: "Jan 16, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Cabrini.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 3,
+  fig.height = 3
+  )
+```
+
+## Help on slides
+
+At any time, press `h` to open `Help`.
+
+---
+
+## What is statistics?
+
+- Statistics is the science of learning from data
+
+- The goal of statistics is to summarize data in a way that allows for
+easy descriptions or inferences of the data
+  - Data visualization and computing are important parts of statistics
+
+- R, a language and environment for statistical computing and graphics, will be used as a main tool throughout the course
+
+---
+
+## Why R? 
+
+- Specialized for data analysis
+
+- Many packages have been developed and are available
+
+- Excellent graphics
+
+- Free!
+
+---
+
+## Installing R/RStudio
+
+- To install R, go to https://www.r-project.org/ and follow instruction there
+    - Click on CRAN under Download on the left
+    - Choose the closest mirror site (e.g. http://lib.stat.cmu.edu/R/CRAN/)
+    - Download R for your platform (Windows/Mac/Linux)
+    
+- To install RStudio (an integrated development environment for R), go to https://www.rstudio.com/ and follow instruction
+
+---
+
+## RStudio IDE overview
+
+<p align = "center"> 
+  <img src = rstudio.png>
+</p>
+
+---
+
+## R as a calculator
+
+Use R console:
+
+```{r}
+5 + 3
+```
+
+```{r}
+# everything after # (pound sign) is ignored
+# useful for comments
+2 * 5 # product of 2 and 5
+```
+
+```{r}
+3^2
+```
+
+```{r}
+3**2
+```
+
+---
+
+## Variables
+
+Variables can be used to store numerical values. 
+
+- A variable can be a combination of letters (case sensitive), digits, period (.) and underscore (_).
+- It must start with a letter or a period. If it starts with a period, it cannot be followed by a digit.
+- Reserved words in R, such as `TRUE`, cannot be used as variables.
+
+```{r}
+Num1 <- 5 
+Num2 <- 3 
+sum_num <- Num1 + Num2
+prod.num <- Num1 * Num2
+print(sum_num) 
+print(prod.num)
+```
+
+---
+
+## Characters
+
+Variables can also be used to store character values.
+
+```{r}
+first_name <- "John" # use quotation marks for character strings
+last_name <- 'Smith' # single quotation also works
+print(first_name)
+print(last_name)
+```
+
+---
+
+## Functions
+
+One or more values can produce new one using R functions.
+
+```{r}
+a <- 1; b <- 3 # semicolon (;) can be used to separate lines
+s <- sum(a, b) # sum() is a function that computes the sum
+print(s)
+```
+
+```{r}
+first_name <- "John" 
+last_name <- "Smith"
+# paste() puts together multiple character strings
+full_name <- paste(first_name, last_name) 
+print(full_name)
+```
+
+For detailed usage of a function, type `help(function_name)`, e.g. `help(paste)` or `?function_name`, e.g. `?paste`.
+
+---
+
+## Vectors
+
+Multiple numerical values or characters can be saved as a single variable using an R function `c()`.
+
+```{r}
+vec1 <- c(2, 3, 5, 7, 1, 4)
+print(vec1)
+```
+
+```{r}
+vec2 <- c("Joe", "waited", "for", "the", "train")
+print(vec2)
+```
+
+---
+
+## Functions applied to a vector -- part I
+
+```{r}
+length(vec1)
+sum(vec1)
+```
+
+--
+
+**Exercise**: sort the numbers 2, 3, 5, 7, 1, 4 from the smallest to the largest and vice versa. 
+
+--
+
+```{r}
+sort(vec1)
+```
+
+--
+
+```{r}
+sort(vec1, decreasing = F)
+```
+
+---
+
+## Functions applied to a vector -- part II
+
+```{r}
+collapse1 <- paste(vec2, collapse = " "); print(collapse1)
+```
+
+```{r}
+collapse2 <- paste(vec2, collapse = "_"); print(collapse2)
+```
+
+--
+
+**Exercise**: produce the following output
+
+```{r, echo = F}
+paste(vec2, collapse = "")
+```
+
+--
+
+```{r}
+collapse3 <- paste(vec2, collapse = ""); print(collapse3)
+```
+
+---
+
+## Vector manipulation
+
+Use brackets `[]` to extract components of a vector.
+
+```{r}
+a <- vec1[3]
+print(a)
+```
+
+```{r}
+dm <- vec2[c(1, 5)]
+print(dm)
+```
+
+---
+
+## Special vectors -- part I
+
+**Exercise**: compute the sum $1 + 2 + 3 + \cdots + 10$.
+
+--
+
+```{r}
+w1 <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+sum(w1)
+```
+
+--
+
+Colon (:) can be used to generate a vector consisting of consecutive numbers.
+
+```{r}
+# 
+w2 <- 1:10
+print(w2)
+sum(w2) 
+```
+
+---
+
+## Special vectors -- part II
+
+**Exercise**: compute the sum $2 + 4 + 6 +\cdots + 20$.
+
+--
+
+```{r}
+# one can use a function seq()
+# type ?seq to get help
+w3 <- seq(2, 20, by = 2)
+sum(w3)
+```
+
+--
+
+Alternatively, one can use the previous vector:
+
+```{r}
+w4 <- 2*w1 # product of a single number and a vector
+print(w4)
+sum(w4)
+```
+
+---
+
+## Data frame
+
+Vectors of an equal length can be combined to form a data frame.
+
+```{r}
+# use of the function data.frame()
+first_name <- c("Lisa", "John", "Chuck", "Matt")
+last_name <- c("Simpson", "Smith", "Williams", "June")
+age_yrs <- c(8, 42, 81, 23)
+book <- data.frame(first = first_name,
+                   last = last_name,
+                   age = age_yrs)
+print(book)
+dim(book) # dimensions of a data frame: dim()
+```
+
+---
+
+## Handling data frames
+
+```{r}
+# extract a single element from a data frame
+book[2, 3]
+# extract a column: use $
+age_extracted <- book$age
+print(age_extracted)
+# extract a row
+book[4, ]
+```
+
+---
+
+## Retrieving a column from a data frame
+
+```{r}
+# use column number
+method1 <- book[,1]
+print(method1)
+```
+
+```{r}
+# use "$" to extract a column
+method2 <- book$first
+print(method2)
+```
+
+---
+
+## Reading a data file 
+
+Download a [file](heights.txt) to be used in an example (Chrome users: Menu $\rightarrow$ More Tools $\rightarrow$ Save Page As).
+
+```{r}
+# heights.txt is a space-delimited file 
+# consisting of 1375 observations of mom/daughter age height pairs
+# file path `file = "heights.txt"` below should be adjusted!
+d <- read.table(file = "heights.txt", header = TRUE, sep = " ")
+```
+
+A glance at a data frame:
+
+```{r}
+dim(d) # dimension
+names(d) # variable(column) names
+```
+
+---
+
+## Inspecting a data frame
+
+```{r}
+head(d) # first few rows (6 rows by default)
+tail(d) # last few rows
+```
+
+---
+
+## Histogram
+
+The first step of data analysis is often data visualization. A histogram is a good tool to understand the range and frequency of given data.
+
+.pull-left-code[
+
+Instead of using graphic feature from base R, we will use a package developed especially for visualization.
+
+```{r, eval = F}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+In fact, we need only `ggplot2`, which is one of packages contained in `tidyverse`.
+
+```{r, eval = F}
+g1 <- ggplot(d, aes(x = Mheight)) + 
+  geom_histogram()
+print(g1)
+```
+]
+
+.pull-right-plot[
+```{r, echo = F}
+g1 <- ggplot(d, aes(x = Mheight)) + 
+  geom_histogram()
+print(g1)
+```
+]
+
+
