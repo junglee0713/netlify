@@ -140,7 +140,23 @@ ggplot(df, aes(color, fill = clarity)) + #<<
 
 ---
 
-## To be continued (To be saved under "static" folder) ...
+## Bash script test
+
+```{bash}
+cd /Users/leej39/Dropbox/GitHub/netlify
+awk 'NR<=2 {print}' < config.toml
+```
+
+---
+
+## Python test
+
+```{python}
+a = 1+2
+print(a)
+b = len('abcde')
+print(b)
+```
 
 ---
 
@@ -150,6 +166,7 @@ Recall that the sample mean is given by sum of samples divided by the number of 
 $$\bar{x} = \frac{x_1+x_2+\cdots+x_n}{n}$$
 
 ```{r}
+d <- read.table(file = "heights.txt", header = TRUE, sep = " ")
 mom <- d$Mheight
 s <- sum(mom)
 n <- length(mom)
