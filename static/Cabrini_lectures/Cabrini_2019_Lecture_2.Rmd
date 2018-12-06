@@ -24,8 +24,8 @@ opts_chunk$set(
   message = FALSE,
   dpi = 300,
   fig.align = "center",
-  fig.width = 3,
-  fig.height = 3
+  fig.width = 4,
+  fig.height = 4
   )
 ```
 
@@ -131,10 +131,9 @@ ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
 
 ## Colored bar graphs
 
-```{r, fig.width = 8, fig.height = 4}
+```{r, out.width = "75%", fig.asp = 0.7}
 ggplot(df, aes(color, fill = clarity)) + #<<
   geom_bar() +
-  theme(aspect.ratio = 1) + #<<
   facet_wrap(~cut) 
 ```
 

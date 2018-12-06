@@ -32,8 +32,8 @@ How to create a blog using blogdown and Netlify
 Create a new repository: https://github.com/junglee0713/netlify
  Clone the repository, e.g.
   cd /Users/leej39/Dropbox/GitHub git clone git@github.com:junglee0713/netlify.git  (optional) Create an R project, say /Users/leej39/Dropbox/GitHub/netlify/netlify.Rproj.
- Open RStudio and install necessary packages, following instruction in https://bookdown.org/yihui/blogdown/installation.html
-  install.packages(&amp;quot;blogdown&amp;quot;) blogdown::install_hugo() If you are okay with the default theme (I am), run the following  blogdown::serve_site() blogdown::hugo_build() Change the configuration file /Users/leej39/Dropbox/GitHub/netlify/config.</description>
+ (do only once) Open RStudio and install necessary packages, following instruction in https://bookdown.org/yihui/blogdown/installation.html
+  install.packages(&amp;quot;blogdown&amp;quot;) blogdown::install_hugo() Make sure that /Users/leej39/Dropbox/GitHub/netlify does not include files other than LICENSE, the RStudio project file (*.</description>
     </item>
     
     <item>

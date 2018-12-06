@@ -74,14 +74,14 @@
 git clone git@github.com:junglee0713/netlify.git </code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li><p>(optional) Create an R project, say <code>/Users/leej39/Dropbox/GitHub/netlify/netlify.Rproj</code>.</p></li>
-<li><p>Open RStudio and install necessary packages, following instruction in <a href="https://bookdown.org/yihui/blogdown/installation.html" class="uri">https://bookdown.org/yihui/blogdown/installation.html</a></p></li>
+<li><p>(do only once) Open RStudio and install necessary packages, following instruction in <a href="https://bookdown.org/yihui/blogdown/installation.html" class="uri">https://bookdown.org/yihui/blogdown/installation.html</a></p></li>
 </ol>
 <pre class="r"><code>install.packages(&quot;blogdown&quot;)
 blogdown::install_hugo()</code></pre>
 <ol start="5" style="list-style-type: decimal">
-<li>If you are okay with the default theme (I am), run the following</li>
+<li>Make sure that <code>/Users/leej39/Dropbox/GitHub/netlify</code> does not include files other than <code>LICENSE</code>, the RStudio project file (<code>*.Rproj</code>), <code>README</code> or <code>README.md</code>. If you are okay with the default theme, run the following</li>
 </ol>
-<pre class="r"><code>blogdown::serve_site() 
+<pre class="r"><code>blogdown::serve_site() # or blogdown::serve_site(theme = &quot;user/repo&quot;) to choose a different theme
 blogdown::hugo_build()</code></pre>
 <ol start="6" style="list-style-type: decimal">
 <li><p>Change the configuration file <code>/Users/leej39/Dropbox/GitHub/netlify/config.toml</code> as appropriate.</p></li>

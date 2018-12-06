@@ -24,17 +24,17 @@ git clone git@github.com:junglee0713/netlify.git
 
 3. (optional) Create an R project, say `/Users/leej39/Dropbox/GitHub/netlify/netlify.Rproj`.
 
-4. Open RStudio and install necessary packages, following instruction in https://bookdown.org/yihui/blogdown/installation.html
+4. (do only once) Open RStudio and install necessary packages, following instruction in https://bookdown.org/yihui/blogdown/installation.html
 
 ```{r, eval = F}
 install.packages("blogdown")
 blogdown::install_hugo()
 ```
 
-5. If you are okay with the default theme (I am), run the following 
+5. Make sure that `/Users/leej39/Dropbox/GitHub/netlify` does not include files other than `LICENSE`, the RStudio project file (`*.Rproj`), `README` or `README.md`. If you are okay with the default theme, run the following 
 
 ```{r, eval = F}
-blogdown::serve_site() 
+blogdown::serve_site() # or blogdown::serve_site(theme = "user/repo") to choose a different theme
 blogdown::hugo_build()
 ```
 
