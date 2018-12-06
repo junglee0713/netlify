@@ -139,26 +139,6 @@ ggplot(df, aes(color, fill = clarity)) + #<<
 
 ---
 
-## Bash script test
-
-```{bash}
-cd /Users/leej39/Dropbox/GitHub/netlify
-awk 'NR<=2 {print}' < config.toml
-```
-
----
-
-## Python test
-
-```{python}
-a = 1+2
-print(a)
-b = len('abcde')
-print(b)
-```
-
----
-
 ## Example: find the sample mean of mom's heights
 
 Recall that the sample mean is given by sum of samples divided by the number of samples:
