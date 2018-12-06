@@ -199,17 +199,39 @@ ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
 
 ---
 
-## Example: find the sample mean of mom's heights
+## Description of numerical data
 
-Recall that the sample mean is given by sum of samples divided by the number of samples:
+What is the distribution of `carat` like?
+
+
+```r
+ggplot(df, aes(carat)) +
+  geom_histogram()
+```
+
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-12-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Location and spread of numerical data
+
+- Measure of location: sample mean and median
+- Measure of spread: sample variance and standard deviation
+
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-13-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Example: find the sample mean
+
+The sample mean is given by sum of samples divided by the number of samples:
 `$$\bar{x} = \frac{x_1+x_2+\cdots+x_n}{n}$$`
 
 
 ```r
 d &lt;- read.table(file = "heights.txt", header = TRUE, sep = " ")
 mom &lt;- d$Mheight
-s &lt;- sum(mom)
-n &lt;- length(mom)
+s &lt;- sum(mom); n &lt;- length(mom)
 mom_height_mean &lt;- s/n
 print(mom_height_mean)
 ```
@@ -228,6 +250,88 @@ mean(mom) # mean() gives the mean of a vector
 ```
 ## [1] 62.4528
 ```
+
+---
+
+## Sample median
+
+The median is the value separating the higher half from the lower half of numerical data. R has a built in function to compute the median. 
+
+
+```r
+median(mom)
+```
+
+```
+## [1] 62.4
+```
+
+In general, one can compute quantiles (cut points dividing range of numerical data).
+
+
+```r
+quantile(mom)
+```
+
+```
+##   0%  25%  50%  75% 100% 
+## 55.4 60.8 62.4 63.9 70.8
+```
+
+The median is the same as the 50% quantile. 
+
+---
+
+## Example
+
+**Exercise**: Find the sample mean and median of `carat`.
+
+--
+
+
+```r
+mean(carat); median(carat)
+```
+
+```
+## [1] 0.7979397
+```
+
+```
+## [1] 0.7
+```
+
+--
+
+**Exercise**: Find the 90% quantile `carat`.
+
+--
+
+
+```r
+quantile(carat)
+```
+
+```
+##   0%  25%  50%  75% 100% 
+## 0.20 0.40 0.70 1.04 5.01
+```
+
+--
+
+
+```r
+quantile(carat, probs = 0.9)
+```
+
+```
+##  90% 
+## 1.51
+```
+
+---
+
+## To be continued with spread
 
 ---
 
@@ -294,7 +398,7 @@ where `$$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}
 
 ## Normal pdf
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
 
 _mean_ determines the center of the bell shape, while _standard deviation_ measures the spread.
     </textarea>

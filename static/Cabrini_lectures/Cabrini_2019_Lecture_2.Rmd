@@ -139,16 +139,39 @@ ggplot(df, aes(color, fill = clarity)) + #<<
 
 ---
 
-## Example: find the sample mean of mom's heights
+## Description of numerical data
 
-Recall that the sample mean is given by sum of samples divided by the number of samples:
+What is the distribution of `carat` like?
+
+```{r, out.width = "50%"}
+ggplot(df, aes(carat)) +
+  geom_histogram()
+```
+
+---
+
+## Location and spread of numerical data
+
+- Measure of location: sample mean and median
+- Measure of spread: sample variance and standard deviation
+
+```{r, out.width = "50%", echo = F}
+ggplot(df, aes(carat)) +
+  geom_histogram() +
+  geom_vline(xintercept = mean(df$carat), lty = "dashed", color = "red")
+```
+
+---
+
+## Example: find the sample mean
+
+The sample mean is given by sum of samples divided by the number of samples:
 $$\bar{x} = \frac{x_1+x_2+\cdots+x_n}{n}$$
 
 ```{r}
 d <- read.table(file = "heights.txt", header = TRUE, sep = " ")
 mom <- d$Mheight
-s <- sum(mom)
-n <- length(mom)
+s <- sum(mom); n <- length(mom)
 mom_height_mean <- s/n
 print(mom_height_mean)
 ```
@@ -158,6 +181,56 @@ R has a built in function to compute the mean:
 ```{r}
 mean(mom) # mean() gives the mean of a vector
 ```
+
+---
+
+## Sample median
+
+The median is the value separating the higher half from the lower half of numerical data. R has a built in function to compute the median. 
+
+```{r}
+median(mom)
+```
+
+In general, one can compute quantiles (cut points dividing range of numerical data).
+
+```{r}
+quantile(mom)
+```
+
+The median is the same as the 50% quantile. 
+
+---
+
+## Example
+
+**Exercise**: Find the sample mean and median of `carat`.
+
+--
+
+```{r}
+mean(carat); median(carat)
+```
+
+--
+
+**Exercise**: Find the 90% quantile `carat`.
+
+--
+
+```{r}
+quantile(carat)
+```
+
+--
+
+```{r}
+quantile(carat, probs = 0.9)
+```
+
+---
+
+## To be continued with spread
 
 ---
 
