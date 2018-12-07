@@ -6,10 +6,20 @@
     <description>Recent content on Jung-Jin Lee&#39;s website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 27 Nov 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 06 Dec 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Interactive 3D plot</title>
+      <link>/2018/12/06/interactive-3d-plot/</link>
+      <pubDate>Thu, 06 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/12/06/interactive-3d-plot/</guid>
+      <description>Interactive 3D plot created using plotly:
+library(plotly) mtcars$am[which(mtcars$am == 0)] &amp;lt;- &amp;#39;Automatic&amp;#39; mtcars$am[which(mtcars$am == 1)] &amp;lt;- &amp;#39;Manual&amp;#39; mtcars$am &amp;lt;- as.factor(mtcars$am) p &amp;lt;- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, color = ~am, colors = c(&amp;#39;#BF382A&amp;#39;, &amp;#39;#0C4B8E&amp;#39;)) %&amp;gt;% add_markers() %&amp;gt;% layout(scene = list(xaxis = list(title = &amp;#39;Weight&amp;#39;), yaxis = list(title = &amp;#39;Gross horsepower&amp;#39;), zaxis = list(title = &amp;#39;1/4 mile time&amp;#39;))) p  {&#34;</description>
+    </item>
     
     <item>
       <title>Cabrini lectures</title>
