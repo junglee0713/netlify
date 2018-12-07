@@ -16,7 +16,11 @@ knitr::opts_chunk$set(
 
 Interactive 3D plot created using `plotly`:
 
+<<<<<<< HEAD
 ```{r, echo = T}
+=======
+```{r}
+>>>>>>> 37731c382700905011424f1a0a8f69a446495b12
 library(plotly)
 
 mtcars$am[which(mtcars$am == 0)] <- 'Automatic'
@@ -28,5 +32,13 @@ p <- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, color = ~am, colors = c('#BF38
   layout(scene = list(xaxis = list(title = 'Weight'),
                      yaxis = list(title = 'Gross horsepower'),
                      zaxis = list(title = '1/4 mile time')))
+<<<<<<< HEAD
+=======
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+#chart_link = api_create(p, filename="scatter3d-basic")
+#chart_link
+>>>>>>> 37731c382700905011424f1a0a8f69a446495b12
 p
 ```
