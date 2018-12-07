@@ -18,7 +18,7 @@
       
       <guid>/2018/12/06/interactive-3d-plot/</guid>
       <description>Interactive 3D plot created using plotly:
-library(plotly) mtcars$am[which(mtcars$am == 0)] &amp;lt;- &amp;#39;Automatic&amp;#39; mtcars$am[which(mtcars$am == 1)] &amp;lt;- &amp;#39;Manual&amp;#39; mtcars$am &amp;lt;- as.factor(mtcars$am) p &amp;lt;- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, color = ~am, colors = c(&amp;#39;#BF382A&amp;#39;, &amp;#39;#0C4B8E&amp;#39;)) %&amp;gt;% add_markers() %&amp;gt;% layout(scene = list(xaxis = list(title = &amp;#39;Weight&amp;#39;), yaxis = list(title = &amp;#39;Gross horsepower&amp;#39;), zaxis = list(title = &amp;#39;1/4 mile time&amp;#39;))) # Create a shareable link to your chart # Set up API credentials: https://plot.</description>
+library(plotly) mtcars$am[which(mtcars$am == 0)] &amp;lt;- &amp;#39;Automatic&amp;#39; mtcars$am[which(mtcars$am == 1)] &amp;lt;- &amp;#39;Manual&amp;#39; mtcars$am &amp;lt;- as.factor(mtcars$am) p &amp;lt;- plot_ly(mtcars, x = ~wt, y = ~hp, z = ~qsec, color = ~am, colors = c(&amp;#39;#BF382A&amp;#39;, &amp;#39;#0C4B8E&amp;#39;)) %&amp;gt;% add_markers() %&amp;gt;% layout(scene = list(xaxis = list(title = &amp;#39;Weight&amp;#39;), yaxis = list(title = &amp;#39;Gross horsepower&amp;#39;), zaxis = list(title = &amp;#39;1/4 mile time&amp;#39;))) p  {&#34;</description>
     </item>
     
     <item>
