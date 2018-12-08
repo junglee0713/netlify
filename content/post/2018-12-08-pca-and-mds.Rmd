@@ -1,0 +1,31 @@
+---
+title: PCA and MDS
+author: Jung-Jin Lee
+date: '2018-12-08'
+slug: pca-and-mds
+categories: []
+tags: []
+---
+
+```{r, echo = F}
+knitr::opts_chunk$set(
+  message = F
+)
+```
+
+A mock data set consisting of $5$ three dimensional data points:
+
+```{r}
+library(plotly)
+d <- data.frame(x = c(-1, 0, 1, 0, 2), 
+                y = c(0, 3, 0, 1, 1), 
+                z = c(1, 1, 0, 0, 2), 
+                lab = letters[1:5]) 
+
+p <- plot_ly(d, x = ~x, y = ~y, z = ~z, color = ~lab) %>%
+  add_markers() 
+
+p
+
+```
+
