@@ -52,7 +52,7 @@ plot_ly(Xs, x = ~x, y = ~y, z = ~z,
 
 ```{r}
 scene = list(camera = list(up = list(x = 1, y = 0, z = 0),
-                           eye = list(x = 0, y = 0, z = 1.8)))
+                           eye = list(x = 0, y = 0, z = 2)))
 Y <- prcomp(Xraw, center = T, scale = T)$x %>%
   as.data.frame()
 plot_ly(Y, x = ~PC1, y = ~PC2, z = ~PC3, 
