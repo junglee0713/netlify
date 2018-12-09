@@ -37,9 +37,9 @@ plot_ly(Xraw, x = ~x, y = ~y, z = ~z,
   add_markers() 
 ```
 
-Our goal is to find a _good_ (meaning to be clarified later) two dimensional projection $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$ of $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$ so that we can reduce the dimension (from 3 to 2) of data and and visualize them. 
+Our goal is to find a _good_ (meaning to be clarified later) two dimensional projection $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$ of $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$ so that we can reduce the dimension (from 3 to 2) of data and visualize them. 
 
-If $x$, $y$, and $z$ variables should be equally weighted, then the data points should be centered and normalized:
+If $x$, $y$, and $z$ variables need to be equally weighted, then the data points should be centered and normalized:
 
 ```{r}
 Xs <- scale(Xraw) %>%
@@ -51,12 +51,16 @@ plot_ly(Xs, x = ~x, y = ~y, z = ~z,
 ```
 
 ```{r}
+scene = list(camera = list(up = list(x = 1, y = 0, z = 0),
+                           eye = list(x = 0, y = 0, z = 1.8)))
 Y <- prcomp(Xraw, center = T, scale = T)$x %>%
   as.data.frame()
 plot_ly(Y, x = ~PC1, y = ~PC2, z = ~PC3, 
         color = colored,
         colors = c("red", "blue", "green", "grey")) %>%
-  add_markers() 
+  add_markers() %>%
+  layout(scene = scene)
+  
 ```
 
 Compare:
