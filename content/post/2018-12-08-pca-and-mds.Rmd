@@ -13,19 +13,60 @@ knitr::opts_chunk$set(
 )
 ```
 
-A mock data set consisting of $5$ three dimensional data points:
+```{r, echo = F}
+n <- 100
+```
+
+A mock data set consisting of `r n` data points, say $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$ in $\mathbb{R}^3$\:
+
+```{r}
+set.seed(2018)
+n <- 100
+Xraw <- data.frame(x = rnorm(n, mean = 3, sd = 1),
+                   y = rnorm(n, mean = 2, sd = 2),
+                   z = rnorm(n, mean = -1, sd = 1)) 
+dim(Xraw)
+```
 
 ```{r}
 library(plotly)
-d <- data.frame(x = c(-1, 0, 1, 0, 2), 
-                y = c(0, 3, 0, 1, 1), 
-                z = c(1, 1, 0, 0, 2), 
-                lab = letters[1:5]) 
-
-p <- plot_ly(d, x = ~x, y = ~y, z = ~z, color = ~lab) %>%
+colored <- c("P1", "P2", "P3", rep("P4 - P100", n-3))
+plot_ly(Xraw, x = ~x, y = ~y, z = ~z, 
+        color = colored,
+        colors = c("red", "blue", "green", "grey")) %>%
   add_markers() 
-
-p
-
 ```
+
+Our goal is to find a _good_ (meaning to be clarified later) two dimensional projection $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$ of $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$ so that we can reduce the dimension (from 3 to 2) of data and and visualize them. 
+
+If $x$, $y$, and $z$ variables should be equally weighted, then the data points should be centered and normalized:
+
+```{r}
+Xs <- scale(Xraw) %>%
+  as.data.frame()
+plot_ly(Xs, x = ~x, y = ~y, z = ~z, 
+        color = colored, 
+        colors = c("red", "blue", "green", "grey")) %>%
+  add_markers() 
+```
+
+```{r}
+Y <- prcomp(Xraw, center = T, scale = T)$x %>%
+  as.data.frame()
+plot_ly(Y, x = ~PC1, y = ~PC2, z = ~PC3, 
+        color = colored,
+        colors = c("red", "blue", "green", "grey")) %>%
+  add_markers() 
+```
+
+Compare:
+
+```{r}
+Y %>% mutate(color_code = colored) %>%
+  ggplot(aes(PC1, PC2, color = color_code)) +
+  scale_color_manual(values = c("red", "blue", "green", "grey")) +
+  theme(aspect.ratio = 1) +
+  geom_point()
+```
+
 
