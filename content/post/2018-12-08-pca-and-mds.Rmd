@@ -20,11 +20,25 @@ n <- 100
 A mock data set consisting of `r n` data points, say $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$ in $\mathbb{R}^3$\:
 
 ```{r}
+## Create a perturbed and slanted elipse in R^3
 set.seed(2018)
-n <- 100
-Xraw <- data.frame(x = rnorm(n, mean = 3, sd = 1),
-                   y = rnorm(n, mean = 2, sd = 2),
-                   z = rnorm(n, mean = -1, sd = 1)) 
+x_center <- 3
+y_center <- 1
+z_center <- 2 
+x_stretch <- 4
+y_stretch <- 3
+z_stretch <- 1
+angle <- pi/3
+
+x_ori <- x_stretch*cos(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.5)
+y_ori <- y_stretch*sin(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.5)
+
+x <- cos(angle)*x_ori - sin(angle)*y_ori + x_center
+y <- sin(angle)*x_ori + cos(angle)*y_ori + y_center
+z <- z_stretch*sin(2*pi*(1:n)/n) + z_center
+
+Xraw <- data.frame(x, y, z) 
+Xraw <- Xraw[sample(nrow(Xraw)), ]
 dim(Xraw)
 ```
 
