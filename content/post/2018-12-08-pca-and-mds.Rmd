@@ -1,5 +1,5 @@
 ---
-title: Pincipal component analysis
+title: Principal component analysis
 author: Jung-Jin Lee
 date: '2018-12-08'
 slug: pca-and-mds
