@@ -58,7 +58,7 @@ plot_ly(X, x = ~x, y = ~y, z = ~z,
   add_markers() 
 ```
 
-<a name="later"></a> Consider a projection $P$ onto a two dimensional subspace of $\mathbb{R}^3$ and let $Y=XP$. Since $X$ is centered, so is $Y$ and hence the total variance of $Y$ is given by $\frac{1}{n-1}\|Y\|_{HS}^2$, where $\|\cdot\|_{HS}$ denotes the Hilbert-Schmidt norm. 
+<a name="later"></a> Consider a projection $P$ onto a two dimensional subspace $W$ of $\mathbb{R}^3$ and let $Y=XP$. Since $X$ is centered, so is $Y$ and hence the total variance of $Y$ is given by $\frac{1}{n-1}\|Y\|_{HS}^2$, where $\|\cdot\|_{HS}$ denotes the Hilbert-Schmidt norm. 
 By a good two dimensional representation, we mean finding a projection $P$ such that $\frac{1}{n-1}\|Y\|_{HS}^2$ is maximized, where $Y=XP$. As $P$ is a projection matrix, $P=P^t=P^2$ and it follows that 
 $$\|Y\|_{HS}^2=tr((XP)^t(XP))=tr(P^tX^tXP)=tr(X^tXPP^t)=tr(X^tY)$$ and that
 
@@ -83,8 +83,7 @@ then $P_0$ is a projection of rank 2 satisfying $\|X-Y_0\|_{HS}^2 = \sigma_3^2$.
 
 Note that $XP_0=U\Sigma V^tVQV^t = U\Sigma_0V^t$, where $$\Sigma_0=\left[\begin{array}{ccc} \sigma_1 & & \\ & \sigma_2 &  \\ & & 0 \\ & & \\ & & \end{array}\right]_{`r n` \times 3}.$$
 
-In particular, this shows that the first two columns of $V$ are basis for $XP_0$ 
-and the first two columns of $U\Sigma_0$ provide the desired coordinates $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$. This can be obtained as in the following using an R function `svd()`:
+In particular, this shows that the first two columns of $V$ are basis for $W$, the subspace associated with $P$, and the first two columns of $U\Sigma_0$ provide the desired coordinates $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$. This can be obtained as in the following using an R function `svd()`:
 
 ```{r}
 SVD <- svd(X, nu = n)
