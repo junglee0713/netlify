@@ -12,13 +12,13 @@
     
     
     <item>
-      <title>PCA and MDS</title>
+      <title>Pincipal component analysis</title>
       <link>/2018/12/08/pca-and-mds/</link>
       <pubDate>Sat, 08 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>/2018/12/08/pca-and-mds/</guid>
-      <description>A mock data set consisting of 100 data points, say \(\mathbf{P}_1, \cdots, \mathbf{P}_{100}\) in \(\mathbb{R}^3\):
-## Create a perturbed and slanted elipse in R^3 set.seed(2018) x_center &amp;lt;- 3 y_center &amp;lt;- 1 z_center &amp;lt;- 2 x_stretch &amp;lt;- 4 y_stretch &amp;lt;- 3 z_stretch &amp;lt;- 1 angle &amp;lt;- pi/3 x_ori &amp;lt;- x_stretch*cos(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.5) y_ori &amp;lt;- y_stretch*sin(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.</description>
+      <description>A mock data set consisting of 100 data points, say \(\mathbf{P}_1, \cdots, \mathbf{P}_{100}\), is generated below. They depict a perturbed and slanted ellipse in \(\mathbb{R}^3\). Let \(X_{raw}\) be the \(100 \times 3\) matrix whose rows consist of \(\mathbf{P}_1, \cdots, \mathbf{P}_{100}\).
+set.seed(2018) ## Create a perturbed and slanted ellipse in R^3 x_center &amp;lt;- 3; y_center &amp;lt;- 1; z_center &amp;lt;- 2 x_stretch &amp;lt;- 4; y_stretch &amp;lt;- 3; z_stretch &amp;lt;- 1 angle &amp;lt;- pi/3 x_ori &amp;lt;- x_stretch*cos(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.</description>
     </item>
     
     <item>

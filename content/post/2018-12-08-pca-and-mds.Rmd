@@ -1,10 +1,8 @@
 ---
-title: PCA and MDS
+title: Pincipal component analysis
 author: Jung-Jin Lee
 date: '2018-12-08'
 slug: pca-and-mds
-categories: []
-tags: []
 ---
 
 ```{r, echo = F}
@@ -17,30 +15,28 @@ knitr::opts_chunk$set(
 n <- 100
 ```
 
-A mock data set consisting of `r n` data points, say $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$ in $\mathbb{R}^3$\:
+A mock data set consisting of `r n` data points, say $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$, is generated below. They depict a perturbed and slanted ellipse in $\mathbb{R}^3$. Let $X_{raw}$ be the $`r n` \times 3$ matrix whose rows consist of $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$. 
 
 ```{r}
-## Create a perturbed and slanted elipse in R^3
 set.seed(2018)
-x_center <- 3
-y_center <- 1
-z_center <- 2 
-x_stretch <- 4
-y_stretch <- 3
-z_stretch <- 1
+## Create a perturbed and slanted ellipse in R^3
+x_center <- 3; y_center <- 1; z_center <- 2 
+x_stretch <- 4; y_stretch <- 3; z_stretch <- 1
 angle <- pi/3
 
-x_ori <- x_stretch*cos(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.5)
-y_ori <- y_stretch*sin(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.5)
+x_ori <- x_stretch*cos(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.5) # stretch
+y_ori <- y_stretch*sin(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.5) # stretch
 
-x <- cos(angle)*x_ori - sin(angle)*y_ori + x_center
-y <- sin(angle)*x_ori + cos(angle)*y_ori + y_center
-z <- z_stretch*sin(2*pi*(1:n)/n) + z_center
+x <- cos(angle)*x_ori - sin(angle)*y_ori + x_center # rotate
+y <- sin(angle)*x_ori + cos(angle)*y_ori + y_center # rotate
+z <- z_stretch*sin(2*pi*(1:n)/n) + z_center # make it slanted
 
 Xraw <- data.frame(x, y, z) 
-Xraw <- Xraw[sample(nrow(Xraw)), ]
+Xraw <- Xraw[sample(nrow(Xraw)), ] # permute rows to randomize P1, P2, P3
 dim(Xraw)
 ```
+
+The following is an interactive 3D plot showing the distribution of points:
 
 ```{r}
 library(plotly)
@@ -51,33 +47,76 @@ plot_ly(Xraw, x = ~x, y = ~y, z = ~z,
   add_markers() 
 ```
 
-Our goal is to find a _good_ (meaning to be clarified later) two dimensional projection $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$ of $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$ so that we can reduce the dimension (from 3 to 2) of data and visualize them. 
-
-If $x$, $y$, and $z$ variables need to be equally weighted, then the data points should be centered and normalized:
+Our goal is to find a _good_ (meaning to be clarified <a href="#later">later</a>) two dimensional representation $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$ of $\mathbf{P}_1, \cdots, \mathbf{P}_{`r n`}$ so that we can reduce the dimension (from 3 to 2) of data and visualize them. If $x$, $y$, and $z$ variables need to be equally weighted, then the data points should be centered and normalized. Let $X$ be the centered and normalized version of $X_{raw}$.
 
 ```{r}
-Xs <- scale(Xraw) %>%
+X <- scale(Xraw) %>%
   as.data.frame()
-plot_ly(Xs, x = ~x, y = ~y, z = ~z, 
+plot_ly(X, x = ~x, y = ~y, z = ~z, 
         color = colored, 
         colors = c("red", "blue", "green", "grey")) %>%
   add_markers() 
 ```
 
+<a name="later"></a> Consider a projection $P$ onto a two dimensional subspace of $\mathbb{R}^3$ and let $Y=XP$. Since $X$ is centered, so is $Y$ and hence the total variance of $Y$ is given by $\frac{1}{n-1}\|Y\|_{HS}^2$, where $\|\cdot\|_{HS}$ denotes the Hilbert-Schmidt norm. 
+By a good two dimensional representation, we mean finding a projection $P$ such that $\frac{1}{n-1}\|Y\|_{HS}^2$ is maximized, where $Y=XP$. As $P$ is a projection matrix, $P=P^t=P^2$ and it follows that 
+$$\|Y\|_{HS}^2=tr((XP)^t(XP))=tr(P^tX^tXP)=tr(X^tXPP^t)=tr(X^tY)$$ and that
+
+\begin{aligned}
+\|X-Y\|_{HS}^2&=tr((X-Y)^t(X-Y))\\
+&=tr(X^tX)-tr(X^tY)-tr(Y^tX)+tr(Y^tY)\\
+&=tr(X^tX)-tr(X^tY)-tr((Y^tX)^t)+tr(Y^tY)\\
+&=tr(X^tX)-2tr(X^tY)+tr(Y^tY)\\
+&=\|X\|_{HS}^2-\|Y\|_{HS}^2,
+\end{aligned}
+
+which implies that $\|Y\|_{HS}^2$ is maximized when $\|X-Y\|_{HS}^2$ is minimized. 
+
+Let $X=U\Sigma V^t$ be a [singular value decomposition](https://en.wikipedia.org/wiki/Singular_value_decomposition), where $U$ is a $`r n` \times `r n`$ orthogonal matrix, $V$ is a $3 \times 3$ orthogonal matrix, and 
+$$\Sigma=\left[\begin{array}{ccc} \sigma_1 & & \\ & \sigma_2 &  \\ & & \sigma_3 \\ & & \\ & & \end{array}\right]_{`r n`\times 3}$$ with
+$$\sigma_1\geq \sigma_2\geq \sigma_3.$$
+On one hand, by [Eckart–Young–Mirsky theorem](https://en.wikipedia.org/wiki/Low-rank_approximation), 
+$$\min_{rank(Y)=2} \|X-Y\|_{HS}^2 = \sigma_3^2$$
+On the other hand, let $Y_0=XP_0$, where $P_0=VQV^t$ and 
+$$Q=\left[\begin{array}{ccc} 1 & & \\ & 1 &  \\ & & 0 \end{array}\right],$$
+then $P_0$ is a projection of rank 2 satisfying $\|X-Y_0\|_{HS}^2 = \sigma_3^2$. This is our desired projection!
+
+Note that $XP_0=U\Sigma V^tVQV^t = U\Sigma_0V^t$, where $$\Sigma_0=\left[\begin{array}{ccc} \sigma_1 & & \\ & \sigma_2 &  \\ & & 0 \\ & & \\ & & \end{array}\right]_{`r n` \times 3}.$$
+
+In particular, this shows that the first two columns of $V$ are basis for $XP_0$ 
+and the first two columns of $U\Sigma_0$ provide the desired coordinates $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$. This can be obtained as in the following using an R function `svd()`:
+
+```{r}
+SVD <- svd(X, nu = n)
+U <- SVD$u # 100 x 100
+D <- rbind(diag(SVD$d), matrix(0, nrow = n-3, ncol = 3)) # 100 x 3
+V <- SVD$v
+X_recover <- (U %*% D) %*% t(V) # This recovers X 
+Q <- U %*% D # The first two columns of Q gives coordinates Q1, Q2, ..., Q100
+head(Q[, 1:2])
+```
+
+The R function `prcomp()` easily computes the coordinates $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$:
+
+```{r}
+Y <- prcomp(Xraw, center = T, scale = T)$x %>%
+  as.data.frame() # PC1 and PC2 of Y represent coordinates of Q1, Q2, ..., Q100 
+head(Y)
+```
+
+The projected points on the PC1-PC2 plane viewed from PC3 axis:
+
 ```{r}
 scene = list(camera = list(up = list(x = 1, y = 0, z = 0),
                            eye = list(x = 0, y = 0, z = 2)))
-Y <- prcomp(Xraw, center = T, scale = T)$x %>%
-  as.data.frame()
 plot_ly(Y, x = ~PC1, y = ~PC2, z = ~PC3, 
         color = colored,
         colors = c("red", "blue", "green", "grey")) %>%
   add_markers() %>%
   layout(scene = scene)
-  
 ```
 
-Compare:
+Finally, one can get the following 2D plot as a result of dimension reduction:
 
 ```{r}
 Y %>% mutate(color_code = colored) %>%
@@ -86,5 +125,3 @@ Y %>% mutate(color_code = colored) %>%
   theme(aspect.ratio = 1) +
   geom_point()
 ```
-
-
