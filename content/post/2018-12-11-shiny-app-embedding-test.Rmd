@@ -7,4 +7,4 @@ categories: []
 tags: []
 ---
 
-<iframe width="450" height="400" scrolling="no" frameborder="no"  src=" https://junglee0713.shinyapps.io/Test/"> </iframe>
+<iframe width="500" height="600" scrolling="yes" frameborder="yes" src=" https://junglee0713.shinyapps.io/Test/"> </iframe>
