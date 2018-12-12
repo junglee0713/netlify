@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Jung-Jin Lee&#39;s website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 08 Dec 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 11 Dec 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Shiny app embedding — test</title>
+      <link>/2018/12/11/shiny-app-embedding-test/</link>
+      <pubDate>Tue, 11 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/12/11/shiny-app-embedding-test/</guid>
+      <description>  </description>
+    </item>
     
     <item>
       <title>Principal component analysis</title>

@@ -88,14 +88,18 @@ In particular, this shows that the first two columns of $V$ are basis for $W$, t
 ```{r}
 SVD <- svd(X, nu = n)
 U <- SVD$u # 100 x 100
-D <- rbind(diag(SVD$d), matrix(0, nrow = n-3, ncol = 3)) # 100 x 3
+Sigma <- rbind(diag(SVD$d), matrix(0, nrow = n-3, ncol = 3)) # 100 x 3
 V <- SVD$v
-X_recover <- (U %*% D) %*% t(V) # This recovers X 
-Q <- U %*% D # The first two columns of Q gives coordinates Q1, Q2, ..., Q100
+X_recover <- (U %*% Sigma) %*% t(V) # This recovers X 
+Q <- U %*% Sigma # The first two columns of Q gives coordinates Q1, Q2, ..., Q100
 head(Q[, 1:2])
 ```
 
-The R function `prcomp()` easily computes the coordinates $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$:
+**Remark**: $U\Sigma$ (and hence $U\Sigma_0$) can be computed from the [orthogonal diagonalization](https://en.wikipedia.org/wiki/Diagonalizable_matrix#Diagonalizable_matrices) of $XX^t$, as  
+$$XX^t = U\Sigma V^t(V\Sigma^tU^t) = U\Lambda U^t,$$
+where $$\Lambda = \Sigma\Sigma^t= \left[\begin{array}{ccccc} \sigma_1^2 & & & &\\ & \sigma_2^2 & & & \\ & & \sigma_3^2 & & \\ & & & 0 & \\ & & & & \ddots  \end{array}\right]_{`r n` \times `r n`}.$$
+
+The R function `prcomp()` easily computes the coordinates $\mathbf{Q}_1, \cdots, \mathbf{Q}_{`r n`}$ from $X_{raw}$:
 
 ```{r}
 Y <- prcomp(Xraw, center = T, scale = T)$x %>%
@@ -124,3 +128,4 @@ Y %>% mutate(color_code = colored) %>%
   theme(aspect.ratio = 1) +
   geom_point()
 ```
+
