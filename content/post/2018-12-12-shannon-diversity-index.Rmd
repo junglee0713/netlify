@@ -1,8 +1,10 @@
 ---
-title: Shannon diversity
+title: Shannon diversity index
 author: Jung-Jin Lee
-date: '2018-12-11'
-slug: shiny-app-embedding-test
+date: '2018-12-12'
+slug: shannon-diversity-index
+categories: []
+tags: []
 ---
 
 In ecology, the Shannon diversity of a community is defined by

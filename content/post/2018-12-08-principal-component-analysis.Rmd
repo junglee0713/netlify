@@ -2,7 +2,7 @@
 title: Principal component analysis
 author: Jung-Jin Lee
 date: '2018-12-08'
-slug: pca-and-mds
+slug: principal-component-analysis
 ---
 
 ```{r, echo = F}

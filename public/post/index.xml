@@ -6,26 +6,26 @@
     <description>Recent content in Posts on Jung-Jin Lee&#39;s website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 11 Dec 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 12 Dec 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Shannon diversity</title>
-      <link>/2018/12/11/shiny-app-embedding-test/</link>
-      <pubDate>Tue, 11 Dec 2018 00:00:00 +0000</pubDate>
+      <title>Shannon diversity index</title>
+      <link>/2018/12/12/shannon-diversity-index/</link>
+      <pubDate>Wed, 12 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>/2018/12/11/shiny-app-embedding-test/</guid>
+      <guid>/2018/12/12/shannon-diversity-index/</guid>
       <description>In ecology, the Shannon diversity of a community is defined by \[H=-\sum_{i}^R p_i\log p_i,\] where \(R\) is the number of distinct species and \(p_i\) is the proportion of species \(i\). The Shannon diversity measures richness (i.e. the number of distinct species in a community) and evenness (i.e. how evenly the proportions of species are spread). In the following illustration, each randomly generated dot represents a mock community: the horizontal coordinate shows the number of distinct species (richness) and the color shows the sample standard deviation of the proportions (evenness).</description>
     </item>
     
     <item>
       <title>Principal component analysis</title>
-      <link>/2018/12/08/pca-and-mds/</link>
+      <link>/2018/12/08/principal-component-analysis/</link>
       <pubDate>Sat, 08 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>/2018/12/08/pca-and-mds/</guid>
+      <guid>/2018/12/08/principal-component-analysis/</guid>
       <description>A mock data set consisting of 100 data points, say \(\mathbf{P}_1, \cdots, \mathbf{P}_{100}\), is generated below. They depict a perturbed and slanted ellipse in \(\mathbb{R}^3\). Let \(X_{raw}\) be the \(100 \times 3\) matrix whose rows consist of \(\mathbf{P}_1, \cdots, \mathbf{P}_{100}\).
 set.seed(2018) ## Create a perturbed and slanted ellipse in R^3 x_center &amp;lt;- 3; y_center &amp;lt;- 1; z_center &amp;lt;- 2 x_stretch &amp;lt;- 4; y_stretch &amp;lt;- 3; z_stretch &amp;lt;- 1 angle &amp;lt;- pi/3 x_ori &amp;lt;- x_stretch*cos(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.</description>
     </item>
