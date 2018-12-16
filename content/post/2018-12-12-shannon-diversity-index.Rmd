@@ -72,4 +72,4 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
-<iframe width="100%", height="500" scrolling="yes" frameborder="no" src=" https://junglee0713.shinyapps.io/Shannon/"> </iframe>
+<iframe width="100%", height="600" scrolling="yes" frameborder="no" src=" https://junglee0713.shinyapps.io/Shannon/"> </iframe>
