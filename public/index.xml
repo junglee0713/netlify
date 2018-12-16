@@ -6,10 +6,19 @@
     <description>Recent content on Jung-Jin Lee&#39;s website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 12 Dec 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 15 Dec 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Drexel lectures Spring 2019</title>
+      <link>/2018/12/15/drexel-lectures-spring-2019/</link>
+      <pubDate>Sat, 15 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/12/15/drexel-lectures-spring-2019/</guid>
+      <description>Lecture 1</description>
+    </item>
     
     <item>
       <title>Shannon diversity index</title>
@@ -31,7 +40,7 @@ set.seed(2018) ## Create a perturbed and slanted ellipse in R^3 x_center &amp;lt
     </item>
     
     <item>
-      <title>Cabrini lectures</title>
+      <title>Cabrini lectures Spring 2019</title>
       <link>/2018/11/27/cabrini-lectures/</link>
       <pubDate>Tue, 27 Nov 2018 00:00:00 +0000</pubDate>
       

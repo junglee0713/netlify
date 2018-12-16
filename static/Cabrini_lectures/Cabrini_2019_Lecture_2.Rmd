@@ -209,6 +209,7 @@ The median is the same as the 50% quantile.
 --
 
 ```{r}
+carat <- df$carat
 mean(carat); median(carat)
 ```
 
