@@ -71,5 +71,23 @@ server <- function(input, output) {
 # Run the application 
 shinyApp(ui = ui, server = server)
 ```
+<<<<<<< HEAD
 `
 <iframe width="100%", height="500" scrolling="yes" frameborder="no" src=" https://junglee0713.shinyapps.io/Shannon/"> </iframe>
+=======
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.min.js"></script>
+<style>
+  iframe {
+    min-width: 100%;
+  }
+</style>
+
+<iframe scrolling="no" frameborder="no" src=" https://junglee0713.shinyapps.io/Shannon/"> </iframe>
+
+<script>
+  iFrameResize({
+    heightCalculationMethod: 'taggedElement'
+  });
+</script>
+>>>>>>> 663a8764173ecd69b4fca6e713c67d54e2c0a8f9
