@@ -5,71 +5,13 @@ date: '2018-12-12'
 slug: shannon-diversity-index
 categories: []
 tags: []
+css: ["../../public/css/shannon.css"]
 ---
 
 In ecology, the Shannon diversity of a community is defined by
 $$H=-\sum_{i}^R p_i\log p_i,$$
 where $R$ is the number of distinct species and $p_i$ is the proportion of species $i$. The Shannon diversity measures richness (i.e. the number of distinct species in a community) and evenness (i.e. how evenly the proportions of species are spread). In the following illustration, each randomly generated dot represents a mock community: the horizontal coordinate shows the number of distinct species (richness) and the color shows the sample standard deviation of the proportions (evenness). The vertical coordinate gives the resulting Shannon diversity.
 
-```{r, message = FALSE, eval = F, echo = F}
-library(shiny)
-
-ui <- fluidPage(
-   
-   # Application title
-   titlePanel("Shannon diversity"),
-   
-   # Sidebar with a slider input for number of communities
-   sidebarLayout(
-      sidebarPanel(
-         sliderInput("num_comm",
-                     "Number of communities:",
-                     min = 10,
-                     max = 300,
-                     value = 100)
-      ),
-      
-      # Show a plot of the generated distribution
-      mainPanel(
-         plotOutput("distPlot")
-      )
-   )
-)
-
-server <- function(input, output) {
-   
-   output$distPlot <- renderPlot({
-     library(tidyverse)
-     library(viridis)
-     num_comm <- input$num_comm
-     max_num_species <- 10
-     n <- sample(1:(max_num_species-1), size = num_comm, replace = T)
-     s <- data.frame(index = 1:num_comm, num_species = rep(NA, num_comm), 
-                     shannon = rep(NA, num_comm), sd = rep(NA, num_comm))
-     for (i in 1:length(n)) {
-       breaks_num <- n[i]
-       breaks <- c(0, sort(runif(breaks_num)), 1)
-       props <- diff(breaks)
-       s$index[i] <- i
-       s$num_species[i] <- breaks_num+1
-       s$shannon[i] <- -sum(props*log(props))
-       s$sd[i] <- sd(props)
-     }
-     
-     ggplot(s, aes(x=num_species, y=shannon)) + 
-       geom_point(aes(color = sd)) + 
-       scale_color_viridis() + 
-       theme(aspect.ratio = 1) +
-       labs(color = "Standard deviation of\nproportions",
-            x = "Number of species",
-            y = "Shannon index") +
-       scale_x_discrete(limits = 2:max_num_species) +
-       theme_bw() 
-   })
-}
-
-# Run the application 
-shinyApp(ui = ui, server = server)
-```
-
-<iframe width="100%", height="700" scrolling="yes" frameborder="no" src=" https://junglee0713.shinyapps.io/Shannon/"> </iframe>
+<div class="model-box">
+<iframe class="model" width="100%", height="700" scrolling="yes" frameborder="no" src=" https://junglee0713.shinyapps.io/Shannon/"> </iframe>
+</div>
