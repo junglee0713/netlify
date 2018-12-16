@@ -36,7 +36,7 @@
       
       <guid>/2018/12/08/principal-component-analysis/</guid>
       <description>A mock data set consisting of 100 data points, say \(\mathbf{P}_1, \cdots, \mathbf{P}_{100}\), is generated below. They depict a perturbed and slanted ellipse in \(\mathbb{R}^3\). Let \(X_{raw}\) be the \(100 \times 3\) matrix whose rows consist of \(\mathbf{P}_1, \cdots, \mathbf{P}_{100}\).
-set.seed(2018) ## Create a perturbed and slanted ellipse in R^3 x_center &amp;lt;- 3; y_center &amp;lt;- 1; z_center &amp;lt;- 2 x_stretch &amp;lt;- 4; y_stretch &amp;lt;- 3; z_stretch &amp;lt;- 1 angle &amp;lt;- pi/3 x_ori &amp;lt;- x_stretch*cos(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.</description>
+set.seed(2018) n &amp;lt;- 100 ## Create a perturbed and slanted ellipse in R^3 x_center &amp;lt;- 3; y_center &amp;lt;- 1; z_center &amp;lt;- 2 x_stretch &amp;lt;- 4; y_stretch &amp;lt;- 3; z_stretch &amp;lt;- 1 angle &amp;lt;- pi/3 x_ori &amp;lt;- x_stretch*cos(2*pi*(1:n)/n) + rnorm(n, mean = 0, sd = 0.</description>
     </item>
     
     <item>

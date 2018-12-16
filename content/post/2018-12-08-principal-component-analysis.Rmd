@@ -19,6 +19,7 @@ A mock data set consisting of `r n` data points, say $\mathbf{P}_1, \cdots, \mat
 
 ```{r}
 set.seed(2018)
+n <- 100
 ## Create a perturbed and slanted ellipse in R^3
 x_center <- 3; y_center <- 1; z_center <- 2 
 x_stretch <- 4; y_stretch <- 3; z_stretch <- 1
