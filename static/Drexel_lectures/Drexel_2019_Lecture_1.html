@@ -266,11 +266,11 @@ sort(vec1)
 
 
 ```r
-sort(vec1, decreasing = F)
+sort(vec1, decreasing = T)
 ```
 
 ```
-## [1] 1 2 3 4 5 7
+## [1] 7 5 4 3 2 1
 ```
 
 ---
@@ -531,6 +531,7 @@ Download a [file](heights.txt) to be used in an example (Chrome users: Menu `\(\
 # heights.txt is a space-delimited file 
 # consisting of 1375 observations of mom/daughter age height pairs
 # file path `file = "heights.txt"` below should be adjusted!
+# Mac users: Finder -&gt; Right click -&gt; Option -&gt; Copy as pathname
 d &lt;- read.table(file = "heights.txt", header = TRUE, sep = " ")
 ```
 
