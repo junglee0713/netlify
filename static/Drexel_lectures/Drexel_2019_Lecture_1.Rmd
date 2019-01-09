@@ -77,6 +77,16 @@ easy descriptions or inferences of the data
 
 ---
 
+## R project setup
+
+- Make a directory to be used for class
+
+- File $\rightarrow$ New Project $\rightarrow$ Existing Directory $\rightarrow$ Create Project from Existing Directory
+
+- Start R by opening an .Rproj file
+
+---
+
 ## R as a calculator
 
 Use R console:
