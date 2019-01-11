@@ -1,0 +1,77 @@
+---
+title: PCoA of distances generated from points in Euclidean space
+author: Jung-Jin Lee
+date: '2019-01-10'
+slug: pcoa-of-points-in-euclidean-space
+---
+
+```{r, echo = F}
+knitr::opts_chunk$set(
+  message = F
+)
+library(tidyverse)
+library(ggrepel)
+library(ape) # for pcoa()
+```
+
+Original points in $\mathbb{R}^2$ are generated:
+
+```{r}
+set.seed(2019)
+n <- 15
+d0 <- data.frame(ID = 1:n, x = rnorm(n), y = rnorm(n))
+g <- ggplot(d0, aes(x, y)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = "grey") +
+  theme(aspect.ratio = 1)
+print(g)
+```
+
+```{r}
+DistMat <- d0 %>%
+  select(-ID) %>%
+  dist()
+PCoA_Result <- pcoa(DistMat)
+d <- PCoA_Result$vectors %>%
+  as.data.frame() %>%
+  mutate(ID = 1:n)
+g <- ggplot(d, aes(Axis.1, Axis.2)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = "grey") +
+  theme(aspect.ratio = 1)
+print(g)
+```
+
+So when the usual $\ell_2$ distance is used, PCoA produces coordinates that are the _same_ as original. What if $\ell_\infty$ norm is used?
+
+```{r}
+DistMat <- d0 %>%
+  select(-ID) %>%
+  dist(method = "maximum")
+PCoA_Result <- pcoa(DistMat)
+d <- PCoA_Result$vectors %>%
+  as.data.frame() %>%
+  mutate(ID = 1:n)
+g <- ggplot(d, aes(Axis.1, Axis.2)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = "grey") +
+  theme(aspect.ratio = 1)
+print(g)
+```
+
+What about $\ell_1$?
+
+```{r}
+DistMat <- d0 %>%
+  select(-ID) %>%
+  dist(method = "manhattan")
+PCoA_Result <- pcoa(DistMat)
+d <- PCoA_Result$vectors %>%
+  as.data.frame() %>%
+  mutate(ID = 1:n)
+g <- ggplot(d, aes(Axis.1, Axis.2)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = "grey") +
+  theme(aspect.ratio = 1)
+print(g)
+```

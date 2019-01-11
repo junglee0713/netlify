@@ -1,0 +1,68 @@
+---
+title: PCoA of distances generated from points in Euclidean space
+author: Jung-Jin Lee
+date: '2019-01-10'
+slug: pcoa-of-points-in-euclidean-space
+---
+
+
+
+<pre><code>## ── Attaching packages ────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.8
+## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<p>Original points in <span class="math inline">\(\mathbb{R}^2\)</span> are generated:</p>
+<pre class="r"><code>set.seed(2019)
+n &lt;- 15
+d0 &lt;- data.frame(ID = 1:n, x = rnorm(n), y = rnorm(n))
+g &lt;- ggplot(d0, aes(x, y)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = &quot;grey&quot;) +
+  theme(aspect.ratio = 1)
+print(g)</code></pre>
+<p><img src="/post/2019-01-10-pcoa-of-points-in-euclidean-space_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>DistMat &lt;- d0 %&gt;%
+  select(-ID) %&gt;%
+  dist()
+PCoA_Result &lt;- pcoa(DistMat)
+d &lt;- PCoA_Result$vectors %&gt;%
+  as.data.frame() %&gt;%
+  mutate(ID = 1:n)
+g &lt;- ggplot(d, aes(Axis.1, Axis.2)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = &quot;grey&quot;) +
+  theme(aspect.ratio = 1)
+print(g)</code></pre>
+<p><img src="/post/2019-01-10-pcoa-of-points-in-euclidean-space_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>So when the usual <span class="math inline">\(\ell_2\)</span> distance is used, PCoA produces coordinates that are the <em>same</em> as original. What if <span class="math inline">\(\ell_\infty\)</span> norm is used?</p>
+<pre class="r"><code>DistMat &lt;- d0 %&gt;%
+  select(-ID) %&gt;%
+  dist(method = &quot;maximum&quot;)
+PCoA_Result &lt;- pcoa(DistMat)
+d &lt;- PCoA_Result$vectors %&gt;%
+  as.data.frame() %&gt;%
+  mutate(ID = 1:n)
+g &lt;- ggplot(d, aes(Axis.1, Axis.2)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = &quot;grey&quot;) +
+  theme(aspect.ratio = 1)
+print(g)</code></pre>
+<p><img src="/post/2019-01-10-pcoa-of-points-in-euclidean-space_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>What about <span class="math inline">\(\ell_1\)</span>?</p>
+<pre class="r"><code>DistMat &lt;- d0 %&gt;%
+  select(-ID) %&gt;%
+  dist(method = &quot;manhattan&quot;)
+PCoA_Result &lt;- pcoa(DistMat)
+d &lt;- PCoA_Result$vectors %&gt;%
+  as.data.frame() %&gt;%
+  mutate(ID = 1:n)
+g &lt;- ggplot(d, aes(Axis.1, Axis.2)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = &quot;grey&quot;) +
+  theme(aspect.ratio = 1)
+print(g)</code></pre>
+<p><img src="/post/2019-01-10-pcoa-of-points-in-euclidean-space_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>

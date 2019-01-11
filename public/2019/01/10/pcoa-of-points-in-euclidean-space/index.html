@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.51" />
+
+
+<title>PCoA of distances generated from points in Euclidean space - Jung-Jin Lee&#39;s website</title>
+<meta property="og:title" content="PCoA of distances generated from points in Euclidean space - Jung-Jin Lee&#39;s website">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/home.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="https://github.com/junglee0713">GitHub</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">PCoA of distances generated from points in Euclidean space</h1>
+
+    
+    <span class="article-date">2019/01/10</span>
+    
+
+    <div class="article-content">
+      
+
+
+<pre><code>## ── Attaching packages ────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.8
+## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0</code></pre>
+<pre><code>## ── Conflicts ───────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()</code></pre>
+<p>Original points in <span class="math inline">\(\mathbb{R}^2\)</span> are generated:</p>
+<pre class="r"><code>set.seed(2019)
+n &lt;- 15
+d0 &lt;- data.frame(ID = 1:n, x = rnorm(n), y = rnorm(n))
+g &lt;- ggplot(d0, aes(x, y)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = &quot;grey&quot;) +
+  theme(aspect.ratio = 1)
+print(g)</code></pre>
+<p><img src="/post/2019-01-10-pcoa-of-points-in-euclidean-space_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>DistMat &lt;- d0 %&gt;%
+  select(-ID) %&gt;%
+  dist()
+PCoA_Result &lt;- pcoa(DistMat)
+d &lt;- PCoA_Result$vectors %&gt;%
+  as.data.frame() %&gt;%
+  mutate(ID = 1:n)
+g &lt;- ggplot(d, aes(Axis.1, Axis.2)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = &quot;grey&quot;) +
+  theme(aspect.ratio = 1)
+print(g)</code></pre>
+<p><img src="/post/2019-01-10-pcoa-of-points-in-euclidean-space_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>So when the usual <span class="math inline">\(\ell_2\)</span> distance is used, PCoA produces coordinates that are the <em>same</em> as original. What if <span class="math inline">\(\ell_\infty\)</span> norm is used?</p>
+<pre class="r"><code>DistMat &lt;- d0 %&gt;%
+  select(-ID) %&gt;%
+  dist(method = &quot;maximum&quot;)
+PCoA_Result &lt;- pcoa(DistMat)
+d &lt;- PCoA_Result$vectors %&gt;%
+  as.data.frame() %&gt;%
+  mutate(ID = 1:n)
+g &lt;- ggplot(d, aes(Axis.1, Axis.2)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = &quot;grey&quot;) +
+  theme(aspect.ratio = 1)
+print(g)</code></pre>
+<p><img src="/post/2019-01-10-pcoa-of-points-in-euclidean-space_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>What about <span class="math inline">\(\ell_1\)</span>?</p>
+<pre class="r"><code>DistMat &lt;- d0 %&gt;%
+  select(-ID) %&gt;%
+  dist(method = &quot;manhattan&quot;)
+PCoA_Result &lt;- pcoa(DistMat)
+d &lt;- PCoA_Result$vectors %&gt;%
+  as.data.frame() %&gt;%
+  mutate(ID = 1:n)
+g &lt;- ggplot(d, aes(Axis.1, Axis.2)) +
+  geom_point() +
+  geom_text_repel(aes(label = ID), size = 3, segment.color = &quot;grey&quot;) +
+  theme(aspect.ratio = 1)
+print(g)</code></pre>
+<p><img src="/post/2019-01-10-pcoa-of-points-in-euclidean-space_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+
+    </div>
+  </article>
+
+  
+<section id="comments">
+  <div id="disqus_thread"></div>
+  <script>
+  var disqus_config = function () {
+  
+  };
+  (function() {
+    var inIFrame = function() {
+      var iframe = true;
+      try { iframe = window.self !== window.top; } catch (e) {}
+      return iframe;
+    };
+    if (inIFrame()) return;
+    var d = document, s = d.createElement('script');
+    s.src = '//junglee0713-netlify.disqus.com/embed.js'; s.async = true;
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-129677462-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+  </body>
+</html>
+
