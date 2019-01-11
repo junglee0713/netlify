@@ -5,7 +5,7 @@ date: '2019-01-10'
 slug: pcoa-of-points-in-euclidean-space
 ---
 
-```{r, echo = F, message = F}
+```{r, message = F}
 knitr::opts_chunk$set(
   message = F
 )

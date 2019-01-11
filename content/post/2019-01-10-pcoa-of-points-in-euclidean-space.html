@@ -7,6 +7,12 @@ slug: pcoa-of-points-in-euclidean-space
 
 
 
+<pre class="r"><code>knitr::opts_chunk$set(
+  message = F
+)
+library(tidyverse)
+library(ggrepel)
+library(ape) # for pcoa()</code></pre>
 <p>Original points in <span class="math inline">\(\mathbb{R}^2\)</span> are generated:</p>
 <pre class="r"><code>set.seed(2019)
 n &lt;- 15
