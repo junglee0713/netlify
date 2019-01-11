@@ -248,6 +248,15 @@ dm <- vec2[c(1, 5)]
 print(dm)
 ```
 
+**Exercise**: extract the last element of `vec1` without viewing its elements.
+
+--
+
+```{r}
+vec1[length(vec1)]
+```
+
+
 ---
 
 ## Special vectors -- part I
