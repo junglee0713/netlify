@@ -1,0 +1,27 @@
+---
+title: "Homework 1"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\bigskip
+
+1. How many digits does $N=1234567891011121314...9998999910000$ have, where $N$ is formed by concatenating $1,2,3,\ldots,9999,10000$? (_Hint_: you might want to look up the functions \texttt{nchar(), as.character(), paste()})
+
+\medskip
+
+2. Compute
+$$1^2+2^2+3^2+\cdots+99^2+100^2$$
+
+```{r, echo = F, eval = F}
+vec_char <- as.character(1:10000) # to use paste, turn numeric to character
+vec_collapse <- paste(string, collapse = "")
+print(nchar(vec_collapse))
+```
+

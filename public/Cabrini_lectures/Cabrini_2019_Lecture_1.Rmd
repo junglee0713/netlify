@@ -77,6 +77,18 @@ easy descriptions or inferences of the data
 
 ---
 
+## R project setup
+
+- Make a directory to be used for class
+
+- File $\rightarrow$ New Project $\rightarrow$ Existing Directory $\rightarrow$ Create Project from Existing Directory
+
+- Start R by opening the .Rproj file
+
+- To create a new .Rmd file, File $\rightarrow$ New File $\rightarrow$ R Markdown $\rightarrow$ (HTML/PDF/Word)
+
+---
+
 ## R as a calculator
 
 Use R console:
@@ -191,7 +203,7 @@ sort(vec1)
 --
 
 ```{r}
-sort(vec1, decreasing = F)
+sort(vec1, decreasing = T)
 ```
 
 ---
@@ -235,6 +247,17 @@ print(a)
 dm <- vec2[c(1, 5)]
 print(dm)
 ```
+
+--
+
+**Exercise**: extract the last element of `vec1` without viewing its elements.
+
+--
+
+```{r}
+vec1[length(vec1)]
+```
+
 
 ---
 
@@ -343,6 +366,7 @@ Download a [file](heights.txt) to be used in an example (Chrome users: Menu $\ri
 # heights.txt is a space-delimited file 
 # consisting of 1375 observations of mom/daughter age height pairs
 # file path `file = "heights.txt"` below should be adjusted!
+# Mac users: Finder -> Right click -> Option -> Copy as pathname
 d <- read.table(file = "heights.txt", header = TRUE, sep = " ")
 ```
 
