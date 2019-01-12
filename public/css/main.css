@@ -9,6 +9,10 @@ img {
   max-width: 100%;
 }
 
+.plotly html-widget {
+  max-width: 100%;
+}
+
 body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
