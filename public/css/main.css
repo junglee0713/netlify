@@ -5,6 +5,10 @@ body {
   position: relative;
 }
 
+img {
+  max-width: 100%;
+}
+
 body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -319,3 +323,4 @@ code {
     box-shadow: none;
   }
 }
+
