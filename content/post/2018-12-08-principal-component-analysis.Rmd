@@ -120,7 +120,7 @@ plot_ly(Y, x = ~PC1, y = ~PC2, z = ~PC3,
   layout(scene = scene)
 ```
 
-Finally, one can get the following 2D plot as a result of dimension reduction:
+Finally, one can get the following 2D plot as a result of dimension reduction: 
 
 ```{r}
 Y %>% mutate(color_code = colored) %>%
