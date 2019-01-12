@@ -117,7 +117,7 @@ plot_ly(Y, x = ~PC1, y = ~PC2, z = ~PC3,
         color = colored,
         colors = c("red", "blue", "green", "grey")) %>%
   add_markers() %>%
-  layout(scene = scene, autosize = T)
+  layout(scene = scene)
 ```
 
 Finally, one can get the following 2D plot as a result of dimension reduction:
