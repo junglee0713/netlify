@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lecture 2</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Jung-Jin Lee" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Drexel.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 2
+### Jung-Jin Lee
+### Jan 15, 2019
+
+---
+
+ 
+
+
+## Type of data
+
+- Categorical Data - consist of qualitative values
+  - Nominal values: gender, coat colors
+  - Ordinal values: body conditions, age groups
+  
+- Numerical Data - consist of quantitative values
+  - Discrete values: litter size, parity
+  - Continuous values: height, weight, temperature
+  
+---
+
+## Explore data
+
+
+```r
+df &lt;- diamonds ## diamonds is a built-in data set
+dim(df)
+```
+
+```
+## [1] 53940    10
+```
+
+```r
+head(df)
+```
+
+```
+## # A tibble: 6 x 10
+##   carat cut       color clarity depth table price     x     y     z
+##   &lt;dbl&gt; &lt;ord&gt;     &lt;ord&gt; &lt;ord&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 0.23  Ideal     E     SI2      61.5    55   326  3.95  3.98  2.43
+## 2 0.21  Premium   E     SI1      59.8    61   326  3.89  3.84  2.31
+## 3 0.23  Good      E     VS1      56.9    65   327  4.05  4.07  2.31
+## 4 0.290 Premium   I     VS2      62.4    58   334  4.2   4.23  2.63
+## 5 0.31  Good      J     SI2      63.3    58   335  4.34  4.35  2.75
+## 6 0.24  Very Good J     VVS2     62.8    57   336  3.94  3.96  2.48
+```
+
+---
+
+## Explore data, continued
+
+
+```r
+names(df)
+```
+
+```
+##  [1] "carat"   "cut"     "color"   "clarity" "depth"   "table"   "price"  
+##  [8] "x"       "y"       "z"
+```
+
+---
+
+## Explore data, continued
+
+How many distinct values are there in the variable `cut`?
+
+
+```r
+DiaCut &lt;- df$cut
+unique(DiaCut)
+```
+
+```
+## [1] Ideal     Premium   Good      Very Good Fair     
+## Levels: Fair &lt; Good &lt; Very Good &lt; Premium &lt; Ideal
+```
+
+What is the frequency of each value?
+
+
+```r
+table(DiaCut)
+```
+
+```
+## DiaCut
+##      Fair      Good Very Good   Premium     Ideal 
+##      1610      4906     12082     13791     21551
+```
+
+---
+
+## Bar graph
+
+One way to visualize categorical data is to use a bar graph
+
+
+```r
+g &lt;- ggplot(data = df, aes(x = cut)) + 
+  geom_bar() 
+print(g)
+```
+
+&lt;img src="Drexel_2019_Lecture_2_files/figure-html/unnamed-chunk-6-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Exercise
+
+- How many distinct values are there in the variable `color`?
+- What is the frequency of each value in `color`?
+- Draw a bar graph showing the frequency
+
+--
+
+
+```r
+unique(df$color)
+```
+
+```
+## [1] E I J H F G D
+## Levels: D &lt; E &lt; F &lt; G &lt; H &lt; I &lt; J
+```
+
+--
+
+
+```r
+table(df$color)
+```
+
+```
+## 
+##     D     E     F     G     H     I     J 
+##  6775  9797  9542 11292  8304  5422  2808
+```
+
+---
+
+## Exercise, continued
+
+
+```r
+ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
+  geom_bar()
+```
+
+&lt;img src="Drexel_2019_Lecture_2_files/figure-html/unnamed-chunk-9-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Two-way table
+
+Frequency of color for each cut
+
+
+```r
+table(df$cut, df$color)
+```
+
+```
+##            
+##                D    E    F    G    H    I    J
+##   Fair       163  224  312  314  303  175  119
+##   Good       662  933  909  871  702  522  307
+##   Very Good 1513 2400 2164 2299 1824 1204  678
+##   Premium   1603 2337 2331 2924 2360 1428  808
+##   Ideal     2834 3903 3826 4884 3115 2093  896
+```
+
+---
+
+## Graphs using facets
+
+
+```r
+ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
+  geom_bar() +
+* facet_wrap(~cut)
+```
+
+&lt;img src="Drexel_2019_Lecture_2_files/figure-html/unnamed-chunk-11-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Colored bar graphs
+
+
+```r
+*ggplot(df, aes(color, fill = clarity)) +
+  geom_bar() +
+  facet_wrap(~cut) 
+```
+
+&lt;img src="Drexel_2019_Lecture_2_files/figure-html/unnamed-chunk-12-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Exercise
+
+Produce the following plots:
+
+&lt;img src="Drexel_2019_Lecture_2_files/figure-html/unnamed-chunk-13-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Description of numerical data
+
+What is the distribution of `carat` like?
+
+
+```r
+ggplot(df, aes(carat)) +
+  geom_histogram()
+```
+
+&lt;img src="Drexel_2019_Lecture_2_files/figure-html/unnamed-chunk-14-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Location and spread of numerical data
+
+- Measure of location: sample mean and median
+- Measure of spread: sample variance and standard deviation
+
+&lt;img src="Drexel_2019_Lecture_2_files/figure-html/unnamed-chunk-15-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Example: find the sample mean
+
+The sample mean is given by sum of samples divided by the number of samples:
+`$$\bar{x} = \frac{x_1+x_2+\cdots+x_n}{n}$$`
+
+
+```r
+d &lt;- read.table(file = "heights.txt", header = TRUE, sep = " ")
+mom &lt;- d$Mheight
+s &lt;- sum(mom); n &lt;- length(mom)
+mom_height_mean &lt;- s/n
+print(mom_height_mean)
+```
+
+```
+## [1] 62.4528
+```
+
+R has a built in function to compute the mean:
+
+
+```r
+mean(mom) # mean() gives the mean of a vector
+```
+
+```
+## [1] 62.4528
+```
+
+---
+
+## Sample median
+
+The median is the value separating the higher half from the lower half of numerical data. R has a built in function to compute the median. 
+
+
+```r
+median(mom)
+```
+
+```
+## [1] 62.4
+```
+
+In general, one can compute quantiles (cut points dividing range of numerical data).
+
+
+```r
+quantile(mom)
+```
+
+```
+##   0%  25%  50%  75% 100% 
+## 55.4 60.8 62.4 63.9 70.8
+```
+
+The median is the same as the 50% quantile. 
+
+---
+
+## Example
+
+**Exercise**: Find the sample mean and median of `carat`.
+
+--
+
+
+```r
+carat &lt;- df$carat
+mean(carat); median(carat)
+```
+
+```
+## [1] 0.7979397
+```
+
+```
+## [1] 0.7
+```
+
+--
+
+**Exercise**: Find the 90% quantile `carat`.
+
+--
+
+
+```r
+quantile(carat)
+```
+
+```
+##   0%  25%  50%  75% 100% 
+## 0.20 0.40 0.70 1.04 5.01
+```
+
+--
+
+
+```r
+quantile(carat, probs = 0.9)
+```
+
+```
+##  90% 
+## 1.51
+```
+
+---
+
+## Sample variance
+
+The sample variance measures spread of given data:
+`$$s^2 =\frac{(x_1-\bar{x})^2+(x_2-\bar{x})^2+\cdots+(x_n-\bar{x})^2}{n-1}.$$`
+Note that the denominator is `\(n-1\)`, not `\(n\)`.
+
+R has a built in function to compute the sample variance:
+
+
+```r
+var(mom) # var() gives the sample variance of a vector
+```
+
+```
+## [1] 5.546511
+```
+
+One could also compute the sample variance using the definition:
+
+
+```r
+v1 &lt;- mom-mean(mom); v2 &lt;- v1^2
+sum(v2)/(length(mom)-1)
+```
+
+```
+## [1] 5.546511
+```
+
+---
+
+## Sample standard deviation
+
+The sample standard deviation also measures spread of given data -- it is simply the square root of the sample variance:
+`$$s = \sqrt{s^2} = \sqrt{\frac{(x_1-\bar{x})^2+(x_2-\bar{x})^2+\cdots+(x_n-\bar{x})^2}{n-1}}.$$`
+
+R has a built in function to compute the sample standard deviation:
+
+
+```r
+sd(mom) # sd() gives the sample standard deviation of a vector
+```
+
+```
+## [1] 2.355103
+```
+
+---
+
+## Exercise
+
+- Produce the histogram of daughter's heights from the dataset `heights.txt`.
+
+- Get mean/median/sample variance of daughter's heights. 
+
+---
+
+## Exercise, continued
+
+
+```r
+ggplot(d, aes(Dheight)) + geom_histogram()
+```
+
+&lt;img src="Drexel_2019_Lecture_2_files/figure-html/unnamed-chunk-26-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+
+```r
+D_height &lt;- d$Dheight
+c(mean(D_height), median(D_height), var(D_height))
+```
+
+```
+## [1] 63.751055 63.600000  6.760274
+```
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
