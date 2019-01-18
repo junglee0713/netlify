@@ -277,7 +277,6 @@ sum(w1)
 Colon (:) can be used to generate a vector consisting of consecutive numbers.
 
 ```{r}
-# 
 w2 <- 1:10
 print(w2)
 sum(w2) 

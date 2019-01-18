@@ -39,7 +39,7 @@ print(nchar(vec_collapse))
 head(iris)
 ```
 
-3. Compute the sample mean, sample variance, and 90% quantile of of `Sepal.Length`.
+3. Compute the sample mean, sample variance, and 90% quantile of `Sepal.Length`.
 
 4. What is the _fifth_ smallest value of `Sepal.Length`?
 
