@@ -12,3 +12,5 @@ tags: []
 [Lecture 2](/Drexel_lectures/Drexel_2019_Lecture_2.html)
 
 [Homework 1](/Drexel_lectures/HW1.pdf)
+
+[Lecture 3](/Drexel_lectures/Drexel_2019_Lecture_3.html)

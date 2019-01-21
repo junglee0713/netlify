@@ -1,6 +1,6 @@
 baseurl = "/"
 languageCode = "en-us"
-title = "Jung-Jin Lee's website"
+title = "Jung-Jin Lee's blog"
 theme = "hugo-lithium"
 googleAnalytics = "UA-129677462-1"
 disqusShortname = "junglee0713-netlify"

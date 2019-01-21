@@ -145,6 +145,24 @@ print(last_name)
 
 ---
 
+## Logical values
+
+```{r}
+TF1 <- T # upper case T, not t
+TF2 <- F # Upper ase F, not f
+print(TF1)
+print(TF2)
+```
+
+```{r}
+TF3 <- TRUE # can use TRUE instead of T
+TF4 <- FALSE # can use FALSE instead of F
+print(TF3)
+print(TF4)
+```
+
+---
+
 ## Functions
 
 One or more values can produce new one using R functions.
@@ -230,6 +248,29 @@ paste(vec2, collapse = "")
 
 ```{r}
 collapse3 <- paste(vec2, collapse = ""); print(collapse3)
+```
+
+---
+
+## Functions applied to a vector -- part III
+
+```{r}
+print(vec1)
+```
+
+Which elements are greater than 3?
+
+```{r}
+vec3 <- vec1 > 3
+print(vec3)
+```
+
+--
+
+How many elements of `vec1` are greater than 3?
+
+```{r}
+sum(vec3) # in R, TRUE is 1, FALSE is 0
 ```
 
 ---
