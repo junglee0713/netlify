@@ -44,7 +44,8 @@ opts_chunk$set(
 ## Explore data
 
 ```{r}
-df <- diamonds ## diamonds is a built-in data set
+library(tidyverse)
+df <- diamonds ## diamonds comes with ggplot2
 dim(df)
 head(df)
 ```
