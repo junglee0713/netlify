@@ -20,6 +20,7 @@ class: center, middle, inverse, title-slide
 
 
 
+
 ## Type of data
 
 - Categorical Data - consist of qualitative values
@@ -32,7 +33,7 @@ class: center, middle, inverse, title-slide
   
 ---
 
-## Description of categorial data
+## Explore data
 
 
 ```r
@@ -62,7 +63,21 @@ head(df)
 
 ---
 
-## Example: explore data
+## Explore data, continued
+
+
+```r
+names(df)
+```
+
+```
+##  [1] "carat"   "cut"     "color"   "clarity" "depth"   "table"   "price"  
+##  [8] "x"       "y"       "z"
+```
+
+---
+
+## Explore data, continued
 
 How many distinct values are there in the variable `cut`?
 
@@ -103,7 +118,7 @@ g &lt;- ggplot(data = df, aes(x = cut)) +
 print(g)
 ```
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-6-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -148,7 +163,7 @@ ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
   geom_bar()
 ```
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-8-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-9-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -182,7 +197,7 @@ ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
 * facet_wrap(~cut)
 ```
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-10-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-11-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -195,7 +210,15 @@ ggplot(df, aes(color)) + ## can omit 'data = ' and 'x = '
   facet_wrap(~cut) 
 ```
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-11-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-12-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Exercise
+
+Produce the following plots:
+
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-13-1.png" width="75%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -209,7 +232,7 @@ ggplot(df, aes(carat)) +
   geom_histogram()
 ```
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-12-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-14-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -218,7 +241,7 @@ ggplot(df, aes(carat)) +
 - Measure of location: sample mean and median
 - Measure of spread: sample variance and standard deviation
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-13-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-15-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -332,10 +355,6 @@ quantile(carat, probs = 0.9)
 
 ---
 
-## To be continued with spread
-
----
-
 ## Sample variance
 
 The sample variance measures spread of given data:
@@ -385,23 +404,32 @@ sd(mom) # sd() gives the sample standard deviation of a vector
 
 ---
 
-## Normal distribution
+## Exercise
 
-- A continuous random variable `\(X\)` is said to follow a _normal distribution_ `\(N(\mu, \sigma^2)\)` if the probability `\(P(a\leq X \leq b)\)` that `\(X\)` is between `\(a\)` and `\(b\)` is given by 
-`$$P(a\leq X \leq b) = \int_a^b \phi_{\mu,\sigma}(x)\,dx,$$`
-where `$$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.$$`
+- Produce the histogram of daughter's heights from the dataset `heights.txt`.
 
-- `\(\phi_{\mu,\sigma}(x)\)` is a bell-shaped function called the probability distribution function (pdf) of `\(X\)`. `\(\mu\)` is called the _mean_ and `\(\sigma\)` is called the _standard deviation_.
-
-- In particular, if `\(\mu = 0\)` and `\(\sigma = 1\)`, `\(X\)` is said to follow the _standard_ normal distribution.
+- Get mean/median/sample variance of daughter's heights. 
 
 ---
 
-## Normal pdf
+## Exercise, continued
 
-&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
 
-_mean_ determines the center of the bell shape, while _standard deviation_ measures the spread.
+```r
+ggplot(d, aes(Dheight)) + geom_histogram()
+```
+
+&lt;img src="Cabrini_2019_Lecture_2_files/figure-html/unnamed-chunk-26-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+
+```r
+D_height &lt;- d$Dheight
+c(mean(D_height), median(D_height), var(D_height))
+```
+
+```
+## [1] 63.751055 63.600000  6.760274
+```
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
