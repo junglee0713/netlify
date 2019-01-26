@@ -96,6 +96,13 @@ tinytex::install_tinytex()
 
 ---
 
+## Inline/Console output control
+
+<p align = "center"> 
+  <img src = chunk_output_inline.png width = "400">
+</p>
+---
+
 ## R as a calculator
 
 Use R console:
