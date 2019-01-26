@@ -87,6 +87,13 @@ easy descriptions or inferences of the data
 
 - To create a new .Rmd file, File $\rightarrow$ New File $\rightarrow$ R Markdown $\rightarrow$ (HTML/PDF/Word)
 
+- To produce pdf output, run following (it may take some time):
+
+```{r, eval = FALSE}
+install.packages("tinytex")
+tinytex::install_tinytex()
+```
+
 ---
 
 ## R as a calculator
