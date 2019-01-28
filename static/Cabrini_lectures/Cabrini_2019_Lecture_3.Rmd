@@ -1,0 +1,373 @@
+---
+title: "Lecture 3"
+author: "Jung-Jin Lee"
+date: "Jan 30, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Cabrini.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## Exploring data
+
+```{r}
+d <- iris # iris data set comes with base R
+dim(d)
+```
+
+So `d` has `r nrow(d)` observations and `r ncol(d)` variables.
+
+```{r}
+head(d)
+```
+
+---
+
+## Exploring data, continued
+
+```{r}
+table(d$Species)
+```
+
+.pull-left[
+<p align = "center">
+  <img src = iris_species.jpeg>
+</p>
+]
+.pull-right[
+<p align = "center">
+  <img src = iris_petal_sepal.png width = "180">
+</p>  
+]
+
+---
+
+## Exploring data, continued
+
+```{r, out.width = "50%"}
+g <- ggplot(d, aes(Sepal.Length)) + geom_histogram()
+print(g)
+```
+
+---
+
+## Data manipulation
+
+Create a data set consists of `setosa` only.
+
+```{r}
+library(dplyr) # dplyr is a part of tidyverse
+# you could run library(tidyverse) instead
+```
+
+`dplyr` provides the following _verbs_ that are useful in data manipulation:
+- `select()`: subset using columns (variables)
+- `filter()`: subset using rows (observations)
+- `mutate()`: transform variables
+- `arrange()`: reorder observations
+
+These verbs, when combined with the pipe operator `%>%`, become even more powerful!
+
+---
+
+## select()
+
+**Example**: create a data set consising only of `Sepal.Length` and `Sepal.Width`.
+
+```{r}
+s1 <- select(d, Sepal.Length, Sepal.Width)
+dim(s1)
+head(s1)
+```
+
+---
+ 
+## select(), continued
+
+**Exercise**: create a data set consising of `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width`.
+
+--
+
+```{r}
+s2 <- select(d, Sepal.Length, Sepal.Width, Petal.Length, Petal.Width)
+dim(s2)
+head(s2)
+```
+
+---
+
+## select(), continued
+
+```{r}
+s3 <- select(d, -Species)
+head(s3)
+```
+
+---
+
+## filter()
+
+**Example**: create a data set consising only of `setosa` species.
+
+```{r}
+f1 <- filter(d, Species == "setosa") # note use of ==, not =
+dim(f1)
+head(f1)
+```
+
+---
+
+## filter(), continued
+
+**Exercise**: create a data set consising only of `setosa` and `virginica` species.
+
+--
+
+```{r}
+f2 <- filter(d, Species %in% c("setosa", "virginica")) # %in%
+dim(f2)
+tail(f2)
+```
+
+--
+
+```{r}
+f3 <- filter(d, Species != "versicolor") # != means "not equal"
+dim(f3)
+```
+
+---
+
+## filter(), continued
+
+**Exercise**: create a data set with `Sepal.Length` < 6.
+
+--
+
+```{r}
+f4 <- filter(d, Sepal.Length < 6) 
+dim(f4)
+head(f4)
+```
+
+---
+
+## filter(), continued
+
+**Exercise**: how many `virginica` species have `Sepal.Length` at least 5.7?
+
+--
+
+```{r}
+f5 <- filter(d, Sepal.Length >= 5.7) # >= "greater than or equal to"
+```
+
+--
+
+```{r}
+table(f5$Species)
+```
+
+--
+
+```{r}
+Sep.Len.Cut <- 5.7
+f6 <- filter(d, Sepal.Length >= Sep.Len.Cut) 
+table(f6$Species)
+```
+
+---
+
+## mutate()
+
+**Example**: create a new variable `Sepal.Sum` which is defined as `Sepal.Length` + `Sepal.Width`.
+
+```{r}
+m1 <- mutate(d, Sepal.Sum = Sepal.Length + Sepal.Width)
+dim(m1)
+head(m1)
+```
+
+---
+
+## mutate(), continued
+
+**Exercise**: create a new variable `size` which is defined as "big" if `Sepal.Length` $\geq$ 5 and "small" if `Sepal.Length` $<$ 5 (_Hint_: you might want to look up the function `ifelse()`).
+
+--
+
+```{r}
+m2 <- mutate(d, size = ifelse(Sepal.Length >= 5, "big", "small"))
+dim(m2)
+head(m2)
+```
+
+---
+
+## arrange()
+
+**Example**: sort `d` by `Sepal.Length` (ascending order)
+
+```{r}
+a1 <- arrange(d, Sepal.Length)
+dim(a1)
+head(a1)
+```
+
+---
+
+## arrange(), continued
+
+**Example**: sort `d` by `Sepal.Length` (descending order) 
+
+```{r}
+a2 <- arrange(d, desc(Sepal.Length))
+dim(a2)
+head(a2)
+```
+
+---
+
+## Piping
+
+**Exercise**: report all `setosa` elements with the difference `Diff` defined by `Diff` =  `Sepal.Length` - `Sepal.Width` > 1.5. Show only `Sepal.Length`, `Sepal.Width` and `Diff`, and sort by descending order of `Diff`.
+
+--
+
+```{r}
+r1 <- mutate(d, Diff = Sepal.Length - Sepal.Width)
+```
+
+--
+
+```{r}
+r2 <- filter(r1, Diff > 1.5, Species == "setosa")
+```
+
+--
+
+```{r}
+r3 <- select(r2, Sepal.Length, Sepal.Width, Diff)
+```
+
+--
+
+```{r}
+r4 <- arrange(r3, desc(Diff))
+head(r4)
+```
+
+---
+
+## Piping, continued
+
+Piping operator `%>%` takes the LHS of `%>%` as the first argument of the RHS of `%>%`.
+
+```{r}
+r <- d %>% 
+  mutate(Diff = Sepal.Length - Sepal.Width) %>%
+  filter(Diff > 1.5, Species == "setosa") %>%
+  select(Sepal.Length, Sepal.Width, Diff) %>%
+  arrange(desc(Diff))
+head(r)
+```
+
+---
+
+## Box plot
+
+**Example**: describe the distribution of `Sepal.Length` using box plot.
+
+```{r, out.width = "50%"}
+g <- ggplot(d, aes(x = Species, y = Sepal.Length)) +
+  geom_boxplot()
+print(g)
+```
+
+---
+
+## Box plot, continued
+
+- The thick line indicates the median.
+- The lower and upper hinges correspond to the 25% and 75% quantiles. 
+- The upper whisker extends from the hinge to the largest value no further than 1.5 $\times$ IQR from the hinge, where IQR is the inter-quartile range (distance between the 25% and 75% quantiles). Similary for the lower whisker. 
+
+--
+
+**Exercise**: compute the maximum, minimum, 25% quantile, 75% quantile and median for `versicola` species and compare with the previous plot. 
+
+--
+
+```{r}
+ds <- d %>%
+  filter(Species == "versicolor")
+quantile(ds$Sepal.Length)
+```
+
+---
+
+## Box plot, continued
+
+**Exercise**: create the following plots.
+
+```{r, echo = F, out.width = "50%"}
+g <- d %>%
+  filter(Species != "versicolor") %>%
+  ggplot(aes(Species, Sepal.Width)) +
+  geom_boxplot()
+print(g)
+```
+
+---
+
+## Scatter plots
+
+How are `Sepal.Length` and `Sepal.Width` associated?
+
+--
+
+```{r, out.width = "50%"}
+g <- ggplot(d, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point()
+print(g)
+```
+
+---
+
+## Scatter plots, continued
+
+```{r, out.width = "50%"}
+g <- ggplot(d, aes(Sepal.Length, Sepal.Width, color = Species)) +
+  geom_point()
+print(g)
+```
+
+---
+
+## Scatter plots, continued
+
+```{r, out.width = "60%"}
+g2 <- g + theme(aspect.ratio = 1)
+print(g2)
+```

@@ -30,7 +30,8 @@ set.seed(2019) n &amp;lt;- 15 d0 &amp;lt;- data.frame(ID = 1:n, x = rnorm(n), y 
       <description>Lecture 1
 Lecture 2
 Homework 1
-Lecture 3</description>
+Lecture 3
+Lecture 4</description>
     </item>
     
     <item>
@@ -60,7 +61,8 @@ set.seed(2018) n &amp;lt;- 100 ## Create a perturbed and slanted ellipse in R^3 
       <guid>/2018/11/27/cabrini-lectures-spring-2019/</guid>
       <description>Lecture 1
 Lecture 2
-Homework 1</description>
+Homework 1
+Lecture 3</description>
     </item>
     
   </channel>

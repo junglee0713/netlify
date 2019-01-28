@@ -10,3 +10,5 @@ slug: cabrini-lectures-spring-2019
 [Lecture 2](/Cabrini_lectures/Cabrini_2019_Lecture_2.html)
 
 [Homework 1](/Cabrini_lectures/HW1.pdf)
+
+[Lecture 3](/Cabrini_lectures/Cabrini_2019_Lecture_3.html)
