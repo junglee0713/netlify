@@ -41,15 +41,25 @@ head(iris)
 
 3. Compute the sample mean, sample variance, and 90% quantile of `Sepal.Length`.
 
+```{r, echo = F, eval = F}
+sl <- iris$Sepal.Length
+mean(sl); var(sl); quantile(sl, prob = 0.9)
+```
+
 4. What is the _fifth_ smallest value of `Sepal.Length`?
+
+```{r, echo = F, eval = F}
+sort(sl, T)[5]
+```
+
 
 5. Obtain the following plots that describe the histogram of `Sepal.Length` by `Species`. 
 
-```{r, echo = F, message=F, fig.height = 3}
+```{r, echo = F, message = F, fig.height = 3}
 g <- ggplot(iris, aes(Sepal.Length)) + 
   geom_histogram() +
   facet_wrap(~Species) 
-
+ 
 print(g)
 ```
 

@@ -16,3 +16,5 @@ tags: []
 [Lecture 3](/Drexel_lectures/Drexel_2019_Lecture_3.html)
 
 [Lecture 4](/Drexel_lectures/Drexel_2019_Lecture_4.html)
+
+[Homework 2](/Drexel_lectures/HW2.pdf)
