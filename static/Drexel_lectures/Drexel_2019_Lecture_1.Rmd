@@ -88,11 +88,13 @@ easy descriptions or inferences of the data
 - To create a new .Rmd file, File $\rightarrow$ New File $\rightarrow$ R Markdown $\rightarrow$ (HTML/PDF/Word)
 
 - To produce pdf output, run following (it may take some time):
-
 ```{r, eval = FALSE}
 install.packages("tinytex")
 tinytex::install_tinytex()
 ```
+- Useful chunk options: `message = F, echo = F, eval = F`
+
+- Inline coding can be done using a pair of backticks and `r`: ` `r "\x60r 2+3\x60"`\`
 
 ---
 
@@ -101,7 +103,6 @@ tinytex::install_tinytex()
 <p align = "center"> 
   <img src = chunk_output_inline.png width = "400">
 </p>
-
 ---
 
 ## R as a calculator
@@ -154,7 +155,7 @@ Variables can also be used to store character values.
 ```{r}
 first_name <- "John" # use quotation marks for character strings
 last_name <- 'Smith' # single quotation also works
-print(first_name)
+print(first_name) # print() can be omitted, but encouraged
 print(last_name)
 ```
 
@@ -178,12 +179,40 @@ print(TF4)
 
 ---
 
+## Logical values, continued
+
+```{r}
+p <- 4; q <- 6 # semicolon (;) can be used to separate lines
+call1 <- p > 5
+call2 <- q > 5
+call3 <- q > 6
+call4 <- q >= 6
+print(call1)
+print(call2)
+print(call3)
+print(call4)
+```
+
+---
+
+## Combination of logical values
+
+```{r}
+p <- 4; q <- 6 
+print(p < 5 & q < 7) # & means "and": TRUE only if both are TRUE
+print(p < 5 & q < 5) 
+print(p < 5 | q < 5) # | means "or": FALSE only if both are FALSE
+print(!(p < 5)) # ! means "not"
+```
+
+---
+
 ## Functions
 
 One or more values can produce new one using R functions.
 
 ```{r}
-a <- 1; b <- 3 # semicolon (;) can be used to separate lines
+a <- 1; b <- 3 
 s <- sum(a, b) # sum() is a function that computes the sum
 print(s)
 ```
@@ -212,6 +241,11 @@ print(vec1)
 ```{r}
 vec2 <- c("Joe", "waited", "for", "the", "train")
 print(vec2)
+```
+
+```{r}
+vec3 <- vec2 %in% c("Joe", "for") # %in% determines membership
+print(vec3)
 ```
 
 ---
@@ -276,8 +310,8 @@ print(vec1)
 Which elements are greater than 3?
 
 ```{r}
-vec3 <- vec1 > 3
-print(vec3)
+vec4 <- vec1 > 3
+print(vec4)
 ```
 
 --
@@ -285,7 +319,7 @@ print(vec3)
 How many elements of `vec1` are greater than 3?
 
 ```{r}
-sum(vec3) # in R, TRUE is 1, FALSE is 0
+sum(vec4) # in R, TRUE is 1, FALSE is 0
 ```
 
 ---
@@ -313,7 +347,6 @@ print(dm)
 ```{r}
 vec1[length(vec1)]
 ```
-
 
 ---
 
@@ -471,5 +504,3 @@ g1 <- ggplot(d, aes(x = Mheight)) +
 print(g1)
 ```
 ]
-
-

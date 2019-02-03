@@ -82,11 +82,13 @@ easy descriptions or inferences of the data
 
 - To produce pdf output, run following (it may take some time):
 
-
 ```r
 install.packages("tinytex")
 tinytex::install_tinytex()
 ```
+- Useful chunk options: `message = F, echo = F, eval = F`
+
+- Inline coding can be done using a pair of backticks and `r`: ` `r 2+3`\`
 
 ---
 
@@ -180,7 +182,7 @@ Variables can also be used to store character values.
 ```r
 first_name &lt;- "John" # use quotation marks for character strings
 last_name &lt;- 'Smith' # single quotation also works
-print(first_name)
+print(first_name) # print() can be omitted, but encouraged
 ```
 
 ```
@@ -239,13 +241,93 @@ print(TF4)
 
 ---
 
+## Logical values, continued
+
+
+```r
+p &lt;- 4; q &lt;- 6 # semicolon (;) can be used to separate lines
+call1 &lt;- p &gt; 5
+call2 &lt;- q &gt; 5
+call3 &lt;- q &gt; 6
+call4 &lt;- q &gt;= 6
+print(call1)
+```
+
+```
+## [1] FALSE
+```
+
+```r
+print(call2)
+```
+
+```
+## [1] TRUE
+```
+
+```r
+print(call3)
+```
+
+```
+## [1] FALSE
+```
+
+```r
+print(call4)
+```
+
+```
+## [1] TRUE
+```
+
+---
+
+## Combination of logical values
+
+
+```r
+p &lt;- 4; q &lt;- 6 
+print(p &lt; 5 &amp; q &lt; 7) # &amp; means "and": TRUE only if both are TRUE
+```
+
+```
+## [1] TRUE
+```
+
+```r
+print(p &lt; 5 &amp; q &lt; 5) 
+```
+
+```
+## [1] FALSE
+```
+
+```r
+print(p &lt; 5 | q &lt; 5) # | means "or": FALSE only if both are FALSE
+```
+
+```
+## [1] TRUE
+```
+
+```r
+print(!(p &lt; 5)) # ! means "not"
+```
+
+```
+## [1] FALSE
+```
+
+---
+
 ## Functions
 
 One or more values can produce new one using R functions.
 
 
 ```r
-a &lt;- 1; b &lt;- 3 # semicolon (;) can be used to separate lines
+a &lt;- 1; b &lt;- 3 
 s &lt;- sum(a, b) # sum() is a function that computes the sum
 print(s)
 ```
@@ -293,6 +375,16 @@ print(vec2)
 
 ```
 ## [1] "Joe"    "waited" "for"    "the"    "train"
+```
+
+
+```r
+vec3 &lt;- vec2 %in% c("Joe", "for") # %in% determines membership
+print(vec3)
+```
+
+```
+## [1]  TRUE FALSE  TRUE FALSE FALSE
 ```
 
 ---
@@ -401,8 +493,8 @@ Which elements are greater than 3?
 
 
 ```r
-vec3 &lt;- vec1 &gt; 3
-print(vec3)
+vec4 &lt;- vec1 &gt; 3
+print(vec4)
 ```
 
 ```
@@ -415,7 +507,7 @@ How many elements of `vec1` are greater than 3?
 
 
 ```r
-sum(vec3) # in R, TRUE is 1, FALSE is 0
+sum(vec4) # in R, TRUE is 1, FALSE is 0
 ```
 
 ```
@@ -462,7 +554,6 @@ vec1[length(vec1)]
 ```
 ## [1] 4
 ```
-
 
 ---
 
@@ -735,7 +826,7 @@ print(g1)
 ]
 
 .pull-right-plot[
-&lt;img src="Cabrini_2019_Lecture_1_files/figure-html/unnamed-chunk-41-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_1_files/figure-html/unnamed-chunk-44-1.png" style="display: block; margin: auto;" /&gt;
 ]
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

@@ -91,6 +91,10 @@ where $$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{
 
 --
 
+- In particular, the area under the curve equals 1.
+
+--
+
 - $\phi_{\mu,\sigma}(x)$ is a bell-shaped function called the probability distribution function (pdf) of $X$. $\mu$ is called the _mean_ and $\sigma$ is called the _standard deviation_.
 
 --
@@ -375,19 +379,39 @@ pt(1.2, df = 5) - pt(-1, df = 5)
 
 ## _t_-distribution, continued
 
-**Exercise**: suppose $X$ follows $t$-distribution with $5$ degrees of freedom. Determine $t_{5, 0.1}$ so that the probability that $X\geq t_{5, 0.1} = 0.1$ (_Hint_: look up `qt()`).
+**Exercise**: suppose $X$ follows $t$-distribution with $5$ degrees of freedom. Determine $t_{5, 0.2}$ so that the probability that $X\geq t_{5, 0.2} = 0.2$ (_Hint_: look up `qt()`).
 
 ```{r, echo = F, out.width = "55%"}
 library(latex2exp)
 gt5 <- ggplot(data.frame(x = 0), aes(x)) +
-  scale_x_continuous(lim = c(-2, 2), breaks = c(1.47), labels = c(TeX("$t_{5, 0.1}$"))) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(0.92), labels = c(TeX("$t_{5, 0.2}$"))) +
   theme_bw() + 
   theme_classic() +
-  stat_function(fun = tfun.5, xlim = c(1.47, 2), geom = "area", fill = "red") + 
+  stat_function(fun = tfun.5, xlim = c(0.92, 2), geom = "area", fill = "red") + 
   stat_function(fun = tfun.5) + 
   ylim(0, 0.45) +
   ggtitle("t, df = 5")
 print(gt5) 
+```
+
+---
+
+## _t_-distribution, continued
+
+**Exercise**: suppose $X$ follows $t$-distribution with $4$ degrees of freedom. Determine $t_{4, 0.025}$ so that the probability that $-t_{4, 0.025} \leq X \leq t_{4, 0.025} = 0.95$.
+
+```{r, echo = F, out.width = "55%"}
+library(latex2exp)
+tfun.4 = function(x) dt(x, df = 4)
+gt4 <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-3.5, 3.5), breaks = c(-2.77, 2.77), labels = c(TeX("$-t_{4, 0.025}$"), TeX("$t_{4, 0.025}$"))) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun.4, xlim = c(-2.77, 2.77), geom = "area", fill = "red") + 
+  stat_function(fun = tfun.4) + 
+  ylim(0, 0.45) +
+  ggtitle("t, df = 4")
+print(gt4) 
 ```
 
 ---

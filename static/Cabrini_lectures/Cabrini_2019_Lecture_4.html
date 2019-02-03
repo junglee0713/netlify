@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lecture 4</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Jung-Jin Lee" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Cabrini.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 4
+### Jung-Jin Lee
+### Feb 6, 2019
+
+---
+
+ 
+
+
+## Normal distribution
+
+Consider the data set `heights.txt` which consists of mother/daughter height pairs. 
+
+
+```r
+ht &lt;- read.table(file = "heights.txt", header = T, sep = " ")
+dim(ht)
+```
+
+```
+## [1] 1375    2
+```
+
+```r
+head(ht)
+```
+
+```
+##   Mheight Dheight
+## 1    59.7    55.1
+## 2    58.2    56.5
+## 3    60.6    56.0
+## 4    60.7    56.8
+## 5    61.8    56.0
+## 6    55.5    57.9
+```
+
+---
+
+## Normal distribution, continued
+
+.pull-left[
+
+```r
+ggplot(ht, aes(Mheight)) + 
+  geom_histogram()
+```
+
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(ht, aes(Dheight)) + 
+  geom_histogram()
+```
+
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+Note that the histograms look like a bell.
+
+---
+
+## Normal distribution, continued
+
+Bell shapes are observed in other data sets, too. 
+
+.pull-left[
+
+```r
+ggplot(diamonds, aes(depth)) + 
+  geom_histogram()
+```
+
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+
+```r
+ggplot(iris, aes(Sepal.Width)) + 
+  geom_histogram() 
+```
+
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Rigorous definition of normal distribution
+
+- A continuous random variable `\(X\)` is said to follow a _normal distribution_ `\(N(\mu, \sigma^2)\)` if the probability `\(P(a\leq X \leq b)\)` that `\(X\)` is between `\(a\)` and `\(b\)` is given by 
+`$$P(a\leq X \leq b) = \int_a^b \phi_{\mu,\sigma}(x)\,dx,$$`
+where `$$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.$$`
+
+--
+
+- In particular, the area under the curve equals 1.
+
+--
+
+- `\(\phi_{\mu,\sigma}(x)\)` is a bell-shaped function called the probability distribution function (pdf) of `\(X\)`. `\(\mu\)` is called the _mean_ and `\(\sigma\)` is called the _standard deviation_.
+
+--
+
+- In particular, if `\(\mu = 0\)` and `\(\sigma = 1\)`, `\(X\)` is said to follow the _standard_ normal distribution.
+
+---
+
+## Why is normal distribution important?
+
+- Has mathematically important properties (e.g. Central Limit Theorem).
+
+- Related with other important distributions (e.g. `\(t\)`, `\(F\)`, `\(\chi^2\)`).
+
+- Provides a good model for many real-world data (e.g. A normal distribution is a good model for data such as heights or weights).
+
+---
+
+## Normal pdf
+
+
+
+.pull-left[
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+_mean_ determines the center of the bell shape, while _standard deviation_ measures the spread.
+
+---
+
+## Normal pdf, continued
+
+**Example**: the life of a fully-charged cell phone battery is normally distributed with a mean of 13 hours with a standard deviation of 1 hour. `\(X\)`, the life of a randomly selected fully-charged phone battery, can be assumed to follow `\(N(13, 1^2)\)`. 
+
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-10-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Normal pdf, continued
+
+- What is the probability that `\(X \leq 13\)`?
+
+--
+
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-11-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- As the curve is symmetric, the desired probability is `\(0.5\)`.
+
+---
+
+## Normal pdf, continued
+
+- What is the probability that `\(X \leq 12\)`?
+
+.pull-left[
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+`pnorm()` computes the desired probability:
+
+```r
+pnorm(12, mean = 13, sd = 1)
+```
+
+```
+## [1] 0.1586553
+```
+
+```r
+pnorm(13, mean = 13, sd = 1)
+```
+
+```
+## [1] 0.5
+```
+]
+
+--
+
+**Exercise**: compute the probability that X `\(\geq\)` 14.
+
+---
+
+## Normal pdf, continued
+
+- What is the probability that `\(11 \leq X \leq 14\)`?
+
+.pull-left[
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Normal pdf, continued
+
+**Exercise**: 
+
+- Compute the probability that `\(X\geq 15\)`, where `\(X\)` follows `\(N(13,1^2)\)`.
+- Compute the probability that `\(Z \leq -1\)`, where `\(Z\)` follows `\(N(0,1^2)\)`.
+- Determine `\(z_{0.1}\)` such that the probability that `\(Z\leq z_{0.1}\)` equals 0.9 (_hint_: look up `qnorm()`). 
+
+.pull-left[
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-16-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-17-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## _t_-distribution
+
+- Class of bell-shaped distribution determined by a parameter called _degrees of freedom_.
+
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## _t_-distribution, continued
+
+**Example**: suppose `\(X\)` follows `\(t\)`-distribution with `\(5\)` degrees of freedom. What is the probability that `\(X\leq 0\)`? `\(X\leq -1.5\)`? `\(-1 \leq X \leq 1.2\)`? `\(X \geq 1.6\)`?
+
+.pull-left[
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+
+```r
+pt(0, df = 5)
+```
+
+```
+## [1] 0.5
+```
+
+```r
+pt(-1.5, df = 5)
+```
+
+```
+## [1] 0.09695184
+```
+
+```r
+pt(1.2, df = 5) - pt(-1, df = 5)
+```
+
+```
+## [1] 0.6764457
+```
+
+```r
+1-pt(1.6, df = 5)
+```
+
+```
+## [1] 0.08524762
+```
+]
+
+---
+
+## _t_-distribution, continued
+
+**Exercise**: suppose `\(X\)` follows `\(t\)`-distribution with `\(5\)` degrees of freedom. Determine `\(t_{5, 0.2}\)` so that the probability that `\(X\geq t_{5, 0.2} = 0.2\)` (_Hint_: look up `qt()`).
+
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-21-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## _t_-distribution, continued
+
+**Exercise**: suppose `\(X\)` follows `\(t\)`-distribution with `\(4\)` degrees of freedom. Determine `\(t_{4, 0.025}\)` so that the probability that `\(-t_{4, 0.025} \leq X \leq t_{4, 0.025} = 0.95\)`.
+
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-22-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Using data to make inference
+
+- Point estimate
+
+--
+
+- Confidence interval
+
+--
+
+- Statistical tests
+
+---
+
+## Point estimate
+
+- Assume that the heights of all UK women follow a normal distribution `\(N(\mu, \sigma^2)\)`.
+- Interested in determining `\(\mu\)` and `\(\sigma\)`.
+- Sample mean ans sample standard deviation are known to be _good_ estimates for `\(\mu\)` and `\(\sigma\)`, respectively. 
+
+--
+
+.pull-left[
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-23-1.png" width="95%" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+
+```r
+mean(ht$Mheight)
+```
+
+```
+## [1] 62.4528
+```
+
+```r
+sd(ht$Mheight)
+```
+
+```
+## [1] 2.355103
+```
+
+**Exercise**: compute the sample mean and sample standard deviation of `Sepal.Width` in `iris` data set.
+
+]
+
+---
+
+## Confidence interval
+
+Point estimate is too naive -- how much can we trust 62.4528 as a reliable estimator for `\(\mu\)`, the true population mean?
+
+**Example**: suppose that we are measuring the battery life which is assume to follow a normal distribution. Assume that we collected two sets of samples of size 5:
+`$$\text{Sample 1: }\{12, 13, 13, 14, 13\}$$`
+`$$\text{Sample 2: }\{10, 11, 16, 13, 15\}$$`
+
+```r
+sample1 &lt;- c(12, 13, 13, 14, 13); sample2 &lt;- c(10, 11, 16, 13, 15)
+c(mean(sample1), mean(sample2))
+```
+
+```
+## [1] 13 13
+```
+
+```r
+c(sd(sample1), sd(sample2))
+```
+
+```
+## [1] 0.7071068 2.5495098
+```
+
+---
+
+## Confidence interval, continued
+
+Suppose that a sample of size `\(n\)`, say `\(X_1, X_2, \ldots, X_n\)`, is taken from a population that follows `\(N(\mu, \sigma^2)\)`. The 100 `\(\times (1-\alpha)\)` % confidence interval of `\(\mu\)` is defined as
+`$$\left(\bar{X} - t_{n-1, \alpha/2}\frac{S}{\sqrt{n}},~\bar{X} + t_{n-1, \alpha/2}\frac{S}{\sqrt{n}}\right),$$`
+where, `\(\bar{X}\)` and `\(S\)` represent the sample mean and sample standard deviation, respectively and `\(t_{n-1, \alpha/2}\)` is the quantile value of a `\(t\)`-distribution of `\(n-1\)` degrees of freedom with tail probability `\(\alpha/2\)`.
+
+In particular, the 95% confidence interval (so `\(\alpha = 0.05\)`) of `\(\mu\)` is given by 
+`$$\left(\bar{X} - t_{n-1, 0.025}\frac{S}{\sqrt{n}},~\bar{X} + t_{n-1, 0.025}\frac{S}{\sqrt{n}}\right),$$`
+
+Interpretation of 95% confidence interval: when this procedure of creating 95% confidence intervals is repeated, about 95% of the intervals will contain the true population mean. 
+
+---
+
+## Confidence interval, continued
+
+
+```r
+alpha &lt;- 0.05
+xbar &lt;- mean(sample1)
+sdev &lt;- sd(sample1)
+n &lt;- length(sample1)
+tval &lt;- qt(1-alpha/2, df = n-1)
+CI95 &lt;- xbar + tval*sdev/sqrt(n)*c(-1,1)
+CI95
+```
+
+```
+## [1] 12.12201 13.87799
+```
+
+**Exercise**: compute the 95% confidence interval of `sample2`. 
+
+---
+
+## Confidence interval, continued
+
+`t.test()` can be used to compute confidence interval of mean.
+
+
+```r
+t1 &lt;- t.test(sample1)
+t1
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  sample1
+## t = 41.11, df = 4, p-value = 2.093e-06
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  12.12201 13.87799
+## sample estimates:
+## mean of x 
+##        13
+```
+
+---
+
+## Confidence interval, continued
+
+
+```r
+t2 &lt;- t.test(sample2)
+t2
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  sample2
+## t = 11.402, df = 4, p-value = 0.0003375
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##   9.834366 16.165634
+## sample estimates:
+## mean of x 
+##        13
+```
+
+---
+
+## Confidence interval, revisited
+
+Review of confidence interval: 
+
+`$$\left(\bar{X} - t_{n-1, \alpha/2}\frac{S}{\sqrt{n}},~\bar{X} + t_{n-1, \alpha/2}\frac{S}{\sqrt{n}}\right)$$`
+
+- As `\(1-\alpha\)` (called confidence level) increases, the confidence interval becomes wider. 
+
+- As `\(n\)` (sample size) increases, the confidence interval becomes narrower. 
+
+---
+
+## Exercises
+
+**Exercise**: based on the `heights.txt` data, find the 80%, 90% and 95% confidence interval of the mean of UK women's heights (mom's heights).
+
+**Exercise**: `starwars`, which comes with the package `dplyr`, is a data set that contains data related with characters in the movie Star Wars. 
+
+- Explorer the data set. Subset the data so that the resulting data set contains only human species with `height` data available (_Hint_: look up `is.na()`). How many observations?
+
+---
+
+## Exercises, continued
+
+- Explore the data set and create the following plot showing the height distribution of Human species:
+&lt;img src="Cabrini_2019_Lecture_4_files/figure-html/unnamed-chunk-29-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+- Find the name of the tallest Human female character.
+
+
+
+- Find the 95% confidence interval of the mean of Human male heights.
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

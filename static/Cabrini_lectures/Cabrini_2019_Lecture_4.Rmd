@@ -1,0 +1,566 @@
+---
+title: "Lecture 4"
+author: "Jung-Jin Lee"
+date: "Feb 6, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Cabrini.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## Normal distribution
+
+Consider the data set `heights.txt` which consists of mother/daughter height pairs. 
+
+```{r}
+ht <- read.table(file = "heights.txt", header = T, sep = " ")
+dim(ht)
+head(ht)
+```
+
+---
+
+## Normal distribution, continued
+
+.pull-left[
+```{r}
+ggplot(ht, aes(Mheight)) + 
+  geom_histogram()
+```
+]
+
+.pull-right[
+```{r}
+ggplot(ht, aes(Dheight)) + 
+  geom_histogram()
+```
+]
+
+Note that the histograms look like a bell.
+
+---
+
+## Normal distribution, continued
+
+Bell shapes are observed in other data sets, too. 
+
+.pull-left[
+```{r}
+ggplot(diamonds, aes(depth)) + 
+  geom_histogram()
+```
+]
+
+--
+
+.pull-right[
+```{r}
+ggplot(iris, aes(Sepal.Width)) + 
+  geom_histogram() 
+```
+]
+
+---
+
+## Rigorous definition of normal distribution
+
+- A continuous random variable $X$ is said to follow a _normal distribution_ $N(\mu, \sigma^2)$ if the probability $P(a\leq X \leq b)$ that $X$ is between $a$ and $b$ is given by 
+$$P(a\leq X \leq b) = \int_a^b \phi_{\mu,\sigma}(x)\,dx,$$
+where $$\phi_{\mu,\sigma}(x) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.$$
+
+--
+
+- In particular, the area under the curve equals 1.
+
+--
+
+- $\phi_{\mu,\sigma}(x)$ is a bell-shaped function called the probability distribution function (pdf) of $X$. $\mu$ is called the _mean_ and $\sigma$ is called the _standard deviation_.
+
+--
+
+- In particular, if $\mu = 0$ and $\sigma = 1$, $X$ is said to follow the _standard_ normal distribution.
+
+---
+
+## Why is normal distribution important?
+
+- Has mathematically important properties (e.g. Central Limit Theorem).
+
+- Related with other important distributions (e.g. $t$, $F$, $\chi^2$).
+
+- Provides a good model for many real-world data (e.g. A normal distribution is a good model for data such as heights or weights).
+
+---
+
+## Normal pdf
+
+```{r, echo = FALSE}
+fun.1 <- function(x) dnorm(x, mean = 3, sd = 2)
+g1 <- ggplot(data.frame(x = 3), aes(x)) +
+  scale_x_continuous(lim = c(-3, 9), breaks = c(-3, 3, 9)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.1) +
+  ylim(c(0, 0.4)) +
+  theme(aspect.ratio = 1) +
+  geom_segment(x = 3, y = 0, xend = 3, yend = 0.2, lty = "dashed", color = "red") +
+  ggtitle(bquote('N(3,'~2^2~')'))
+
+fun.2 <- function(x) dnorm(x, mean = 0, sd = 1)
+g2 <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2.5, 2.5), breaks = c(-2, 0, 2)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.2) + 
+  ylim(0, 0.4) +
+  theme(aspect.ratio = 1) +
+  geom_segment(x = 0, y = 0, xend = 0, yend = 0.4, lty = "dashed", color = "red") +
+  ggtitle(bquote('N(0,'~1^2~')'))
+```
+
+.pull-left[
+```{r, echo = F}
+print(g1)
+```
+]
+
+--
+
+.pull-right[
+```{r, echo = F}
+print(g2)
+```
+]
+
+_mean_ determines the center of the bell shape, while _standard deviation_ measures the spread.
+
+---
+
+## Normal pdf, continued
+
+**Example**: the life of a fully-charged cell phone battery is normally distributed with a mean of 13 hours with a standard deviation of 1 hour. $X$, the life of a randomly selected fully-charged phone battery, can be assumed to follow $N(13, 1^2)$. 
+
+```{r, echo = F, out.width = "50%"}
+fun.3 <- function(x) dnorm(x, mean = 13, sd = 1)
+g3 <- ggplot(data.frame(x = 13), aes(x)) +
+  scale_x_continuous(lim = c(9, 17), breaks = c(10, 13, 16)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.3) + 
+  ylim(0, 0.4) +
+  theme(aspect.ratio = 1) +
+  geom_segment(x = 0, y = 0, xend = 0, yend = 0.4, lty = "dashed", color = "red") +
+  ggtitle(bquote('N(13,'~1^2~')'))
+print(g3)
+```
+
+---
+
+## Normal pdf, continued
+
+- What is the probability that $X \leq 13$?
+
+--
+
+```{r, echo = F, out.width = "50%"}
+g4 <-ggplot(data.frame(x = 13), aes(x)) +
+  scale_x_continuous(lim = c(9, 17), breaks = c(10, 13, 16)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.3, xlim = c(9, 13), geom = "area", fill = "red") + 
+  stat_function(fun = fun.3) + 
+  ylim(0, 0.45) +
+  theme(aspect.ratio = 1) +
+  geom_segment(x = 0, y = 0, xend = 0, yend = 0.4, lty = "dashed", color = "red") +
+  ggtitle(bquote('N(13,'~1^2~')'))
+print(g4)
+```
+
+--
+
+- As the curve is symmetric, the desired probability is $0.5$.
+
+---
+
+## Normal pdf, continued
+
+- What is the probability that $X \leq 12$?
+
+.pull-left[
+```{r, echo = F}
+g5 <- ggplot(data.frame(x = 12), aes(x)) +
+  scale_x_continuous(lim = c(9, 17), breaks = c(12, 13)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.3, xlim = c(9, 12), geom = "area", fill = "red") + 
+  stat_function(fun = fun.3) + 
+  ylim(0, 0.45) +
+  theme(aspect.ratio = 1) +
+  geom_segment(x = 0, y = 0, xend = 0, yend = 0.4, lty = "dashed", color = "red") +
+  ggtitle(bquote('N(13,'~1^2~')'))
+print(g5)
+```
+]
+
+--
+
+.pull-right[
+`pnorm()` computes the desired probability:
+```{r}
+pnorm(12, mean = 13, sd = 1)
+pnorm(13, mean = 13, sd = 1)
+```
+]
+
+--
+
+**Exercise**: compute the probability that X $\geq$ 14.
+
+---
+
+## Normal pdf, continued
+
+- What is the probability that $11 \leq X \leq 14$?
+
+.pull-left[
+```{r, echo = F}
+g6 <- ggplot(data.frame(x = 13), aes(x)) +
+  scale_x_continuous(lim = c(9, 17), breaks = c(11, 14)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.3, xlim = c(11, 14), geom = "area", fill = "purple") + 
+  stat_function(fun = fun.3) + 
+  ylim(0, 0.45) +
+  theme(aspect.ratio = 1) +
+  ggtitle(bquote('N(13,'~1^2~')'))
+print(g6)
+```
+]
+
+--
+
+.pull-right[
+```{r, echo = F}
+g7 <- ggplot(data.frame(x = 13), aes(x)) +
+  scale_x_continuous(lim = c(9, 17), breaks = c(11, 14)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.3, xlim = c(11, 14), geom = "area", fill = "red", alpha = 0.5) + 
+  stat_function(fun = fun.3, xlim = c(9, 14), geom = "area", fill = "blue", alpha = 0.5) +
+  stat_function(fun = fun.3) + 
+  ylim(0, 0.45) +
+  theme(aspect.ratio = 1) +
+  ggtitle(bquote('N(13,'~1^2~')'))
+print(g7)
+```
+]
+
+---
+
+## Normal pdf, continued
+
+**Exercise**: 
+
+- Compute the probability that $X\geq 15$, where $X$ follows $N(13,1^2)$.
+- Compute the probability that $Z \leq -1$, where $Z$ follows $N(0,1^2)$.
+- Determine $z_{0.1}$ such that the probability that $Z\leq z_{0.1}$ equals 0.9 (_hint_: look up `qnorm()`). 
+
+.pull-left[
+```{r, echo = F, out.width = "90%"}
+fun.4 = function(x) dnorm(x, mean = 0, sd = 1)
+g8 <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(-1, 0)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.4, xlim = c(-2,-1), geom = "area", fill = "red") + 
+  stat_function(fun = fun.4) + 
+  ylim(0, 0.45) +
+  theme(aspect.ratio = 1) +
+  ggtitle(bquote('N(0,'~1^2~')'))
+print(g8)
+```
+]
+
+.pull-right[
+```{r, echo = F, out.width = "90%"}
+g9 <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(1.28), labels = c(bquote('z'[0.1]))) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = fun.4, xlim = c(-2, 1.28), geom = "area", fill = "red") + 
+  stat_function(fun = fun.4) + 
+  ylim(0, 0.45) +
+  theme(aspect.ratio = 1) +
+  ggtitle(bquote('N(0,'~1^2~')'))
+print(g9)
+```
+]
+
+---
+
+## _t_-distribution
+
+- Class of bell-shaped distribution determined by a parameter called _degrees of freedom_.
+
+```{r, echo = F, out.width = "90%", fig.height = 4, fig.width = 6}
+tfun.1 = function(x) dt(x, df = 1)
+tfun.5 = function(x) dt(x, df = 5)
+tfun.10 = function(x) dt(x, df = 10)
+zfun = function(x) dnorm(x)
+
+gt <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(-2, 0, 2)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun.1, aes(color = "a")) + 
+  stat_function(fun = tfun.5, aes(color = "b")) + 
+  stat_function(fun = tfun.10, aes(color = "c")) + 
+  stat_function(fun = zfun, aes(color = "d")) + 
+  ylim(0, 0.45) +
+  scale_color_manual(name = "Functions",
+                       values = c("blue", "red", "green", "black"), 
+                       labels = c("t, df = 1", "t, df = 5", "t, df = 10", "Standard normal"))
+  
+print(gt)
+```
+
+---
+
+## _t_-distribution, continued
+
+**Example**: suppose $X$ follows $t$-distribution with $5$ degrees of freedom. What is the probability that $X\leq 0$? $X\leq -1.5$? $-1 \leq X \leq 1.2$? $X \geq 1.6$?
+
+.pull-left[
+```{r, echo = F}
+gt5 <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(-1.5, -1, 0, 1.2, 1.6)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun.5) + 
+  ylim(0, 0.45) +
+  ggtitle("t, df = 5")
+print(gt5) 
+```
+]
+
+--
+
+.pull-right[
+```{r}
+pt(0, df = 5)
+pt(-1.5, df = 5)
+pt(1.2, df = 5) - pt(-1, df = 5)
+1-pt(1.6, df = 5)
+```
+]
+
+---
+
+## _t_-distribution, continued
+
+**Exercise**: suppose $X$ follows $t$-distribution with $5$ degrees of freedom. Determine $t_{5, 0.2}$ so that the probability that $X\geq t_{5, 0.2} = 0.2$ (_Hint_: look up `qt()`).
+
+```{r, echo = F, out.width = "55%"}
+library(latex2exp)
+gt5 <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(0.92), labels = c(TeX("$t_{5, 0.2}$"))) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun.5, xlim = c(0.92, 2), geom = "area", fill = "red") + 
+  stat_function(fun = tfun.5) + 
+  ylim(0, 0.45) +
+  ggtitle("t, df = 5")
+print(gt5) 
+```
+
+---
+
+## _t_-distribution, continued
+
+**Exercise**: suppose $X$ follows $t$-distribution with $4$ degrees of freedom. Determine $t_{4, 0.025}$ so that the probability that $-t_{4, 0.025} \leq X \leq t_{4, 0.025} = 0.95$.
+
+```{r, echo = F, out.width = "55%"}
+library(latex2exp)
+tfun.4 = function(x) dt(x, df = 4)
+gt4 <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-3.5, 3.5), breaks = c(-2.77, 2.77), labels = c(TeX("$-t_{4, 0.025}$"), TeX("$t_{4, 0.025}$"))) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun.4, xlim = c(-2.77, 2.77), geom = "area", fill = "red") + 
+  stat_function(fun = tfun.4) + 
+  ylim(0, 0.45) +
+  ggtitle("t, df = 4")
+print(gt4) 
+```
+
+---
+
+## Using data to make inference
+
+- Point estimate
+
+--
+
+- Confidence interval
+
+--
+
+- Statistical tests
+
+---
+
+## Point estimate
+
+- Assume that the heights of all UK women follow a normal distribution $N(\mu, \sigma^2)$.
+- Interested in determining $\mu$ and $\sigma$.
+- Sample mean ans sample standard deviation are known to be _good_ estimates for $\mu$ and $\sigma$, respectively. 
+
+--
+
+.pull-left[
+```{r, echo = F, out.width = "95%"}
+ggplot(ht, aes(Mheight)) + 
+  geom_histogram()
+```
+]
+
+--
+
+.pull-right[
+```{r}
+mean(ht$Mheight)
+sd(ht$Mheight)
+```
+
+**Exercise**: compute the sample mean and sample standard deviation of `Sepal.Width` in `iris` data set.
+
+]
+
+---
+
+## Confidence interval
+
+Point estimate is too naive -- how much can we trust `r mean(ht$Mheight)` as a reliable estimator for $\mu$, the true population mean?
+
+**Example**: suppose that we are measuring the battery life which is assume to follow a normal distribution. Assume that we collected two sets of samples of size 5:
+$$\text{Sample 1: }\{12, 13, 13, 14, 13\}$$
+$$\text{Sample 2: }\{10, 11, 16, 13, 15\}$$
+```{r}
+sample1 <- c(12, 13, 13, 14, 13); sample2 <- c(10, 11, 16, 13, 15)
+c(mean(sample1), mean(sample2))
+c(sd(sample1), sd(sample2))
+```
+
+---
+
+## Confidence interval, continued
+
+Suppose that a sample of size $n$, say $X_1, X_2, \ldots, X_n$, is taken from a population that follows $N(\mu, \sigma^2)$. The 100 $\times (1-\alpha)$ % confidence interval of $\mu$ is defined as
+$$\left(\bar{X} - t_{n-1, \alpha/2}\frac{S}{\sqrt{n}},~\bar{X} + t_{n-1, \alpha/2}\frac{S}{\sqrt{n}}\right),$$
+where, $\bar{X}$ and $S$ represent the sample mean and sample standard deviation, respectively and $t_{n-1, \alpha/2}$ is the quantile value of a $t$-distribution of $n-1$ degrees of freedom with tail probability $\alpha/2$.
+
+In particular, the 95% confidence interval (so $\alpha = 0.05$) of $\mu$ is given by 
+$$\left(\bar{X} - t_{n-1, 0.025}\frac{S}{\sqrt{n}},~\bar{X} + t_{n-1, 0.025}\frac{S}{\sqrt{n}}\right),$$
+
+Interpretation of 95% confidence interval: when this procedure of creating 95% confidence intervals is repeated, about 95% of the intervals will contain the true population mean. 
+
+---
+
+## Confidence interval, continued
+
+```{r}
+alpha <- 0.05
+xbar <- mean(sample1)
+sdev <- sd(sample1)
+n <- length(sample1)
+tval <- qt(1-alpha/2, df = n-1)
+CI95 <- xbar + tval*sdev/sqrt(n)*c(-1,1)
+CI95
+```
+
+**Exercise**: compute the 95% confidence interval of `sample2`. 
+
+---
+
+## Confidence interval, continued
+
+`t.test()` can be used to compute confidence interval of mean.
+
+```{r}
+t1 <- t.test(sample1)
+t1
+```
+
+---
+
+## Confidence interval, continued
+
+```{r}
+t2 <- t.test(sample2)
+t2
+```
+
+---
+
+## Confidence interval, revisited
+
+Review of confidence interval: 
+
+$$\left(\bar{X} - t_{n-1, \alpha/2}\frac{S}{\sqrt{n}},~\bar{X} + t_{n-1, \alpha/2}\frac{S}{\sqrt{n}}\right)$$
+
+- As $1-\alpha$ (called confidence level) increases, the confidence interval becomes wider. 
+
+- As $n$ (sample size) increases, the confidence interval becomes narrower. 
+
+---
+
+## Exercises
+
+**Exercise**: based on the `heights.txt` data, find the 80%, 90% and 95% confidence interval of the mean of UK women's heights (mom's heights).
+
+**Exercise**: `starwars`, which comes with the package `dplyr`, is a data set that contains data related with characters in the movie Star Wars. 
+
+- Explorer the data set. Subset the data so that the resulting data set contains only human species with `height` data available (_Hint_: look up `is.na()`). How many observations?
+
+---
+
+## Exercises, continued
+
+- Explore the data set and create the following plot showing the height distribution of Human species:
+```{r, echo = F, out.width = "50%"}
+dd <- starwars %>% filter(species == "Human") %>%
+  filter(!is.na(height)) 
+
+ggplot(dd, aes(x = gender, y = height)) +
+  geom_boxplot()
+```
+
+- Find the name of the tallest Human female character.
+
+```{r, echo = F}
+ddd <- dd %>% filter(gender == "female") %>%
+  arrange(desc(height))
+```
+
+- Find the 95% confidence interval of the mean of Human male heights.
