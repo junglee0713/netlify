@@ -237,7 +237,7 @@ t.test(ds$Sepal.Length, mu = 5.1)
 
 ## Exercise
 
-Download a tab-delimited file [crabs.tsv](crabs.tsv) (Chrome users: Menu $\rightarrow$ More Tools $\rightarrow$ Save Page As). It consists of 173 observations and 5 variables. 
+Download a tab-delimited file [crabs.tsv](crabs.tsv). It consists of 173 observations and 5 variables. 
 
 ```{r}
 crabs <- read.table("crabs.tsv", header = T, sep = "\t") 
