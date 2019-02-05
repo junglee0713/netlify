@@ -35,7 +35,7 @@ Suppose that a sample of size $n$, say $X_1,X_2,\ldots,X_n$, is taken from a pop
 $$-t_{n-1,\alpha/2} \leq \frac{\bar{X}-\mu}{S/\sqrt{n}} \leq t_{n-1,\alpha/2}$$
 or equivalently, the probability that
 $$\bar{X}-t_{n-1,\alpha/2}\frac{S}{\sqrt{n}}\leq \mu \leq \bar{X}+t_{n-1,\alpha/2}\frac{S}{\sqrt{n}}$$
-equals $1-\alpha$. Here $t_{n-1,\alpha/2}$ is determined so that $P(T\leq t_{n-1,\alpha/2})=1-\alpha/2$, where $T$ follows a $t$-distribution with $n-1$ degrees of freedom. 
+equals $1-\alpha$. Here $t_{n-1,\alpha/2}$ is determined so that the probability that $T \geq t_{n-1,\alpha/2}$ (upper tail) equals $\alpha/2$, where $T$ follows a $t$-distribution with $n-1$ degrees of freedom. 
 
 ---
 
@@ -237,7 +237,7 @@ t.test(ds$Sepal.Length, mu = 5.1)
 
 ## Exercise
 
-Download a tab-delimited file [crabs.tsv](crabs.tsv) (Chrome users: Menu $\rightarrow$ More Tools $\rightarrow$ Save Page As). It consists of 173 observations and 5 variables. 
+Download a tab-delimited file [crabs.tsv](crabs.tsv). It consists of 173 observations and 5 variables. 
 
 ```{r}
 crabs <- read.table("crabs.tsv", header = T, sep = "\t") 
