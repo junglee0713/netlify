@@ -17,7 +17,7 @@ library(tidyverse)
 
 1. Recall `iris` data set. Find the maximum value of the sum `Sepal.Length` $+$ `Sepal.Width`. To which species does the sample with the maximum value you found above belong? _Hint_: you might want to start with defining a new variable `Sepal.Sum` using `mutate()`, for example. 
 
-```{r}
+```{r, eval = F}
 iris %>%
   mutate(sum = Sepal.Length + Sepal.Width) %>%
   arrange(desc(sum)) %>%

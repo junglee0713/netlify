@@ -15,7 +15,15 @@ library(tidyverse)
 
 \bigskip
 
-1. Recall `iris` data set. Find the maximum value of the sum `Sepal.Lenght` $+$ `Sepal.Width`. To which species does the sample with the maximum value you found above belong? _Hint_: you might want to start with defining a new variable `Sepal.Sum` using `mutate()`, for example. 
+1. Recall `iris` data set. Find the maximum value of the sum `Sepal.Length` $+$ `Sepal.Width`. To which species does the sample with the maximum value you found above belong? _Hint_: you might want to start with defining a new variable `Sepal.Sum` using `mutate()`, for example. 
+
+```{r}
+iris %>%
+  mutate(sum = Sepal.Length + Sepal.Width) %>%
+  arrange(desc(sum)) %>%
+  slice(1) %>%
+  pull(Species)
+```
 
 2. Create the following plot using `iris` data set. Note that `setosa` species do not show up. You do NOT need to adjust size or width/height ratio of the plot.
 
