@@ -17,12 +17,12 @@ library(tidyverse)
 
 1. Recall `iris` data set. Find the maximum value of the sum `Sepal.Length` $+$ `Sepal.Width`. To which species does the sample with the maximum value you found above belong? _Hint_: you might want to start with defining a new variable `Sepal.Sum` using `mutate()`, for example. 
 
-```{r}
+```{r, eval = F}
 iris %>%
   mutate(sum = Sepal.Length + Sepal.Width) %>%
   arrange(desc(sum)) %>%
   slice(1) %>%
-  pull(Species)
+  select(sum, Species)
 ```
 
 2. Create the following plot using `iris` data set. Note that `setosa` species do not show up. You do NOT need to adjust size or width/height ratio of the plot.
@@ -46,6 +46,10 @@ ggplot(diamonds, aes(color, price)) +
 
 4. Determine $c$ so that the probability $0\leq Z \leq c$ is $0.45$, where $Z$ follows the standard normal distribution $N(0,1^2)$.
 
+```{r, eval = F}
+qnorm(0.95)
+```
+
 5. Recall the `heights.txt` data we used in class with 1375 mom/daughter height pairs:
 
 ```{r, echo = T}
@@ -53,5 +57,9 @@ ht <- read.table(file = "heights.txt", header = T, sep = " ")
 ```
 
 Assuming that UK women's heights follow a normal distribution $N(\mu, \sigma^2)$, compute the 95% confidence interval of $\mu$ based on the mom's height data. 
+
+```{r, eval = F}
+t.test(ht$Mheight)
+```
 
 
