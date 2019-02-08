@@ -1,0 +1,145 @@
+---
+title: "Lecture 6"
+author: "Jung-Jin Lee"
+date: "Feb 19, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Drexel.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## One-sample _t_-test, review
+
+Under the assumption that the population follows $N(\mu, \sigma^2)$, we test the null hypothesis $H_0: \mu = \mu_0$. 
+
+--
+
+- From samples $X_1,X_2,\ldots, X_n$, compute $t=\frac{\bar{X}-\mu_0}{S/\sqrt{n}}$, where $\bar{X}$ and $S$ denote the sample mean and sample standard deviation, respectively. 
+
+--
+
+- It is known that $t$ follows a $t$-distribution with $n-1$ degrees of freedom.
+
+--
+
+- If $t$ seems to be unlikely to have been generated from a $t$-distribution with $n-1$ degrees of freedom (e.g. $p$-value is small), then maybe it is because our null hypothesis $H_0$ is not valid. 
+
+--
+
+- In general, $p$-value is less than $0.05$, we reject the null hypothesis. If $p$-value is greater than $0.05$, then we do not reject the null hypothesis.
+
+---
+
+## One-sample _t_-test, example
+
+Download a tab-delimited file [donkey.tsv](donkey.tsv). 
+
+```{r}
+donkey <- read.table("donkey.tsv", header = T, sep = "\t") 
+dim(donkey)
+head(donkey)
+```
+
+---
+
+## One-sample _t_-test, example
+
+- Donkey: donkey ID
+
+- Sex: sex
+
+- Age: age in years
+
+- Bodywt: body weight in kg
+
+- Heartgirth: girth at the level of the heart (cm)
+
+- Umbgirth: girth at the umbilicus (cm)
+
+- Length: length from the olecranon to the tuber ischii (cm)
+
+- Height: height at the withers (cm)
+
+---
+
+## One-sample _t_-test, example
+
+Assume that body weights of donkeys follow a normal distribution $N(\mu, \sigma^2)$ and test the null hypothesis $H_0: \mu = 125$.
+
+.pull-left[
+```{r, eval = F}
+ggplot(donkey, aes(Bodywt)) + 
+  geom_histogram(bins = 25) +
+  geom_vline(xintercept = 125, 
+             lty = "dashed", 
+             color = "red") +
+  theme_classic()
+```
+]
+
+.pull-right[
+```{r, echo = F}
+ggplot(donkey, aes(Bodywt)) +
+  geom_histogram(bins = 25) +
+  geom_vline(xintercept = 125,
+             lty = "dashed",
+             color = "red") +
+  theme_classic()
+```
+]
+
+---
+
+## One-sample _t_-test, example
+
+```{r}
+t.test(donkey$Bodywt, mu = 125)
+```
+
+--
+
+Based on the $p$-value, we do NOT reject the null hypothesis. 
+
+---
+
+## One-sample _t_-test, example
+
+What if $H_0: \mu = 130$?
+
+```{r}
+t.test(donkey$Bodywt, mu = 130)
+```
+
+--
+
+Notice that $130$ is not captured by the 95% confidence interval. This is consistent with the interpretation of the 95% confidence interval. 
+
+---
+
+## Inference on proportion
+
+
+
+
+

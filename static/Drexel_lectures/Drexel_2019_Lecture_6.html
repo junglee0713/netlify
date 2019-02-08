@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lecture 6</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Jung-Jin Lee" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Drexel.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 6
+### Jung-Jin Lee
+### Feb 19, 2019
+
+---
+
+ 
+
+
+## One-sample _t_-test, review
+
+Under the assumption that the population follows `\(N(\mu, \sigma^2)\)`, we test the null hypothesis `\(H_0: \mu = \mu_0\)`. 
+
+--
+
+- From samples `\(X_1,X_2,\ldots, X_n\)`, compute `\(t=\frac{\bar{X}-\mu_0}{S/\sqrt{n}}\)`, where `\(\bar{X}\)` and `\(S\)` denote the sample mean and sample standard deviation, respectively. 
+
+--
+
+- It is known that `\(t\)` follows a `\(t\)`-distribution with `\(n-1\)` degrees of freedom.
+
+--
+
+- If `\(t\)` seems to be unlikely to have been generated from a `\(t\)`-distribution with `\(n-1\)` degrees of freedom (e.g. `\(p\)`-value is small), then maybe it is because our null hypothesis `\(H_0\)` is not valid. 
+
+--
+
+- In general, `\(p\)`-value is less than `\(0.05\)`, we reject the null hypothesis. If `\(p\)`-value is greater than `\(0.05\)`, then we do not reject the null hypothesis.
+
+---
+
+## One-sample _t_-test, example
+
+Download a tab-delimited file [donkey.tsv](donkey.tsv). 
+
+
+```r
+donkey &lt;- read.table("donkey.tsv", header = T, sep = "\t") 
+dim(donkey)
+```
+
+```
+## [1] 386   8
+```
+
+```r
+head(donkey)
+```
+
+```
+##   Donkey  Sex Age Bodywt Heartgirth Umbgirth Length Height
+## 1     s1 male 3.5    128        111      126     95    106
+## 2     s2 male 2.0    102        106      120     75    101
+## 3     s3 male 3.0    100        103      125     76    101
+## 4     s4 male 3.0     92        102      121     73    101
+## 5     s5 male 3.0     98        105      121     70    101
+## 6     s6 male 4.0    110        101      126     80    101
+```
+
+---
+
+## One-sample _t_-test, example
+
+- Donkey: donkey ID
+
+- Sex: sex
+
+- Age: age in years
+
+- Bodywt: body weight in kg
+
+- Heartgirth: girth at the level of the heart (cm)
+
+- Umbgirth: girth at the umbilicus (cm)
+
+- Length: length from the olecranon to the tuber ischii (cm)
+
+- Height: height at the withers (cm)
+
+---
+
+## One-sample _t_-test, example
+
+Assume that body weights of donkeys follow a normal distribution `\(N(\mu, \sigma^2)\)` and test the null hypothesis `\(H_0: \mu = 125\)`.
+
+.pull-left[
+
+```r
+ggplot(donkey, aes(Bodywt)) + 
+  geom_histogram(bins = 25) +
+  geom_vline(xintercept = 125, 
+             lty = "dashed", 
+             color = "red") +
+  theme_classic()
+```
+]
+
+.pull-right[
+&lt;img src="Drexel_2019_Lecture_6_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## One-sample _t_-test, example
+
+
+```r
+t.test(donkey$Bodywt, mu = 125)
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  donkey$Bodywt
+## t = -1.8962, df = 385, p-value = 0.05868
+## alternative hypothesis: true mean is not equal to 125
+## 95 percent confidence interval:
+##  120.1189 125.0884
+## sample estimates:
+## mean of x 
+##  122.6036
+```
+
+--
+
+Based on the `\(p\)`-value, we do NOT reject the null hypothesis. 
+
+---
+
+## One-sample _t_-test, example
+
+What if `\(H_0: \mu = 130\)`?
+
+
+```r
+t.test(donkey$Bodywt, mu = 130)
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  donkey$Bodywt
+## t = -5.8527, df = 385, p-value = 1.036e-08
+## alternative hypothesis: true mean is not equal to 130
+## 95 percent confidence interval:
+##  120.1189 125.0884
+## sample estimates:
+## mean of x 
+##  122.6036
+```
+
+--
+
+Notice that `\(130\)` is not captured by the 95% confidence interval. This is consistent with the interpretation of the 95% confidence interval. 
+
+---
+
+## Inference on proportion
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
