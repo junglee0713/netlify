@@ -1,0 +1,311 @@
+---
+title: "Lecture 5"
+author: "Jung-Jin Lee"
+date: "Feb 13, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Cabrini.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## One-sample _t_-test 
+
+Suppose that a sample of size $n$, say $X_1,X_2,\ldots,X_n$, is taken from a population that follows $N(\mu,\sigma^2)$ (this condition can be dropped if $n$ is large enough). Then $\frac{\bar{X}-\mu}{S/\sqrt{n}}$  follows a $t$-distribution with $n-1$ degrees of freedom. In particular, the probability that
+$$-t_{n-1,\alpha/2} \leq \frac{\bar{X}-\mu}{S/\sqrt{n}} \leq t_{n-1,\alpha/2}$$
+or equivalently, the probability that
+$$\bar{X}-t_{n-1,\alpha/2}\frac{S}{\sqrt{n}}\leq \mu \leq \bar{X}+t_{n-1,\alpha/2}\frac{S}{\sqrt{n}}$$
+equals $1-\alpha$. Here $t_{n-1,\alpha/2}$ is determined so that the probability that $T \geq t_{n-1,\alpha/2}$ (upper tail) equals $\alpha/2$, where $T$ follows a $t$-distribution with $n-1$ degrees of freedom. 
+
+---
+
+## One-sample _t_-test, example
+
+```{r, out.width="50%"}
+ht <- read.table(file = "heights.txt", header = T, sep = " ")
+ggplot(ht, aes(Mheight)) + 
+  geom_histogram()
+```
+
+---
+
+## One-sample _t_-test, example
+
+- Assume UK women's heights follow a normal distribution $N(\mu, \sigma^2)$.
+
+--
+
+- A hypothesis is given: population (all UK women's heights) mean $\mu$ is 62.2. This is called the _null hypothesis_ and usually denoted by $H_0$.
+
+--
+
+- Does our data `ht` seem to support the null hypothesis? Or does it provide evidence against the null hypothesis?
+
+--
+
+- This question can be answered using one-sample _t_-test. 
+
+---
+
+## One-sample _t_-test, example
+
+```{r}
+mu <- 62.2 # null hypothesis
+x <- ht$Mheight
+xbar <- mean(x); s <- sd(x); n <- length(x)
+t <- (xbar - mu) / (s/sqrt(n)) 
+print(xbar)
+print(s)
+print(n)
+print(t)
+```
+
+---
+
+## One-sample _t_-test, example
+
+```{r, echo = F, out.width = "45%"}
+library(latex2exp)
+tfun = function(x) dt(x, df = 4)
+gt <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(0, 1.8), labels = c("0", "3.98")) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun) + 
+  ylim(0, 0.45) +
+  ggtitle(paste0("t, df = ", n-1))
+print(gt) 
+```
+
+--
+
+Getting 3.98 seems to be a rare event. How rare is it?
+
+---
+
+## One-sample _t_-test, example
+
+```{r, echo = F, out.width = "45%"}
+tfun = function(x) dt(x, df = 4)
+gt <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(-1.8, 0, 1.8), labels = c("-3.98", "0", "3.98")) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun, xlim = c(-2, -1.8), geom = "area", fill = "red") + 
+  stat_function(fun = tfun, xlim = c(1.8, 2), geom = "area", fill = "red") + 
+  stat_function(fun = tfun) + 
+  ylim(0, 0.45) +
+  ggtitle(paste0("t, df = ", n-1))
+print(gt) 
+```
+
+$p$-value: probability of getting a result that is as extreme as or more extreme than current observation.
+
+--
+
+```{r}
+2*(1- pt(t, df = n-1)) # p-value
+```
+
+---
+
+## One-sample _t_-test, example
+
+- Under the hypothesis that $\mu=62.2$, our current observation seems to be a really rare event. 
+
+--
+
+- How rare? The obtained $p$-value is less than 0.05. This is called a _significance level_.
+
+--
+
+- Maybe this is due to _unreasontable_ hypothesis. 
+
+--
+
+- So it is natural to _reject_ the null hypothesis. 
+
+--
+
+- We conclude that the population mean is not equal to 62.2 (alternative hypothesis).
+
+---
+
+## One-sample _t_-test, example
+
+```{r}
+t.test(x, mu = 62.2)
+```
+
+---
+
+## One-sample _t_-test, exercise
+
+Assume that UK young women's heights follow a normal distribution $N(\mu, \sigma^2)$. Using one-sample _t_-test and data `Dheight`, test the null hypothesis $H_0:\mu = 63.8$.
+
+.pull-left[
+```{r, echo = F}
+ggplot(ht, aes(Dheight)) + geom_histogram()
+```
+]
+
+--
+
+.pull-right[
+```{r, echo = F}
+tfun = function(x) dt(x, df = 4)
+gt <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(-1, 0, 1), labels = c("-0.698", "0", "0.698")) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun, xlim = c(-2, -1), geom = "area", fill = "red") +
+  stat_function(fun = tfun, xlim = c(1, 2), geom = "area", fill = "red") +
+  stat_function(fun = tfun) + 
+  ylim(0, 0.45) +
+  ggtitle(paste0("t, df = ", n-1))
+print(gt) 
+```
+]
+
+---
+
+## One-sample _t_-test, exercise
+
+```{r}
+t.test(ht$Dheight, mu = 63.8)
+```
+
+--
+
+Based on the output above, we do _not_ reject the null hypothesis. 
+
+---
+
+## Exercise
+
+Recall `iris` data set. Based on the `Sepal.Length` data of 50 `setosa` species, can you say that the population mean of `Sepal.Length` is equal to 5.1? Use significance level of 0.05. 
+
+--
+
+.pull-left[
+```{r}
+ds <- iris %>%
+  filter(Species == "setosa")
+```
+
+```{r, eval = F}
+ggplot(ds, aes(Sepal.Length)) + 
+  geom_histogram(bins = 10)
+```
+]
+
+.pull-right[
+```{r, echo = F}
+ggplot(ds, aes(Sepal.Length)) + geom_histogram(bins = 10)
+```
+]
+
+---
+
+## Exercise, continued
+
+```{r}
+t.test(ds$Sepal.Length, mu = 5.1)
+```
+
+---
+
+## Exercise
+
+Download a tab-delimited file [crabs.tsv](crabs.tsv). It consists of 173 observations and 5 variables. 
+
+```{r}
+crabs <- read.table("crabs.tsv", header = T, sep = "\t") 
+dim(crabs)
+head(crabs)
+```
+
+---
+
+## Exercise, continued
+
+A nesting female horseshoe crab may have male crabs residing nearby, called satellites, besides the male crab residing in her nest. Brockmann (1996) investigated factors (including the female crab's color, spine condition, weight, and carapace width) which may influence the presence/absence of satellite males.
+
+<p align = "center">
+  <img src = hsc.jpg width = "500">
+</p>  
+
+---
+
+## Exercise, continued
+
+- color: the female crab's color, coded 1: light; 2: medium light; 3: medium; 4: medium dark; 5: dark. Not all of these colors appear.
+
+- spine: the female crab's spine condition, coded 1: both good; 2: one worn or broken; 3: both worn or broken.
+
+- width: the female crab's carapace width in cm.
+
+- satell: the number of satellite males.
+
+- weight: the female crab's weight in grams.
+
+--
+
+`color` and `spine` are not really numeric. To treat them as non-numeric we use `factor()`. Also create `id` column for each observation.
+
+```{r}
+crabs <- crabs %>%
+  mutate(color = factor(color)) %>%
+  mutate(spine = factor(spine)) %>%
+  mutate(id = paste0("obs", 1:nrow(crabs)))
+```
+
+---
+
+## Exercise, continued
+
+- Create the following plots: histograms of `width` faceted by `spine` conditions and box plots of `weights` by `color`. Set the number of bins in each histogram to 10. Identify the two outliers in the box plots. 
+
+.pull-left[
+```{r, echo = F}
+crabs %>% ggplot(aes(width)) + geom_histogram(bins = 10) + facet_wrap(~spine)
+```
+]
+
+.pull-left[
+```{r, echo = F}
+library(ggrepel)
+crabs %>% mutate(repel_txt = ifelse(weight > 5000 | (color == "5" & weight > 3000), "which crab?", "")) %>%
+  ggplot(aes(color, weight)) + 
+  geom_boxplot() +
+  geom_text_repel(aes(label = repel_txt)) 
+```
+]
+
+---
+
+## Exercise, continued
+
+- Assume that the `width` of horse shoe crabs follows a normal distribution of $N(\mu, \sigma^2)$. Based on the `r nrow(crabs)` observations, test the hypothesis $H_0: \mu = 26$. What is your conclusion? Report the sample mean and 95% confidence interval of $\mu$.
+
+- Assume that the `weight` of horse shoe crabs follows a normal distribution of $N(\mu, \sigma^2)$. Based on the `r nrow(crabs)` observations, test the hypothesis $H_0: \mu = 2300$. What is your conclusion? Report the sample mean and 95% confidence interval of $\mu$.
