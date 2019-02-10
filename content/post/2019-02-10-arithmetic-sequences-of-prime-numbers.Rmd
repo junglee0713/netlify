@@ -1,0 +1,37 @@
+---
+title: Arithmetic sequences of prime numbers
+author: Jung-Jin Lee
+date: '2019-02-10'
+slug: arithmetic-sequences-of-prime-numbers
+categories: []
+tags: []
+---
+
+Today, I saw a question that goes as follows:
+
+If $\{a,b,c,d,e\}$ is an increasing arithmetic sequence of five prime numbers, what is the least possible value of $|a-b|$?
+
+Let's write the sequence as $\{a, a+k, a+2k, a+3k, a+4k\}$, where $k \in \mathbb{N}$. It is easy to see that $a\neq 2$. It is also easy to see that $k$ cannot be odd. 
+
+Consider the remainders of $\{a, a+2, a+4\}$ when divided by $3$. Since $a$ is prime, a must be of the form $3m+1$ or $3m+2$ and this would imply that either $a+2$ or $a+4$ is prime. This shows that $k\neq 2$.
+
+Consider the remainders of $\{a, a+4, a+8, a+12, a+16\}$ when divided by $5$. Since $a$ is prime, a must be of the form $5m \pm 1$ or $5m \pm 2$ and the same argument as above shows that $k\neq 4$. 
+
+Now we know that $k\geq 6$. Indeed the least possible value of $k$ turns out to be $6$ because $\{5, 11, 17, 23, 29\}$ consists of primes. 
+
+```{r}
+library(primes)
+max <- 1000
+by = 6
+length.out = 5
+p_seq <- generate_primes(max = max)
+for (i in seq(1, length(p_seq)-4)) {
+  candidate <- seq(from = p_seq[i], by = 6, length.out = length.out)
+  call <- all(candidate %in% p_seq)
+  if (call) {
+    print(candidate)
+  }
+}
+```
+
+An argument similar to above can be used to show that one of $\{a, a+6, a+12, a+18, a+24\}$ is divisible by $5$, so $\{5, 11, 17, 23, 29\}$ is the only arithmetic sequence of primes with $5$ terms with a common difference of $6$. 

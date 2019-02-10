@@ -6,10 +6,22 @@
     <description>Recent content in Posts on Jung-Jin Lee&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 10 Feb 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Arithmetic sequences of prime numbers</title>
+      <link>/2019/02/10/arithmetic-sequences-of-prime-numbers/</link>
+      <pubDate>Sun, 10 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/02/10/arithmetic-sequences-of-prime-numbers/</guid>
+      <description>Today, I saw a question that goes as follows:
+If \(\{a,b,c,d,e\}\) is an increasing arithmetic sequence of five prime numbers, what is the least possible value of \(|a-b|\)?
+Let’s write the sequence as \(\{a, a+k, a+2k, a+3k, a+4k\}\), where \(k \in \mathbb{N}\). It is easy to see that \(a\neq 2\). It is also easy to see that \(k\) cannot be odd.
+Consider the remainders of \(\{a, a+2, a+4\}\) when divided by \(3\).</description>
+    </item>
     
     <item>
       <title>PCoA of distances generated from points in Euclidean space</title>

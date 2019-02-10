@@ -1,0 +1,31 @@
+---
+title: Arithmetic sequences of prime numbers
+author: Jung-Jin Lee
+date: '2019-02-10'
+slug: arithmetic-sequences-of-prime-numbers
+categories: []
+tags: []
+---
+
+
+
+<p>Today, I saw a question that goes as follows:</p>
+<p>If <span class="math inline">\(\{a,b,c,d,e\}\)</span> is an increasing arithmetic sequence of five prime numbers, what is the least possible value of <span class="math inline">\(|a-b|\)</span>?</p>
+<p>Let’s write the sequence as <span class="math inline">\(\{a, a+k, a+2k, a+3k, a+4k\}\)</span>, where <span class="math inline">\(k \in \mathbb{N}\)</span>. It is easy to see that <span class="math inline">\(a\neq 2\)</span>. It is also easy to see that <span class="math inline">\(k\)</span> cannot be odd.</p>
+<p>Consider the remainders of <span class="math inline">\(\{a, a+2, a+4\}\)</span> when divided by <span class="math inline">\(3\)</span>. Since <span class="math inline">\(a\)</span> is prime, a must be of the form <span class="math inline">\(3m+1\)</span> or <span class="math inline">\(3m+2\)</span> and this would imply that either <span class="math inline">\(a+2\)</span> or <span class="math inline">\(a+4\)</span> is prime. This shows that <span class="math inline">\(k\neq 2\)</span>.</p>
+<p>Consider the remainders of <span class="math inline">\(\{a, a+4, a+8, a+12, a+16\}\)</span> when divided by <span class="math inline">\(5\)</span>. Since <span class="math inline">\(a\)</span> is prime, a must be of the form <span class="math inline">\(5m \pm 1\)</span> or <span class="math inline">\(5m \pm 2\)</span> and the same argument as above shows that <span class="math inline">\(k\neq 4\)</span>.</p>
+<p>Now we know that <span class="math inline">\(k\geq 6\)</span>. Indeed the least possible value of <span class="math inline">\(k\)</span> turns out to be <span class="math inline">\(6\)</span> because <span class="math inline">\(\{5, 11, 17, 23, 29\}\)</span> consists of primes.</p>
+<pre class="r"><code>library(primes)
+max &lt;- 1000
+by = 6
+length.out = 5
+p_seq &lt;- generate_primes(max = max)
+for (i in seq(1, length(p_seq)-4)) {
+  candidate &lt;- seq(from = p_seq[i], by = 6, length.out = length.out)
+  call &lt;- all(candidate %in% p_seq)
+  if (call) {
+    print(candidate)
+  }
+}</code></pre>
+<pre><code>## [1]  5 11 17 23 29</code></pre>
+<p>An argument similar to above can be used to show that one of <span class="math inline">\(\{a, a+6, a+12, a+18, a+24\}\)</span> is divisible by <span class="math inline">\(5\)</span>, so <span class="math inline">\(\{5, 11, 17, 23, 29\}\)</span> is the only arithmetic sequence of primes with <span class="math inline">\(5\)</span> terms with a common difference of <span class="math inline">\(6\)</span>.</p>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.51" />
+
+
+<title>Arithmetic sequences of prime numbers - Jung-Jin Lee&#39;s blog</title>
+<meta property="og:title" content="Arithmetic sequences of prime numbers - Jung-Jin Lee&#39;s blog">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/home.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="https://github.com/junglee0713">GitHub</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">Arithmetic sequences of prime numbers</h1>
+
+    
+    <span class="article-date">2019/02/10</span>
+    
+
+    <div class="article-content">
+      
+
+
+<p>Today, I saw a question that goes as follows:</p>
+<p>If <span class="math inline">\(\{a,b,c,d,e\}\)</span> is an increasing arithmetic sequence of five prime numbers, what is the least possible value of <span class="math inline">\(|a-b|\)</span>?</p>
+<p>Let’s write the sequence as <span class="math inline">\(\{a, a+k, a+2k, a+3k, a+4k\}\)</span>, where <span class="math inline">\(k \in \mathbb{N}\)</span>. It is easy to see that <span class="math inline">\(a\neq 2\)</span>. It is also easy to see that <span class="math inline">\(k\)</span> cannot be odd.</p>
+<p>Consider the remainders of <span class="math inline">\(\{a, a+2, a+4\}\)</span> when divided by <span class="math inline">\(3\)</span>. Since <span class="math inline">\(a\)</span> is prime, a must be of the form <span class="math inline">\(3m+1\)</span> or <span class="math inline">\(3m+2\)</span> and this would imply that either <span class="math inline">\(a+2\)</span> or <span class="math inline">\(a+4\)</span> is prime. This shows that <span class="math inline">\(k\neq 2\)</span>.</p>
+<p>Consider the remainders of <span class="math inline">\(\{a, a+4, a+8, a+12, a+16\}\)</span> when divided by <span class="math inline">\(5\)</span>. Since <span class="math inline">\(a\)</span> is prime, a must be of the form <span class="math inline">\(5m \pm 1\)</span> or <span class="math inline">\(5m \pm 2\)</span> and the same argument as above shows that <span class="math inline">\(k\neq 4\)</span>.</p>
+<p>Now we know that <span class="math inline">\(k\geq 6\)</span>. Indeed the least possible value of <span class="math inline">\(k\)</span> turns out to be <span class="math inline">\(6\)</span> because <span class="math inline">\(\{5, 11, 17, 23, 29\}\)</span> consists of primes.</p>
+<pre class="r"><code>library(primes)
+max &lt;- 1000
+by = 6
+length.out = 5
+p_seq &lt;- generate_primes(max = max)
+for (i in seq(1, length(p_seq)-4)) {
+  candidate &lt;- seq(from = p_seq[i], by = 6, length.out = length.out)
+  call &lt;- all(candidate %in% p_seq)
+  if (call) {
+    print(candidate)
+  }
+}</code></pre>
+<pre><code>## [1]  5 11 17 23 29</code></pre>
+<p>An argument similar to above can be used to show that one of <span class="math inline">\(\{a, a+6, a+12, a+18, a+24\}\)</span> is divisible by <span class="math inline">\(5\)</span>, so <span class="math inline">\(\{5, 11, 17, 23, 29\}\)</span> is the only arithmetic sequence of primes with <span class="math inline">\(5\)</span> terms with a common difference of <span class="math inline">\(6\)</span>.</p>
+
+    </div>
+  </article>
+
+  
+<section id="comments">
+  <div id="disqus_thread"></div>
+  <script>
+  var disqus_config = function () {
+  
+  };
+  (function() {
+    var inIFrame = function() {
+      var iframe = true;
+      try { iframe = window.self !== window.top; } catch (e) {}
+      return iframe;
+    };
+    if (inIFrame()) return;
+    var d = document, s = d.createElement('script');
+    s.src = '//junglee0713-netlify.disqus.com/embed.js'; s.async = true;
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-129677462-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+  </body>
+</html>
+
