@@ -21,12 +21,12 @@ Now we know that $k\geq 6$. Indeed the least possible value of $k$ turns out to 
 
 ```{r}
 library(primes)
-max <- 1000
+max <- 2000
 by = 6
 length.out = 5
 p_seq <- generate_primes(max = max)
-for (i in seq(1, length(p_seq)-4)) {
-  candidate <- seq(from = p_seq[i], by = 6, length.out = length.out)
+for (i in seq(1, length(p_seq))) {
+  candidate <- seq(from = p_seq[i], by = by, length.out = length.out)
   call <- all(candidate %in% p_seq)
   if (call) {
     print(candidate)
