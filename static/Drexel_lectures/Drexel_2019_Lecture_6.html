@@ -39,7 +39,7 @@ Under the assumption that the population follows `\(N(\mu, \sigma^2)\)`, we test
 
 --
 
-- In general, `\(p\)`-value is less than `\(0.05\)`, we reject the null hypothesis. If `\(p\)`-value is greater than `\(0.05\)`, then we do not reject the null hypothesis.
+- In general, if `\(p\)`-value is less than `\(0.05\)`, we reject the null hypothesis. If `\(p\)`-value is greater than `\(0.05\)`, then we do not reject the null hypothesis.
 
 ---
 
@@ -102,10 +102,10 @@ Assume that body weights of donkeys follow a normal distribution `\(N(\mu, \sigm
 ```r
 ggplot(donkey, aes(Bodywt)) + 
   geom_histogram(bins = 25) +
-  geom_vline(xintercept = 125, 
-             lty = "dashed", 
-             color = "red") +
-  theme_classic()
+* geom_vline(xintercept = 125,
+*            lty = "dashed",
+*            color = "red") +
+* theme_classic()
 ```
 ]
 
@@ -175,7 +175,7 @@ Notice that `\(130\)` is not captured by the 95% confidence interval. This is co
 
 **Example**: 
 
-A sample of 1150 cattle is randomly selected from the population in an area. Among those 1150 cattle, 361 were found to have been exposed to Leptospira infection. What can you say about the true proportion of cattle exposed to Leptospira infection among the whole population in the area?
+A sample of 1150 cattle is randomly selected from the population in an area. Among those 1150 cattle, 361 were found to have been exposed to *Leptospira* infection. What can you say about the true proportion of cattle exposed to *Leptospira* infection among the whole population in the area? 
 
 --
 
