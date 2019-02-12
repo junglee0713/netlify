@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lecture 7</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Jung-Jin Lee" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Drexel.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 7
+### Jung-Jin Lee
+### Feb 26, 2019
+
+---
+
+ 
+
+
+## _t_-test: review
+
+- One-sample `\(t\)`-test
+
+  - given sample, test `\(H_0: \mu = \mu_0\)`.
+
+- Two-sample `\(t\)`-test:
+
+  - with equal variance assumption, without equal variance assumption (Welch's test)
+  
+  - test `\(H_0\)`: two populations have the same mean. 
+  
+- Paired `\(t\)`-test
+
+  - need paired samples
+  
+  - test `\(H_0\)`: two populations have the same mean. 
+
+- In all cases, use `t.test()`
+
+---
+
+## _F_-test
+
+- Comparison of two variances (Levene's test)
+
+- Comparison of two or more means (one-way ANOVA)
+
+---
+
+## _F_-distribution
+
+&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-2-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## One-sample variance
+
+Redo the following
+
+
+```r
+#install.packages("DescTools")
+library(DescTools)
+VarTest(c(1,2,3))
+```
+
+```
+## 
+## 	One Sample Chi-Square test on variance
+## 
+## data:  c(1, 2, 3)
+## X-squared = 2, df = 2, p-value = 0.7358
+## alternative hypothesis: true variance is not equal to 1
+## 95 percent confidence interval:
+##   0.271085 39.497890
+## sample estimates:
+## variance of x 
+##             1
+```
+
+---
+
+## Levene's test
+
+**Example**: A biologist is interested in comparing the lengths of female and male green lynx spiders. Assume that the length of male spiders follows `\(N(\mu_m, \sigma_m^2)\)` and the length female spiders follows `\(N(\mu_f, \sigma_f^2)\)`. 
+
+
+```r
+male = c(5.20, 4.70, 5.75, 7.50, 6.45, 6.55, 4.70, 4.80, 5.95, 
+         5.20, 6.35, 6.95, 5.70, 6.20, 5.40, 6.20, 5.85, 6.80, 
+         5.65, 5.50, 5.65, 5.85, 5.75, 6.35, 5.75, 5.95, 5.90, 
+         7.00, 6.10, 5.80)
+female = c(8.25, 9.95, 5.90, 7.05, 8.45, 7.55, 9.80, 10.80, 6.60, 
+           7.55, 8.10, 9.10, 6.10, 9.30, 8.75, 7.00, 7.80, 8.00, 
+           9.00, 6.30, 8.35, 8.70, 8.00, 7.50, 9.50)
+c(length(male), length(female))
+```
+
+```
+## [1] 30 25
+```
+
+```r
+c(mean(male), mean(female))
+```
+
+```
+## [1] 5.916667 8.136000
+```
+
+---
+
+## Levene's test, continued
+
+
+```r
+# ggplot needs a dataframe
+male_df &lt;- data.frame(sex = "male", length = male)
+female_df &lt;- data.frame(sex = "female", length = female)
+*spider &lt;- rbind(male_df, female_df)
+```
+
+&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-6-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Levene's test, continued
+
+THEOREM GOES HERE (FROM 2018 LECTURE 7)
+
+sigma test
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

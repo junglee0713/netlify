@@ -207,18 +207,6 @@ We are 95% certain that the true proportion is captured by this interval.
 ---
 
 ## Inference on proportion, continued
-
-If the sample size $n$ is large enough, then 
-
-- The sample proportion $p$ approximately follows $N\left(\pi,\frac{\pi(1-\pi)}{n}\right)$ (a consequence of *the Central Limit Theorem*). 
-
-- The $(1-\alpha)\times 100$% confidence interval of $\pi$ is approximately given by 
-$$\left(p-z_{\alpha/2}\sqrt{\frac{p(1-p)}{n}}, p+z_{\alpha/2}\sqrt{\frac{p(1-p)}{n}}\right).$$
-Here $z_{\alpha/2}$ denotes the quantile value such that the probability $Z\geq z_{\alpha/2}=\alpha/2$, where $Z$ follows the standard normal distribution $N(0,1^2)$.
-
----
-
-## Inference on proportion, continued
   
 ```{r}
 prop.test(infected, n, p = 0.34)
@@ -247,7 +235,7 @@ cont<- c(62.5, 63.9, 69.2, 66.8, 65.7, 62.6, 69.5, 67.2, 61.1,
 fl <- c(70.7, 67.8, 69.8, 71.8, 66.8, 68.1, 64.9, 67.0, 66.0, 
         68.2, 67.1, 69.4, 69.4, 67.6, 69.8, 64.4, 66.1, 67.9, 
         66.9, 62.7, 66.2, 69.4, 64.6, 64.2)
-c(length(cont), length(fl)); c(mean(cont), mean(fl))
+c(length(control), length(flushed)); c(mean(control), mean(flushed))
 ```
 
 What is your point estimate for the difference of means? 95% confidence interval? Can we say that there is no difference in the mean body weights in the
@@ -296,34 +284,13 @@ ggplot(df, aes(group, weight)) +
 
 ## Two-sample _t_-test, continued
 
-Suppose that $X_1,X_2,\ldots,X_n$ (respectively, $Y_1,Y_2,\ldots,Y_m$) are taken from a populaion that follows $N(\mu_X,\sigma^2)$ (respectively, $N(\mu_Y,\sigma^2)$). Let 
-$$\bar{X}=\frac{X_1+X_2+\cdots+X_n}{n}, \quad \bar{Y}=\frac{Y_1+Y_2+\cdots+Y_m}{m},$$  
-and
-$$S_X^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar{X})^2, \quad S_Y^2=\frac{1}{m-1}\sum_{j=1}^m(Y_j-\bar{Y})^2.$$  
-Then
-$\displaystyle{\frac{\bar{X}-\bar{Y}-(\mu_X-\mu_Y)}{\sqrt{S_p^2\left(\frac{1}{n}+\frac{1}{m}\right)}}}$ follows a $t$-distribution with $n+m-2$ degrees of freedom, where $\displaystyle{S_p^2=\frac{(n-1)S_X^2+(m-1)S_Y^2}{n+m-2}}$. Here $S_p^2$ is called *pooled variance*.  
-
----
-
-## Two-sample _t_-test, continued
-
 ```{r}
-t.test(cont, fl, var.equal = TRUE)
+t.test(cont, fl, var.equal = T)
 ```
 
 ---
 
 ## Two-sample _t_-test: Welch's test
-
-Suppose that $X_1,X_2,\ldots,X_n$ (respectively, $Y_1,Y_2,\ldots,Y_m$) are taken from a populaion that follows $N(\mu_X,\sigma_X^2)$ (respectively, $N(\mu_Y,\sigma_Y^2)$). Let 
-$$\bar{X}=\frac{X_1+X_2+\cdots+X_n}{n}, \quad \bar{Y}=\frac{Y_1+Y_2+\cdots+Y_m}{m},$$ 
-and
-$$S_X^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar{X})^2, \quad S_Y^2=\frac{1}{m-1}\sum_{j=1}^m(Y_j-\bar{Y})^2.$$ 
-Then $\displaystyle{\frac{\bar{X}-\bar{Y}-(\mu_X-\mu_Y)}{\sqrt{\frac{S_X^2}{n}+\frac{S_Y^2}{m}}}}$ follows a $t$-distribution with $r$ degrees of freedom, where $\displaystyle{r=\frac{\left(\frac{S_X^2}{n}+\frac{S_Y^2}{m}\right)^2}{\frac{1}{n-1}\left(\frac{S_X^2}{n}\right)^2+\frac{1}{m-1}\left(\frac{S_Y^2}{m}\right)^2}}$.
-
----
-
-## Two-sample _t_-test: Welch's test, continued
 
 ```{r}
 t.test(cont, fl, var.equal = F)
@@ -375,13 +342,6 @@ ggplot(df, aes(diet, glucose)) +
   geom_point() +
   geom_line(aes(group = obs)) # connect the match #<<
 ```
-
----
-
-## Paired _t_-test, continued
-
-Let $X_1,X_2,\ldots,X_n$ and $Y_1,Y_2,\ldots,Y_n$ be paired measurements from  population with mean $\mu_X$ and $\mu_Y$, respectively. Define $W_i=X_i-Y_i$ for $1\leq i \leq n$. Let $$\bar{W}=\frac{1}{n}\sum_{i=1}^n W_i=\frac{W_1+W_2+\cdots+W_n}{n}$$ and 
-$$S_W^2=\frac{1}{n-1}\sum_{i=1}^n (W_i-\bar{W})^2.$$ Then $$\frac{\bar{W}-(\mu_X-\mu_Y)}{S_W/\sqrt{n}}$$ follows a $t$-distribution with $n-1$ degrees of freedom.  
 
 ---
 

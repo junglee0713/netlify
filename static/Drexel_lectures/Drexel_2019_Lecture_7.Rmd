@@ -1,0 +1,136 @@
+---
+title: "Lecture 7"
+author: "Jung-Jin Lee"
+date: "Feb 26, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Drexel.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## _t_-test: review
+
+- One-sample $t$-test
+
+  - given sample, test $H_0: \mu = \mu_0$.
+
+- Two-sample $t$-test:
+
+  - with equal variance assumption, without equal variance assumption (Welch's test)
+  
+  - test $H_0$: two populations have the same mean. 
+  
+- Paired $t$-test
+
+  - need paired samples
+  
+  - test $H_0$: two populations have the same mean. 
+
+- In all cases, use `t.test()`
+
+---
+
+## _F_-test
+
+- Comparison of two variances (Levene's test)
+
+- Comparison of two or more means (one-way ANOVA)
+
+---
+
+## _F_-distribution
+
+```{r, echo = F, out.width = "90%", fig.height = 4, fig.width = 6}
+library(latex2exp)
+f_1_2 = function(x) df(x, df1 = 1, df = 2)
+f_2_1 = function(x) df(x, df1 = 2, df = 1)
+f_5_2 = function(x) df(x, df1 = 5, df = 2)
+f_30_30 = function(x) df(x, df1 = 30, df = 30)
+gf <- ggplot(data.frame(x = 1), aes(x)) +
+  scale_x_continuous(lim = c(0, 5), breaks = 0:5) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = f_1_2, aes(color = "a")) + 
+  stat_function(fun = f_2_1, aes(color = "b")) + 
+  stat_function(fun = f_5_2, aes(color = "c")) + 
+  stat_function(fun = f_30_30, aes(color = "d")) + 
+  ylim(0, 1.2) +
+  scale_color_manual(name = "Functions",
+                       values = c("blue", "red", "green", "black"), 
+                       labels = c("df1=1, df2=2", "df1=2, df2=1", "df1=5, df2=2", "df1=30, df2=30"))
+print(gf) 
+```
+
+---
+
+## One-sample variance
+
+Redo the following
+
+```{r}
+#install.packages("DescTools")
+library(DescTools)
+VarTest(c(1,2,3))
+```
+
+---
+
+## Levene's test
+
+**Example**: A biologist is interested in comparing the lengths of female and male green lynx spiders. Assume that the length of male spiders follows $N(\mu_m, \sigma_m^2)$ and the length female spiders follows $N(\mu_f, \sigma_f^2)$. 
+
+```{r}
+male = c(5.20, 4.70, 5.75, 7.50, 6.45, 6.55, 4.70, 4.80, 5.95, 
+         5.20, 6.35, 6.95, 5.70, 6.20, 5.40, 6.20, 5.85, 6.80, 
+         5.65, 5.50, 5.65, 5.85, 5.75, 6.35, 5.75, 5.95, 5.90, 
+         7.00, 6.10, 5.80)
+female = c(8.25, 9.95, 5.90, 7.05, 8.45, 7.55, 9.80, 10.80, 6.60, 
+           7.55, 8.10, 9.10, 6.10, 9.30, 8.75, 7.00, 7.80, 8.00, 
+           9.00, 6.30, 8.35, 8.70, 8.00, 7.50, 9.50)
+c(length(male), length(female))
+c(mean(male), mean(female))
+```
+
+---
+
+## Levene's test, continued
+
+```{r}
+# ggplot needs a dataframe
+male_df <- data.frame(sex = "male", length = male)
+female_df <- data.frame(sex = "female", length = female)
+spider <- rbind(male_df, female_df) #<<
+```
+
+```{r, echo = F, out.width = "50%"}
+ggplot(spider, aes(sex, length)) + geom_boxplot()
+```
+
+---
+
+## Levene's test, continued
+
+THEOREM GOES HERE (FROM 2018 LECTURE 7)
+
+sigma test
