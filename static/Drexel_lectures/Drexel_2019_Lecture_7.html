@@ -25,19 +25,21 @@ class: center, middle, inverse, title-slide
 
 - One-sample `\(t\)`-test
 
-  - given sample, test `\(H_0: \mu = \mu_0\)`.
+  - Given sample, test `\(H_0: \mu = \mu_0\)`.
 
 - Two-sample `\(t\)`-test:
 
-  - with equal variance assumption, without equal variance assumption (Welch's test)
+  - With equal variance assumption
   
-  - test `\(H_0\)`: two populations have the same mean. 
+  - Without equal variance assumption (Welch's test)
+  
+  - Test `\(H_0\)`: two populations have the same mean. 
   
 - Paired `\(t\)`-test
 
-  - need paired samples
+  - Need paired samples
   
-  - test `\(H_0\)`: two populations have the same mean. 
+  - Test `\(H_0\)`: two populations have the same mean. 
 
 - In all cases, use `t.test()`
 
@@ -54,33 +56,6 @@ class: center, middle, inverse, title-slide
 ## _F_-distribution
 
 &lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-2-1.png" width="90%" style="display: block; margin: auto;" /&gt;
-
----
-
-## One-sample variance
-
-Redo the following
-
-
-```r
-#install.packages("DescTools")
-library(DescTools)
-VarTest(c(1,2,3))
-```
-
-```
-## 
-## 	One Sample Chi-Square test on variance
-## 
-## data:  c(1, 2, 3)
-## X-squared = 2, df = 2, p-value = 0.7358
-## alternative hypothesis: true variance is not equal to 1
-## 95 percent confidence interval:
-##   0.271085 39.497890
-## sample estimates:
-## variance of x 
-##             1
-```
 
 ---
 
@@ -124,15 +99,206 @@ female_df &lt;- data.frame(sex = "female", length = female)
 *spider &lt;- rbind(male_df, female_df)
 ```
 
-&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-6-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
 ## Levene's test, continued
 
-THEOREM GOES HERE (FROM 2018 LECTURE 7)
+What can we say about variances? 
 
-sigma test
+.pull-left[
+
+```r
+v_df &lt;- spider %&gt;%
+* group_by(sex) %&gt;%
+* summarize(va = var(length))
+v_df
+```
+
+```
+## # A tibble: 2 x 2
+##   sex       va
+##   &lt;fct&gt;  &lt;dbl&gt;
+## 1 male   0.440
+## 2 female 1.56
+```
+
+```r
+ggplot(v_df, aes(sex, va)) +
+* geom_col()
+```
+]
+
+.pull-right[
+&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+Can we say that the population variances are the same between male and female spiders? (i.e., `\(\sigma_m^2 = \sigma_f^2\)`?)
+
+---
+
+## Levene's test, continued
+
+Suppose that `\(X_1,X_2,\ldots,X_n\)` (respectively, `\(Y_1,Y_2,\ldots,Y_m\)`) are taken from a population that follows `\(N(\mu_X,\sigma_X^2)\)` (respectively, `\(N(\mu_Y,\sigma_Y^2)\)`). Let 
+`$$\bar{X}=\frac{X_1+X_2+\cdots+X_n}{n}, \quad \bar{Y}=\frac{Y_1+Y_2+\cdots+Y_m}{m},$$` 
+and
+`$$S_X^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar{X})^2, \quad S_Y^2=\frac{1}{m-1}\sum_{j=1}^m(Y_j-\bar{Y})^2.$$` 
+Then
+`$$\frac{S_X^2/\sigma_X^2}{S_Y^2/\sigma_Y^2}$$` follows an `\(F\)`-distribution with `\(df1=n-1\)` and `\(df2=m-1\)` degrees of freedom.
+
+---
+
+## Levene's test, continued
+
+Going back to `spider` data, under the hypothesis `\(H_0: \sigma_m^2 = \sigma_f^2\)`, the fraction
+`$$\frac{S_m^2/\sigma_m^2}{S_f^2/\sigma_f^2} = \frac{S_m^2}{S_f^2}$$` should follow an `\(F\)`-distribution with `$$df1=30-1=29 \quad \text{and}\quad df2=25-1=24$$` degrees of freedom.
+
+
+```r
+n &lt;- length(male); m &lt;- length(female)
+var_m &lt;- var(male); var_f &lt;- var(female)
+f &lt;- var_m/var_f
+print(f)
+```
+
+```
+## [1] 0.2816196
+```
+
+How likely or unlikely is this?
+
+---
+
+## Levene's test, continued
+
+Under the null hypothesis `\(H_0: \sigma_m^2 = \sigma_f^2\)`, one would expect that `f` is close to 1. 
+
+&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Levene's test, continued
+
+The probability of an event that is as extreme as or more extreme than the current observation (red area) seems to be small.
+
+&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-11-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Levene's test, continued
+
+
+```r
+lower_red = pf(f, df1 = n-1, df2 = m-1)
+pval = 2*lower_red
+print(pval)
+```
+
+```
+## [1] 0.001424841
+```
+
+--
+
+`\(p\)`-value can be easily obtained by `var.test()`:
+
+
+```r
+var.test(male, female)
+```
+
+```
+## 
+## 	F test to compare two variances
+## 
+## data:  male and female
+## F = 0.28162, num df = 29, denom df = 24, p-value = 0.001425
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.1270020 0.6066102
+## sample estimates:
+## ratio of variances 
+##          0.2816196
+```
+
+---
+
+## Aside: one-sample variance test
+
+One-sample variance test is based on `\(\chi^2\)`-test and can be done using `VarTest()` in `DescTools` pacakge. 
+
+
+```r
+#install.packages("DescTools")
+library(DescTools)
+# To test if population variance equals 0.5
+VarTest(male, sigma.squared = 0.5) 
+```
+
+```
+## 
+## 	One Sample Chi-Square test on variance
+## 
+## data:  male
+## X-squared = 25.513, df = 29, p-value = 0.6973
+## alternative hypothesis: true variance is not equal to 0.5
+## 95 percent confidence interval:
+##  0.2790033 0.7949529
+## sample estimates:
+## variance of x 
+##     0.4398851
+```
+
+---
+
+## One-way ANOVA (ANalysis Of VAriance)
+
+**Example**: Dogs were fed a dry diet coated with different agents that were believed to affect the build-up of calculus on the teeth. Calculus accumulation was measured by an index that combined estimates of both the proportion of the teeth covered by the deposit and the thickness of the deposit. 26 dogs were randomly allocated to three treatments: `control`, soluble pyrophosphate (`p2o7`), and sodium hexametaphosphate (`hmp`). The data are presented in the following:
+
+
+```r
+control &lt;- c(0.49, 1.05, 0.79, 1.35, 0.55, 1.36, 1.55, 1.66, 1.00)
+p2o7 &lt;- c(0.34, 0.76, 0.45, 0.69, 0.87, 0.94, 0.22, 1.07, 1.38)
+hmp &lt;- c(0.34, 0.05, 0.53, 0.19, 0.28, 0.45, 0.71, 0.95)
+```
+
+Can we say that all the three means are equal?
+
+---
+
+## Box plots
+
+
+```r
+ctrl_df &lt;- data.frame(diet = "Control", index = control)
+pyro_df &lt;- data.frame(diet = "Pyrophosphate", index = p2o7)
+sod_hexa_df &lt;- data.frame(diet = "Hexametaphosphate", index = hmp)
+dogs &lt;- rbind(ctrl_df, pyro_df, sod_hexa_df)
+table(dogs$diet)
+```
+
+```
+## 
+##           Control     Pyrophosphate Hexametaphosphate 
+##                 9                 9                 8
+```
+
+```r
+mean_df &lt;- dogs %&gt;%
+  group_by(diet) %&gt;%
+  summarize(mean_index = mean(index))
+mean_df
+```
+
+```
+## # A tibble: 3 x 2
+##   diet              mean_index
+##   &lt;fct&gt;                  &lt;dbl&gt;
+## 1 Control                1.09 
+## 2 Pyrophosphate          0.747
+## 3 Hexametaphosphate      0.438
+```
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

@@ -33,19 +33,21 @@ opts_chunk$set(
 
 - One-sample $t$-test
 
-  - given sample, test $H_0: \mu = \mu_0$.
+  - Given sample, test $H_0: \mu = \mu_0$.
 
 - Two-sample $t$-test:
 
-  - with equal variance assumption, without equal variance assumption (Welch's test)
+  - With equal variance assumption
   
-  - test $H_0$: two populations have the same mean. 
+  - Without equal variance assumption (Welch's test)
+  
+  - Test $H_0$: two populations have the same mean. 
   
 - Paired $t$-test
 
-  - need paired samples
+  - Need paired samples
   
-  - test $H_0$: two populations have the same mean. 
+  - Test $H_0$: two populations have the same mean. 
 
 - In all cases, use `t.test()`
 
@@ -80,18 +82,6 @@ gf <- ggplot(data.frame(x = 1), aes(x)) +
                        values = c("blue", "red", "green", "black"), 
                        labels = c("df1=1, df2=2", "df1=2, df2=1", "df1=5, df2=2", "df1=30, df2=30"))
 print(gf) 
-```
-
----
-
-## One-sample variance
-
-Redo the following
-
-```{r}
-#install.packages("DescTools")
-library(DescTools)
-VarTest(c(1,2,3))
 ```
 
 ---
@@ -131,6 +121,157 @@ ggplot(spider, aes(sex, length)) + geom_boxplot()
 
 ## Levene's test, continued
 
-THEOREM GOES HERE (FROM 2018 LECTURE 7)
+What can we say about variances? 
 
-sigma test
+.pull-left[
+```{r}
+v_df <- spider %>%
+  group_by(sex) %>% #<<
+  summarize(va = var(length)) #<<
+v_df
+```
+```{r, eval = F}
+ggplot(v_df, aes(sex, va)) +
+  geom_col() #<<
+```
+]
+
+.pull-right[
+```{r, echo = F}
+ggplot(v_df, aes(sex, va)) +
+  geom_col() #<<
+```
+]
+
+Can we say that the population variances are the same between male and female spiders? (i.e., $\sigma_m^2 = \sigma_f^2$?)
+
+---
+
+## Levene's test, continued
+
+Suppose that $X_1,X_2,\ldots,X_n$ (respectively, $Y_1,Y_2,\ldots,Y_m$) are taken from a population that follows $N(\mu_X,\sigma_X^2)$ (respectively, $N(\mu_Y,\sigma_Y^2)$). Let 
+$$\bar{X}=\frac{X_1+X_2+\cdots+X_n}{n}, \quad \bar{Y}=\frac{Y_1+Y_2+\cdots+Y_m}{m},$$ 
+and
+$$S_X^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar{X})^2, \quad S_Y^2=\frac{1}{m-1}\sum_{j=1}^m(Y_j-\bar{Y})^2.$$ 
+Then
+$$\frac{S_X^2/\sigma_X^2}{S_Y^2/\sigma_Y^2}$$ follows an $F$-distribution with $df1=n-1$ and $df2=m-1$ degrees of freedom.
+
+---
+
+## Levene's test, continued
+
+Going back to `spider` data, under the hypothesis $H_0: \sigma_m^2 = \sigma_f^2$, the fraction
+$$\frac{S_m^2/\sigma_m^2}{S_f^2/\sigma_f^2} = \frac{S_m^2}{S_f^2}$$ should follow an $F$-distribution with $$df1=30-1=29 \quad \text{and}\quad df2=25-1=24$$ degrees of freedom.
+
+```{r}
+n <- length(male); m <- length(female)
+var_m <- var(male); var_f <- var(female)
+f <- var_m/var_f
+print(f)
+```
+
+How likely or unlikely is this?
+
+---
+
+## Levene's test, continued
+
+Under the null hypothesis $H_0: \sigma_m^2 = \sigma_f^2$, one would expect that `f` is close to 1. 
+
+```{r, echo = F, out.width = "90%", fig.height = 4, fig.width = 6}
+f_29_24 = function(x) df(x, df1 = 12, df = 12)
+gf <- ggplot(data.frame(x = 1), aes(x)) +
+  scale_x_continuous(lim = c(0, 3.5), breaks = c(0, f, 1, 2)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = f_29_24) + 
+  geom_segment(x = f, xend = f, y = 0, yend = f_29_24(f), 
+               lty = "dotted", color = "red") +
+  ylim(0, 1) +
+  theme(axis.text.x = element_text(angle = -45, hjust = 0, vjust = 0.5)) +
+  ggtitle(TeX("F_{df1=29, df2=24}"))
+print(gf) 
+```
+
+---
+
+## Levene's test, continued
+
+The probability of an event that is as extreme as or more extreme than the current observation (red area) seems to be small.
+
+```{r, echo = F, out.width = "90%", fig.height = 4, fig.width = 6}
+f_29_24 = function(x) df(x, df1 = 12, df = 12)
+gf <- ggplot(data.frame(x = 1), aes(x)) +
+  scale_x_continuous(lim = c(0, 3.5), breaks = c(0, f, 1, 2)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = f_29_24, xlim = c(0, f), geom = "area", fill = "red") + 
+  stat_function(fun = f_29_24, xlim = c(3.1, 3.5), geom = "area", fill = "red") + 
+  stat_function(fun = f_29_24) + 
+  ylim(0, 1) +
+  theme(axis.text.x = element_text(angle = -45, hjust = 0, vjust = 0.5)) +
+  ggtitle(TeX("F_{df1=29, df2=24}"))
+print(gf) 
+```
+
+---
+
+## Levene's test, continued
+
+```{r}
+lower_red = pf(f, df1 = n-1, df2 = m-1)
+pval = 2*lower_red
+print(pval)
+```
+
+--
+
+$p$-value can be easily obtained by `var.test()`:
+
+```{r}
+var.test(male, female)
+```
+
+---
+
+## Aside: one-sample variance test
+
+One-sample variance test is based on $\chi^2$-test and can be done using `VarTest()` in `DescTools` pacakge. 
+
+```{r}
+#install.packages("DescTools")
+library(DescTools)
+# To test if population variance equals 0.5
+VarTest(male, sigma.squared = 0.5) 
+```
+
+---
+
+## One-way ANOVA (ANalysis Of VAriance)
+
+**Example**: Dogs were fed a dry diet coated with different agents that were believed to affect the build-up of calculus on the teeth. Calculus accumulation was measured by an index that combined estimates of both the proportion of the teeth covered by the deposit and the thickness of the deposit. 26 dogs were randomly allocated to three treatments: `control`, soluble pyrophosphate (`p2o7`), and sodium hexametaphosphate (`hmp`). The data are presented in the following:
+
+```{r}
+control <- c(0.49, 1.05, 0.79, 1.35, 0.55, 1.36, 1.55, 1.66, 1.00)
+p2o7 <- c(0.34, 0.76, 0.45, 0.69, 0.87, 0.94, 0.22, 1.07, 1.38)
+hmp <- c(0.34, 0.05, 0.53, 0.19, 0.28, 0.45, 0.71, 0.95)
+```
+
+Can we say that all the three means are equal?
+
+---
+
+## Box plots
+
+```{r}
+ctrl_df <- data.frame(diet = "Control", index = control)
+pyro_df <- data.frame(diet = "Pyrophosphate", index = p2o7)
+sod_hexa_df <- data.frame(diet = "Hexametaphosphate", index = hmp)
+dogs <- rbind(ctrl_df, pyro_df, sod_hexa_df)
+table(dogs$diet)
+mean_df <- dogs %>%
+  group_by(diet) %>%
+  summarize(mean_index = mean(index))
+mean_df
+```
+
