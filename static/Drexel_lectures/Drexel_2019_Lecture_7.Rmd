@@ -268,10 +268,9 @@ ctrl_df <- data.frame(diet = "Control", index = control)
 pyro_df <- data.frame(diet = "Pyrophosphate", index = p2o7)
 sod_hexa_df <- data.frame(diet = "Hexametaphosphate", index = hmp)
 dogs <- rbind(ctrl_df, pyro_df, sod_hexa_df)
-table(dogs$diet)
 mean_df <- dogs %>%
   group_by(diet) %>%
-  summarize(mean_index = mean(index))
+  summarize(count = n(), mean_index = mean(index))
 mean_df
 ```
 

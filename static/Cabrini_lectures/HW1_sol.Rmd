@@ -1,0 +1,75 @@
+---
+title: "Homework 1"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+\bigskip
+
+1. Compute
+$$1^2+2^2+3^2+\cdots+99^2+100^2.$$
+
+```{r, echo = T, eval = T}
+vec <- 1:100
+sum(vec^2)
+```
+
+\bigskip
+
+2. How many digits does $N=1234567891011121314...9998999910000$ have, where $N$ is formed by concatenating $1,2,3,\ldots,9999,10000$? (_Hint_: you might want to look up the functions \texttt{nchar(), as.character(), paste()})
+
+```{r, echo = T, eval = T}
+vec_char <- as.character(1:10000) # turn numeric to character
+vec_collapse <- paste(vec_char, collapse = "")
+print(nchar(vec_collapse))
+```
+
+\bigskip
+
+`iris` is a data set that comes with base R. It consists of `r nrow(iris)` observations with `r ncol(iris)` columns, `r names(iris)`, which are features related to Iris flowers. You can view the first few rows using `head()`:
+
+```{r}
+head(iris)
+```
+
+3. Compute the sample mean of `Sepal.Length`. Also, what is the _fifth_ smallest value of `Sepal.Length`? 
+
+```{r, echo = T, eval = T}
+mean(iris$Sepal.Length)
+sort(iris$Sepal.Length)[5]
+```
+
+4. Obtain the following plots that describe the histogram of `Sepal.Length` by `Species`. 
+
+```{r, echo = T, message=F, fig.height = 3}
+g <- ggplot(iris, aes(Sepal.Length)) + 
+  geom_histogram() +
+  facet_wrap(~Species) 
+
+print(g)
+```
+
+```{r, echo = FALSE}
+d <- read.table(file = "heights.txt", header = T, sep = " ")
+```
+
+5. Recall that the data set `heights.txt` consists of `r nrow(d)` observations of mother/daughter height pairs. As done in class, you can read in the data set using the following code:
+
+```{r}
+d <- read.table(file = "heights.txt", header = T, sep = " ")
+```
+
+In how many pairs is mother's height greater than daughter's height?
+
+```{r, echo = T, eval = T}
+sum(d$Mheight > d$Dheight)
+```
+
+

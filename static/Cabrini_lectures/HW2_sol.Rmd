@@ -1,0 +1,64 @@
+---
+title: "Homework 2"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  fig.align = "center")
+library(tidyverse)
+```
+
+\bigskip
+
+1. Recall `iris` data set. Find the maximum value of the sum `Sepal.Length` $+$ `Sepal.Width`. To which species does the sample with the maximum value you found above belong? _Hint_: you might want to start with defining a new variable `Sepal.Sum` using `mutate()`, for example. 
+
+```{r, echo = T, eval = T}
+iris %>%
+  mutate(sum = Sepal.Length + Sepal.Width) %>%
+  arrange(desc(sum)) %>%
+  slice(1) %>%
+  pull(Species)
+```
+
+2. Create the following plot using `iris` data set. Note that `setosa` species do not show up. You do NOT need to adjust size or width/height ratio of the plot.
+
+```{r, echo = T, out.width = "50%"}
+iris %>% filter(Species != "setosa") %>%
+  ggplot(aes(Petal.Length, Petal.Width, color = Species)) +
+  theme(aspect.ratio = 1) +
+  geom_point()
+```
+
+3. Create the following plot using `diamonds` data set. 
+
+```{r, echo = T, fig.height = 5, out.width = "80%"}
+ggplot(diamonds, aes(color, price)) +
+  geom_boxplot() +
+  facet_wrap(~cut)
+```
+
+4. Determine $c$ so that the probability $0\leq Z \leq c$ is $0.45$, where $Z$ follows the standard normal distribution $N(0,1^2)$.
+
+```{r, echo = T}
+qnorm(0.5 + 0.45, mean = 0, sd = 1)
+```
+
+5. Recall the `heights.txt` data we used in class with 1375 mom/daughter height pairs:
+
+```{r, echo = T}
+ht <- read.table(file = "heights.txt", header = T, sep = " ")
+```
+
+Assuming that UK women's heights follow a normal distribution $N(\mu, \sigma^2)$, compute the 95% confidence interval of $\mu$ based on the mom's height data. 
+
+```{r, echo = T}
+t.test(ht$Mheight)
+```
+
+
+
