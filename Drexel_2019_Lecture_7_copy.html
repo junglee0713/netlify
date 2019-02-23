@@ -55,7 +55,7 @@ class: center, middle, inverse, title-slide
 
 ## _F_-distribution
 
-&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-2-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_7_copy_files/figure-html/unnamed-chunk-2-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -99,7 +99,7 @@ female_df &lt;- data.frame(sex = "female", length = female)
 *spider &lt;- rbind(male_df, female_df)
 ```
 
-&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_7_copy_files/figure-html/unnamed-chunk-5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -131,7 +131,7 @@ ggplot(v_df, aes(sex, va)) +
 ]
 
 .pull-right[
-&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_7_copy_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 Can we say that the population variances are the same between male and female spiders? (i.e., `\(\sigma_m^2 = \sigma_f^2\)`?)
@@ -174,7 +174,7 @@ How likely or unlikely is this?
 
 Under the null hypothesis `\(H_0: \sigma_m^2 = \sigma_f^2\)`, one would expect that `f` is close to 1. 
 
-&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_7_copy_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -182,7 +182,7 @@ Under the null hypothesis `\(H_0: \sigma_m^2 = \sigma_f^2\)`, one would expect t
 
 The probability of an event that is as extreme as or more extreme than the current observation (red area) seems to be small.
 
-&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-11-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_7_copy_files/figure-html/unnamed-chunk-11-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -305,7 +305,7 @@ ggplot(dogs, aes(diet, index)) +
 * geom_jitter(width = 0.2)
 ```
 
-&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-17-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_7_copy_files/figure-html/unnamed-chunk-17-1.png" width="45%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -328,15 +328,13 @@ x_{1n_1}&amp;&amp;&amp;&amp;&amp; \\
 
 ## One-way ANOVA, continued
 
-- Let `\(x_{ij}\)` be as above. Then
+Let `\(x_{ij}\)` be as above. Then
 `$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2+\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2.$$`
---
-
-- One can prove it using the following: `$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k \sum_{j=1}^{n_i} ((x_{ij}-\bar{x}_i)+(\bar{x}_i-\bar{x}))^2.$$`
+One can prove it using the following: `$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k \sum_{j=1}^{n_i} ((x_{ij}-\bar{x}_i)+(\bar{x}_i-\bar{x}))^2.$$`
 
 --
 
-- SS: sum of squares
+SS: sum of squares
 
 `$$\underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2}_{\text{total SS}} = \underbrace{\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2}_{\text{between group SS}} + \underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2}_{\text{within group SS}}.$$`
 
@@ -388,7 +386,7 @@ print(f)
 
 ## One-way ANOVA, continued
 
-&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_7_copy_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 
 ```r

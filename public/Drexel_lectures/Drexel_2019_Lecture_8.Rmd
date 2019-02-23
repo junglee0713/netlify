@@ -1,0 +1,39 @@
+---
+title: "Lecture 8"
+author: "Jung-Jin Lee"
+date: "Mar 5, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Drexel.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## Chi-squared test
+
+$\chi^2$ test
+
+
+
+
+

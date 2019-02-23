@@ -328,13 +328,15 @@ x_{1n_1}&amp;&amp;&amp;&amp;&amp; \\
 
 ## One-way ANOVA, continued
 
-Let `\(x_{ij}\)` be as above. Then
+- Let `\(x_{ij}\)` be as above. Then
 `$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2+\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2.$$`
-One can prove it using the following: `$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k \sum_{j=1}^{n_i} ((x_{ij}-\bar{x}_i)+(\bar{x}_i-\bar{x}))^2.$$`
+--
+
+- One can prove it using the following: `$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k \sum_{j=1}^{n_i} ((x_{ij}-\bar{x}_i)+(\bar{x}_i-\bar{x}))^2.$$`
 
 --
 
-SS: sum of squares
+- SS: sum of squares
 
 `$$\underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2}_{\text{total SS}} = \underbrace{\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2}_{\text{between group SS}} + \underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2}_{\text{within group SS}}.$$`
 
