@@ -226,7 +226,7 @@ var.test(male, female)
 
 ## Aside: one-sample variance test
 
-One-sample variance test is based on `\(\chi^2\)`-test and can be done using `VarTest()` in `DescTools` pacakge. 
+One-sample variance test is based on `\(\chi^2\)`-test and can be done using `VarTest()` in `DescTools` package. 
 
 
 ```r
@@ -252,7 +252,11 @@ VarTest(male, sigma.squared = 0.5)
 
 ---
 
-## One-way ANOVA (ANalysis Of VAriance)
+## One-way ANOVA
+
+ANOVA: ANalysis Of VAriance
+
+--
 
 **Example**: Dogs were fed a dry diet coated with different agents that were believed to affect the build-up of calculus on the teeth. Calculus accumulation was measured by an index that combined estimates of both the proportion of the teeth covered by the deposit and the thickness of the deposit. 26 dogs were randomly allocated to three treatments: `control`, soluble pyrophosphate (`p2o7`), and sodium hexametaphosphate (`hmp`). The data are presented in the following:
 
@@ -267,29 +271,231 @@ Can we say that all the three means are equal?
 
 ---
 
-## Box plots
+## One-way ANOVA, continued
 
 
 ```r
-ctrl_df &lt;- data.frame(diet = "Control", index = control)
-pyro_df &lt;- data.frame(diet = "Pyrophosphate", index = p2o7)
-sod_hexa_df &lt;- data.frame(diet = "Hexametaphosphate", index = hmp)
+ctrl_df &lt;- data.frame(diet = "control", index = control)
+pyro_df &lt;- data.frame(diet = "p2o7", index = p2o7)
+sod_hexa_df &lt;- data.frame(diet = "hmp", index = hmp)
 dogs &lt;- rbind(ctrl_df, pyro_df, sod_hexa_df)
 mean_df &lt;- dogs %&gt;%
-  group_by(diet) %&gt;%
-  summarize(count = n(), mean_index = mean(index))
+* group_by(diet) %&gt;%
+* summarize(count = n(), mean_index = mean(index))
 mean_df
 ```
 
 ```
 ## # A tibble: 3 x 3
-##   diet              count mean_index
-##   &lt;fct&gt;             &lt;int&gt;      &lt;dbl&gt;
-## 1 Control               9      1.09 
-## 2 Pyrophosphate         9      0.747
-## 3 Hexametaphosphate     8      0.438
+##   diet    count mean_index
+##   &lt;fct&gt;   &lt;int&gt;      &lt;dbl&gt;
+## 1 control     9      1.09 
+## 2 p2o7        9      0.747
+## 3 hmp         8      0.438
+```
+
+---
+
+## One-way ANOVA, continued
+
+
+```r
+ggplot(dogs, aes(diet, index)) +
+  geom_boxplot() +
+* geom_jitter(width = 0.2)
+```
+
+&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-17-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## One-way ANOVA, continued
+
+- Suppose that `\(k\)` groups of real numbers are given as in the following table:
+`$$\begin{array}{cccccc} 1 &amp; 2 &amp; \cdots &amp; i &amp; \cdots &amp; k \\ \hline   
+x_{11} &amp; x_{21} &amp; \cdots &amp; x_{i1} &amp; \cdots &amp; x_{k1} \\ 
+x_{12} &amp; x_{22} &amp; \cdots &amp; x_{i2} &amp; \cdots &amp; x_{k2} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+x_{1n_1}&amp;&amp;&amp;&amp;&amp; \\
+&amp;&amp;&amp;x_{in_i}&amp;&amp; \\
+&amp;&amp;&amp;&amp;&amp; x_{kn_k} \\ 
+&amp;x_{2n_2}&amp;&amp;&amp;&amp; \end{array}$$`
+- Let `\(N\)` denote the total number: `\(N=\sum_{i=1}^k n_{i}\)`.
+- For `\(1\leq i \leq k\)`, let `\(\bar{x}_i=\frac{1}{n_i}\sum_{j=1}^{n_i} x_{ij}\)` (group mean). 
+- Let `\(\bar{x}=\frac{1}{N}\sum_{i=1}^k\sum_{j=1}^{n_j}x_{ij}\)` (global mean).
+
+---
+
+## One-way ANOVA, continued
+
+Let `\(x_{ij}\)` be as above. Then
+`$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2+\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2.$$`
+One can prove it using the following: `$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k \sum_{j=1}^{n_i} ((x_{ij}-\bar{x}_i)+(\bar{x}_i-\bar{x}))^2.$$`
+
+--
+
+SS: sum of squares
+
+`$$\underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2}_{\text{total SS}} = \underbrace{\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2}_{\text{between group SS}} + \underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2}_{\text{within group SS}}.$$`
+
+---
+
+## One-way ANOVA, continued
+
+Let `\(1\leq i \leq k\)` and suppose that `\(X_{ij}\)`, `\(1\leq j \leq n_i\)` is a sample from `\(N(\mu_i, \sigma^2)\)` (Note that identical `\(\sigma\)` is assumed). Under the null hypothesis that `\(H_0:\mu_1=\mu_2=\cdots=\mu_k\)`, 
+`$$\frac{(\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2)/(k-1)}{(\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2)/(N-k)}$$`
+follows an `\(F\)`-distribution with `\(k-1\)` and `\(N-k\)` degrees of freedom.
+
+---
+
+## One-way ANOVA, continued
+
+Roughly speaking: under the null hypothesis that `\(H_0:\mu_1=\mu_2=\cdots=\mu_k\)` (no difference in groups),
+`$$\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2,$$`
+should be small compared to 
+`$$\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2.$$`
+In other words, if `\(H_0:\mu_1=\mu_2=\cdots=\mu_k\)` is valid, then 
+`$$\frac{(\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2)/(k-1)}{(\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2)/(N-k)}$$` should be a small number.
+
+---
+
+## One-way ANOVA, continued
+
+Back to dog diet and calculus on the teeth example:
+
+
+```r
+all &lt;- dogs$index
+top &lt;- length(control)*(mean(control)-mean(all))^2 + 
+  length(p2o7)*(mean(p2o7)-mean(all))^2 + 
+  length(hmp)*(mean(hmp)-mean(all))^2
+bottom &lt;- sum((control-mean(control))^2) +
+  sum((p2o7-mean(p2o7))^2) + 
+  sum((hmp-mean(hmp))^2)
+top_frac &lt;- top/2 # 2 comes from 3-1
+bottom_frac &lt;- bottom/(length(all)-3) 
+f &lt;- top_frac/bottom_frac
+print(f)
+```
+
+```
+## [1] 6.668443
+```
+
+---
+
+## One-way ANOVA, continued
+
+&lt;img src="Drexel_2019_Lecture_7_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+```r
+pval &lt;- 1- pf(f, df1 = 2, df2 = 23)
+print(pval)
+```
+
+```
+## [1] 0.005198423
+```
+
+---
+
+## One-way ANOVA, continued
+
+`\(p\)`-value can also be obtained in two different ways:
+
+- By using `oneway.test(, var.equal = T)`
+
+
+```r
+oneway.test(dogs$index ~ dogs$diet, var.equal = T)
+```
+
+```
+## 
+## 	One-way analysis of means
+## 
+## data:  dogs$index and dogs$diet
+## F = 6.6684, num df = 2, denom df = 23, p-value = 0.005198
+```
+
+--
+
+- By combining `summary()` and `aov()`.
+
+
+```r
+summary(aov(dogs$index ~ dogs$diet))
+```
+
+```
+##             Df Sum Sq Mean Sq F value Pr(&gt;F)   
+## dogs$diet    2  1.805  0.9023   6.668 0.0052 **
+## Residuals   23  3.112  0.1353                  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+## One-way ANOVA, exercise
+
+Back to spider example: under the assumption that the lengths of male and female spiders have the same population variances, test if their population means are the same.
+
+--
+
+
+```r
+t.test(male, female, var.equal = T)
+```
+
+```
+## 
+## 	Two Sample t-test
+## 
+## data:  male and female
+## t = -8.4172, df = 53, p-value = 2.426e-11
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.748183 -1.690484
+## sample estimates:
+## mean of x mean of y 
+##  5.916667  8.136000
+```
+
+---
+
+## One-way ANOVA, exercise
+
+
+```r
+oneway.test(spider$length ~ spider$sex, var.equal = T)
+```
+
+```
+## 
+## 	One-way analysis of means
+## 
+## data:  spider$length and spider$sex
+## F = 70.849, num df = 1, denom df = 53, p-value = 2.426e-11
+```
+
+--
+
+
+```r
+summary(aov(spider$length ~ spider$sex))
+```
+
+```
+##             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## spider$sex   1  67.17   67.17   70.85 2.43e-11 ***
+## Residuals   53  50.24    0.95                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
     </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
@@ -299,16 +505,57 @@ mean_df
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
 });
-(function() {
-  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
   if (!r) return;
   s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
   d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
 })();</script>
 
 <script>
 (function() {
-  var i, text, code, codes = document.getElementsByTagName('code');
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
   for (i = 0; i < codes.length;) {
     code = codes[i];
     if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
@@ -322,7 +569,8 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     i++;
   }
-})();
+};
+slideshow._releaseMath(document);
 </script>
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

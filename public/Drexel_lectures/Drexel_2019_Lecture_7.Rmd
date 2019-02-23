@@ -236,7 +236,7 @@ var.test(male, female)
 
 ## Aside: one-sample variance test
 
-One-sample variance test is based on $\chi^2$-test and can be done using `VarTest()` in `DescTools` pacakge. 
+One-sample variance test is based on $\chi^2$-test and can be done using `VarTest()` in `DescTools` package. 
 
 ```{r}
 #install.packages("DescTools")
@@ -247,7 +247,11 @@ VarTest(male, sigma.squared = 0.5)
 
 ---
 
-## One-way ANOVA (ANalysis Of VAriance)
+## One-way ANOVA
+
+ANOVA: ANalysis Of VAriance
+
+--
 
 **Example**: Dogs were fed a dry diet coated with different agents that were believed to affect the build-up of calculus on the teeth. Calculus accumulation was measured by an index that combined estimates of both the proportion of the teeth covered by the deposit and the thickness of the deposit. 26 dogs were randomly allocated to three treatments: `control`, soluble pyrophosphate (`p2o7`), and sodium hexametaphosphate (`hmp`). The data are presented in the following:
 
@@ -261,16 +265,164 @@ Can we say that all the three means are equal?
 
 ---
 
-## Box plots
+## One-way ANOVA, continued
 
 ```{r}
-ctrl_df <- data.frame(diet = "Control", index = control)
-pyro_df <- data.frame(diet = "Pyrophosphate", index = p2o7)
-sod_hexa_df <- data.frame(diet = "Hexametaphosphate", index = hmp)
+ctrl_df <- data.frame(diet = "control", index = control)
+pyro_df <- data.frame(diet = "p2o7", index = p2o7)
+sod_hexa_df <- data.frame(diet = "hmp", index = hmp)
 dogs <- rbind(ctrl_df, pyro_df, sod_hexa_df)
 mean_df <- dogs %>%
-  group_by(diet) %>%
-  summarize(count = n(), mean_index = mean(index))
+  group_by(diet) %>% #<<
+  summarize(count = n(), mean_index = mean(index)) #<<
 mean_df
 ```
 
+---
+
+## One-way ANOVA, continued
+
+```{r, out.width= "45%"}
+ggplot(dogs, aes(diet, index)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2) #<<
+```
+
+---
+
+## One-way ANOVA, continued
+
+- Suppose that $k$ groups of real numbers are given as in the following table:
+$$\begin{array}{cccccc} 1 & 2 & \cdots & i & \cdots & k \\ \hline   
+x_{11} & x_{21} & \cdots & x_{i1} & \cdots & x_{k1} \\ 
+x_{12} & x_{22} & \cdots & x_{i2} & \cdots & x_{k2} \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+x_{1n_1}&&&&& \\
+&&&x_{in_i}&& \\
+&&&&& x_{kn_k} \\ 
+&x_{2n_2}&&&& \end{array}$$
+- Let $N$ denote the total number: $N=\sum_{i=1}^k n_{i}$.
+- For $1\leq i \leq k$, let $\bar{x}_i=\frac{1}{n_i}\sum_{j=1}^{n_i} x_{ij}$ (group mean). 
+- Let $\bar{x}=\frac{1}{N}\sum_{i=1}^k\sum_{j=1}^{n_j}x_{ij}$ (global mean).
+
+---
+
+## One-way ANOVA, continued
+
+Let $x_{ij}$ be as above. Then
+$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2+\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2.$$
+One can prove it using the following: $$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k \sum_{j=1}^{n_i} ((x_{ij}-\bar{x}_i)+(\bar{x}_i-\bar{x}))^2.$$
+
+--
+
+SS: sum of squares
+
+$$\underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2}_{\text{total SS}} = \underbrace{\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2}_{\text{between group SS}} + \underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2}_{\text{within group SS}}.$$
+
+---
+
+## One-way ANOVA, continued
+
+Let $1\leq i \leq k$ and suppose that $X_{ij}$, $1\leq j \leq n_i$ is a sample from $N(\mu_i, \sigma^2)$ (Note that identical $\sigma$ is assumed). Under the null hypothesis that $H_0:\mu_1=\mu_2=\cdots=\mu_k$, 
+$$\frac{(\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2)/(k-1)}{(\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2)/(N-k)}$$
+follows an $F$-distribution with $k-1$ and $N-k$ degrees of freedom.
+
+---
+
+## One-way ANOVA, continued
+
+Roughly speaking: under the null hypothesis that $H_0:\mu_1=\mu_2=\cdots=\mu_k$ (no difference in groups),
+$$\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2,$$
+should be small compared to 
+$$\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2.$$
+In other words, if $H_0:\mu_1=\mu_2=\cdots=\mu_k$ is valid, then 
+$$\frac{(\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2)/(k-1)}{(\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2)/(N-k)}$$ should be a small number.
+
+---
+
+## One-way ANOVA, continued
+
+Back to dog diet and calculus on the teeth example:
+
+```{r}
+all <- dogs$index
+top <- length(control)*(mean(control)-mean(all))^2 + 
+  length(p2o7)*(mean(p2o7)-mean(all))^2 + 
+  length(hmp)*(mean(hmp)-mean(all))^2
+bottom <- sum((control-mean(control))^2) +
+  sum((p2o7-mean(p2o7))^2) + 
+  sum((hmp-mean(hmp))^2)
+top_frac <- top/2 # 2 comes from 3-1
+bottom_frac <- bottom/(length(all)-3) 
+f <- top_frac/bottom_frac
+print(f)
+```
+
+---
+
+## One-way ANOVA, continued
+
+```{r, echo = F, fig.height = 3, fig.width = 4, out.width = "60%"}
+f_2_23 = function(x) df(x, df1 = 2, df = 5)
+gf <- ggplot(data.frame(x = 1), aes(x)) +
+  scale_x_continuous(lim = c(0, 8), breaks = c(0, f)) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = f_2_23, xlim = c(f, 8), geom = "area", fill = "red") + 
+  stat_function(fun = f_2_23) + 
+  ylim(0, 1) +
+  theme(axis.text.x = element_text(angle = -45, hjust = 0, vjust = 0.5)) +
+  ggtitle(TeX("F_{df1=2, df2=23}"))
+print(gf) 
+```
+
+```{r}
+pval <- 1- pf(f, df1 = 2, df2 = 23)
+print(pval)
+```
+
+---
+
+## One-way ANOVA, continued
+
+$p$-value can also be obtained in two different ways:
+
+- By using `oneway.test(, var.equal = T)`
+
+```{r}
+oneway.test(dogs$index ~ dogs$diet, var.equal = T)
+```
+
+--
+
+- By combining `summary()` and `aov()`.
+
+```{r}
+summary(aov(dogs$index ~ dogs$diet))
+```
+
+---
+
+## One-way ANOVA, exercise
+
+Back to spider example: under the assumption that the lengths of male and female spiders have the same population variances, test if their population means are the same.
+
+--
+
+```{r}
+t.test(male, female, var.equal = T)
+```
+
+---
+
+## One-way ANOVA, exercise
+
+```{r}
+oneway.test(spider$length ~ spider$sex, var.equal = T)
+```
+
+--
+
+```{r}
+summary(aov(spider$length ~ spider$sex))
+```
