@@ -478,6 +478,4 @@ print(gf)
 chisq.test(obs)
 ```
 
---
-
 Conclusion: the insemination methods show different proportions of pregnant animals.
