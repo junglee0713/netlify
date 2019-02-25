@@ -21,9 +21,567 @@ class: center, middle, inverse, title-slide
  
 
 
+## One-way ANOVA, review
+
+Recall `iris` data set:
+
+
+```r
+head(iris)
+```
+
+```
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa
+```
+
+Can we say that `Sepal.Width` is associated with `Species`?
+
+---
+
+## One-way ANOVA, review
+
+
+```r
+ggplot(iris, aes(Species, Sepal.Width)) +
+  geom_boxplot()
+```
+
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-3-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## One-way ANOVA, review
+
+
+```r
+oneway.test(iris$Sepal.Width ~ iris$Species, var.equal = T)
+```
+
+```
+## 
+## 	One-way analysis of means
+## 
+## data:  iris$Sepal.Width and iris$Species
+## F = 49.16, num df = 2, denom df = 147, p-value &lt; 2.2e-16
+```
+
+--
+
+
+```r
+summary(aov(iris$Sepal.Width ~ iris$Species))
+```
+
+```
+##               Df Sum Sq Mean Sq F value Pr(&gt;F)    
+## iris$Species   2  11.35   5.672   49.16 &lt;2e-16 ***
+## Residuals    147  16.96   0.115                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+--
+
+- Small `\(p\)`-value indicates that we should _reject_ the null hypothesis, i.e., population means are not the same for all species.
+- In other words, at least one mean is different from another.
+- Which pair(s) show difference?
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+
+```r
+anova_res &lt;- aov(iris$Sepal.Width ~ iris$Species)
+*TukeyHSD(anova_res)
+```
+
+```
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = iris$Sepal.Width ~ iris$Species)
+## 
+## $`iris$Species`
+##                        diff         lwr        upr     p adj
+## versicolor-setosa    -0.658 -0.81885528 -0.4971447 0.0000000
+## virginica-setosa     -0.454 -0.61485528 -0.2931447 0.0000000
+## virginica-versicolor  0.204  0.04314472  0.3648553 0.0087802
+```
+
+--
+
+All pairs show a significant difference in means.
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+**Example**: recall `crabs.tsv` which has data involving features of female horseshoe crabs.
+
+
+```r
+crabs &lt;- read.table("crabs.tsv", header = T, sep = "\t") 
+crabs &lt;- crabs %&gt;%
+  mutate(color = factor(color)) %&gt;%
+  mutate(spine = factor(spine)) %&gt;%
+  mutate(id = paste0("obs", 1:nrow(crabs)))
+head(crabs)
+```
+
+```
+##   color spine width satell weight   id
+## 1     3     3  28.3      8   3050 obs1
+## 2     4     3  22.5      0   1550 obs2
+## 3     2     1  26.0      9   2300 obs3
+## 4     4     3  24.8      0   2100 obs4
+## 5     4     3  26.0      4   2600 obs5
+## 6     3     3  23.8      0   2100 obs6
+```
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+
+```r
+ggplot(crabs, aes(color, weight)) +
+  geom_boxplot()
+```
+
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-8-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+
+```r
+anova_res &lt;- aov(crabs$weight ~ crabs$color)
+summary(anova_res)
+```
+
+```
+##              Df   Sum Sq Mean Sq F value  Pr(&gt;F)   
+## crabs$color   3  3766792 1255597   3.966 0.00917 **
+## Residuals   169 53502001  316580                   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+
+```r
+hsd &lt;- TukeyHSD(anova_res)
+print(hsd)
+```
+
+```
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = crabs$weight ~ crabs$color)
+## 
+## $`crabs$color`
+##           diff       lwr       upr     p adj
+## 3-2  -91.35614 -538.6378 355.92548 0.9516931
+## 4-2 -329.91667 -805.3818 145.54843 0.2767204
+## 5-2 -455.30303 -979.2401  68.63399 0.1129741
+## 4-3 -238.56053 -504.7929  27.67184 0.0964136
+## 5-3 -363.94689 -709.3779 -18.51583 0.0346278
+## 5-4 -125.38636 -506.6065 255.83381 0.8286679
+```
+
+```r
+names(hsd)
+```
+
+```
+## [1] "crabs$color"
+```
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+
+```r
+df &lt;- hsd$`crabs$color` %&gt;%
+  as.data.frame() %&gt;%
+  rownames_to_column("Pair") %&gt;%
+  mutate(Sig = ifelse(`p adj` &lt; 0.05, "Sig.", "Not Sig."))
+```
+
+
+```r
+ggplot(df, aes(Pair, color = Sig)) +
+  geom_hline(yintercept = 0) +
+* geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.2) +
+  labs(color = "") 
+```
+
+.pull-left[
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-13-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+- `lwr` is the lower limit of 95% confidence interval of mean difference.
+- `upr` is the upper limit of 95% confidence interval of mean difference.
+- The pair color 5 and color 3 shows a significant difference in weights.
+]
+
+---
+
+## Chi-squared distribution
+
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-14-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
 ## Chi-squared test
 
-`\(\chi^2\)` test
+**Example**: 40 mice were randomly selected from 100 male mice and were castrated one day after birth. They were compared with the remaining 60 sham-operated mice. The mice were maintained for 140 days and blood samples were collected biweekly starting at 42 days old. The frequencies of mice with and without diabetes are recorded in the `\(2\times 2\)` contingency table below:
+
+`$$\begin{array}{c|ccc} &amp; \text{Castrated Mice} &amp; \text{Control Mice} &amp; \text{Total} \\ \hline   
+\text{With Diabetes} &amp; 22 &amp; 15 &amp; 37 \\  
+\text{Without Diabetes} &amp; 18 &amp; 45 &amp; 63 \\
+\text{Total} &amp; 40 &amp; 60 &amp; 100
+\end{array}$$`
+It was shown that neonatal castration more than doubled the incidence of diabetes (22/40=55%) when compared with controls (15/60=25%). Is this difference significant? That is, can we say that two population proportions of diabetes are different?
+
+--
+
+This example is different in that the response variable is not continuous, but categorical (With/Without Diabetes).
+
+---
+
+## Chi-squared test, continued
+
+- Observed contingency table
+
+`$$\begin{array}{c|ccc} &amp; \text{Castrated Mice} &amp; \text{Control Mice} &amp; \text{Total} \\ \hline   
+\text{With Diabetes} &amp; 22 &amp; 15 &amp; 37 \\  
+\text{Without Diabetes} &amp; 18 &amp; 45 &amp; 63 \\
+\text{Total} &amp; 40 &amp; 60 &amp; 100
+\end{array}$$`
+
+--
+
+- Overall proportion of diabetes: 37%
+
+--
+
+- If two treatments (Castrated/Control) do not affect the incidence of diabetes, then the proportion diabetes in both treatments should be the same 37%. 
+
+--
+
+- In other words, the expected number of diabetic mice should be about 40 `\(\times\)` 0.37 = 14.8 in castrated group and 60 `\(\times\)` 0.37 = 22.2 in control group.
+
+--
+
+- Similarly, the expected number of non-diabetic mice should be about 40 `\(\times\)` 0.63 = 25.2 in castrated group and 60 `\(\times\)` 0.63 = 37.8 in control group.
+
+---
+
+## Chi-squared test, continued
+
+- Observed contingency table
+
+`$$\begin{array}{c|ccc} &amp; \text{Castrated Mice} &amp; \text{Control Mice} &amp; \text{Total} \\ \hline   
+\text{With Diabetes} &amp; 22 &amp; 15 &amp; 37 \\  
+\text{Without Diabetes} &amp; 18 &amp; 45 &amp; 63 \\
+\text{Total} &amp; 40 &amp; 60 &amp; 100
+\end{array}$$`
+
+--
+
+- Expected contingency table under the assumption that treatments do not affect the incidence of diabetes
+
+`$$\begin{array}{c|ccc} &amp; \text{Castrated Mice} &amp; \text{Control Mice} &amp; \text{Total} \\ \hline   
+\text{With Diabetes} &amp; 14.8 &amp; 22.2 &amp; 37 \\  
+\text{Without Diabetes} &amp; 25.2 &amp; 37.8 &amp; 63 \\
+\text{Total} &amp; 40 &amp; 60 &amp; 100
+\end{array}$$`
+
+---
+
+## Chi-squared test, continued
+
+If treatments do not affect the incidence of diabetes, then observed values should not be too different from expected. The following is true in general:
+
+--
+
+`$$\begin{array}{c|ccc} &amp; \text{X} &amp; \text{Y} &amp; \text{Total} \\ \hline   
+\text{Success} &amp; a &amp; b &amp; a+b \\  
+\text{Failure} &amp; c &amp; d &amp; c+d \\
+\text{Total} &amp; n=a+c &amp; m=b+d &amp; n+m=a+b+c+d
+\end{array}$$`
+
+Let `\(p_0=(a+b)/(a+b+c+d)=(a+b)/(n+m)\)`. Under the assumption that two treatments `\(X\)` and `\(Y\)` have the same success rate, 
+`$$\chi^2 = \frac{(a-np_0)^2}{np_0}+\frac{(b-mp_0)^2}{mp_0}+\frac{(c-n(1-p_0))^2}{n(1-p_0)}+\frac{(d-m(1-p_0))^2}{m(1-p_0)}$$`
+approximately follows a `\(\chi^2\)`-distribution with `\(1\)` degree of freedom.
+
+---
+
+## Chi-squared test, continued
+
+- Observed contingency table
+
+`$$\begin{array}{c|ccc} &amp; \text{Castrated Mice} &amp; \text{Control Mice} &amp; \text{Total} \\ \hline   
+\text{With Diabetes} &amp; 22 &amp; 15 &amp; 37 \\  
+\text{Without Diabetes} &amp; 18 &amp; 45 &amp; 63 \\
+\text{Total} &amp; 40 &amp; 60 &amp; 100
+\end{array}$$`
+
+--
+
+- Expected contingency table
+
+`$$\begin{array}{c|ccc} &amp; \text{Castrated Mice} &amp; \text{Control Mice} &amp; \text{Total} \\ \hline   
+\text{With Diabetes} &amp; 14.8 &amp; 22.2 &amp; 37 \\  
+\text{Without Diabetes} &amp; 25.2 &amp; 37.8 &amp; 63 \\
+\text{Total} &amp; 40 &amp; 60 &amp; 100
+\end{array}$$`
+
+--
+
+
+```r
+X2 &lt;- (22-14.8)^2/14.8 + (15-22.2)^2/22.2 +
+  (18-25.2)^2/25.2 + (45-37.8)^2/37.8; print(X2)
+```
+
+```
+## [1] 9.266409
+```
+
+---
+
+## Chi-squared test, continued
+
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-16-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+```r
+pval &lt;- 1-pchisq(X2, df = 1); print(pval)
+```
+
+```
+## [1] 0.002333948
+```
+
+With small `\(p\)`-value, we conclude that the treatments differently affect on diabetes. 
+
+---
+
+## Chi-squared test, Yates' continuity correction
+
+Instead of `$$\chi^2 = \frac{(a-np_0)^2}{np_0}+\frac{(b-mp_0)^2}{mp_0}+\frac{(c-n(1-p_0))^2}{n(1-p_0)}+\frac{(d-m(1-p_0))^2}{m(1-p_0)},$$`
+Yates suggested the use of 
+`$$\chi^2 = \frac{(|a-np_0|-0.5)^2}{np_0}+\frac{(|b-mp_0|-0.5)^2}{mp_0} \\+\frac{(|c-n(1-p_0)|-0.5)^2}{n(1-p_0)}+\frac{(|d-m(1-p_0)|-0.5)^2}{m(1-p_0)}.$$`
+
+
+```r
+X2_Yates &lt;- 
+  (abs(22-14.8)-0.5)^2/14.8 + (abs(15-22.2)-0.5)^2/22.2 +
+  (abs(18-25.2)-0.5)^2/25.2 + (abs(45-37.8)-0.5)^2/37.8
+print(X2_Yates)
+```
+
+```
+## [1] 8.024096
+```
+
+---
+
+## Chi-squared test, Yates' continuity correction
+
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+```r
+pval &lt;- 1-pchisq(X2_Yates, df = 1); print(pval)
+```
+
+```
+## [1] 0.004615907
+```
+
+Again with small `\(p\)`-value, we conclude that the treatments differently affect on diabetes. 
+
+---
+
+## Chi-squared test, continued
+
+R time!
+
+`$$\begin{array}{c|ccc} &amp; \text{Castrated Mice} &amp; \text{Control Mice} &amp; \text{Total} \\ \hline   
+\text{With Diabetes} &amp; 22 &amp; 15 &amp; 37 \\  
+\text{Without Diabetes} &amp; 18 &amp; 45 &amp; 63 \\
+\text{Total} &amp; 40 &amp; 60 &amp; 100
+\end{array}$$`
+
+
+```r
+contingency &lt;- matrix(c(22, 18, 15, 45), byrow = F, nrow = 2)
+print(contingency)
+```
+
+```
+##      [,1] [,2]
+## [1,]   22   15
+## [2,]   18   45
+```
+
+---
+
+## Chi-squared test, continued
+
+
+```r
+chisq.test(contingency, correct = F) # No Yates' correction
+```
+
+```
+## 
+## 	Pearson's Chi-squared test
+## 
+## data:  contingency
+## X-squared = 9.2664, df = 1, p-value = 0.002334
+```
+
+--
+
+
+```r
+chisq.test(contingency, correct = T) # With Yates' correction
+```
+
+```
+## 
+## 	Pearson's Chi-squared test with Yates' continuity correction
+## 
+## data:  contingency
+## X-squared = 8.0241, df = 1, p-value = 0.004616
+```
+
+Default: With Yates' correction
+
+---
+
+## Chi-squared test, continued
+
+**Example**: 993 cows were randomly assigned to one of three insemination methods. Each cow was inseminated once and the proportion of cows that became pregnant in each group is given in the following table:
+`$$\begin{array}{c|cccc} &amp; \text{Method I} &amp; \text{Method II} &amp; \text{Method III} &amp; \text{Total} \\ \hline   
+\text{Pregnant} &amp; 275 &amp; 192 &amp; 261 &amp; 728 \\  
+\text{Not Pregnant} &amp; 78 &amp; 64 &amp; 123 &amp; 265 \\
+\text{Total} &amp; 353 &amp; 256 &amp; 384 &amp; 993
+\end{array}$$`
+Is there any evidence for believing that the insemination methods show different proportions of pregnant animals?
+
+--
+
+Note that we have more than two treatments. 
+
+---
+
+## Chi-squared test, continued
+
+Suppose that the following `\(r\times c\)` contingency table is given:
+`$$\begin{array}{c|ccccccc} &amp; G_1 &amp; G_2 &amp; \cdots &amp; G_j &amp; \cdots &amp; G_c &amp; \text{Total} \\ \hline   
+\text{Outcome 1} &amp; n_{11} &amp; n_{12} &amp; \cdots &amp; n_{1j} &amp; \cdots &amp; n_{1c} &amp; n_{1+} \\  
+\text{Outcome 2} &amp; n_{21} &amp; n_{22} &amp; \cdots &amp; n_{2j} &amp; \cdots &amp; n_{2c} &amp; n_{2+} \\  
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+\text{Outcome i} &amp; n_{i1} &amp; n_{i2} &amp; \cdots &amp; n_{ij} &amp; \cdots &amp; n_{ic} &amp; n_{i+} \\ 
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+\text{Outcome r} &amp; n_{r1} &amp; n_{r2} &amp; \cdots &amp; n_{rj} &amp; \cdots &amp; n_{rc} &amp; n_{r+} \\
+\text{Total} &amp; n_{+1} &amp; n_{+2} &amp; \cdots &amp; n_{+j} &amp; \cdots &amp; n_{+c} &amp; n
+\end{array}$$`
+Under the assumption that population outcome distributions are the same for all groups, 
+`\(\sum_{i=1}^r\sum_{j=1}^c \frac{(n_{ij}-n_{+j}\frac{n_{i+}}{n})^2}{n_{+j}\frac{n_{i+}}{n}} \quad \left(\sum \frac{(Observed-Expected)^2}{Expected}\right)\)`
+approximately follows a `\(\chi^2\)`-distribution with `\((r-1)(c-1)\)` degrees of freedom.
+
+---
+
+## Chi-squared test, continued
+
+
+```r
+obs &lt;- matrix(c(275, 78, 192, 64, 261, 123), 
+               nrow = 2, byrow = F)
+n_1_plus &lt;- 728; n_2_plus &lt;- 265;
+n_plus_1 &lt;- 353; n_plus_2 &lt;- 256; n_plus_3 &lt;- 384
+n &lt;- 993
+expect &lt;- matrix(1/n*c(n_plus_1*n_1_plus, n_plus_1*n_2_plus, 
+                       n_plus_2*n_1_plus, n_plus_2*n_2_plus,
+                       n_plus_3*n_1_plus, n_plus_3*n_2_plus), 
+                 nrow = 2, ncol = 3)
+print(obs)
+```
+
+```
+##      [,1] [,2] [,3]
+## [1,]  275  192  261
+## [2,]   78   64  123
+```
+
+```r
+print(expect)
+```
+
+```
+##           [,1]      [,2]     [,3]
+## [1,] 258.79557 187.68177 281.5227
+## [2,]  94.20443  68.31823 102.4773
+```
+
+---
+
+## Chi-squared test, continued
+
+
+```r
+X2 &lt;- sum((obs-expect)^2/expect) 
+# Yates' correction is only for 2 x 2
+pval &lt;- 1-pchisq(X2, df = 2)
+print(c(X2, pval))
+```
+
+```
+## [1] 9.780370691 0.007520029
+```
+
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-26-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Chi-squared test, continued
+
+
+```r
+chisq.test(obs)
+```
+
+```
+## 
+## 	Pearson's Chi-squared test
+## 
+## data:  obs
+## X-squared = 9.7804, df = 2, p-value = 0.00752
+```
+
+--
+
+Conclusion: the insemination methods show different proportions of pregnant animals.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

@@ -29,11 +29,455 @@ opts_chunk$set(
   )
 ```
 
+## One-way ANOVA, review
+
+Recall `iris` data set:
+
+```{r}
+head(iris)
+```
+
+Can we say that `Sepal.Width` is associated with `Species`?
+
+---
+
+## One-way ANOVA, review
+
+```{r, out.width = "50%"}
+ggplot(iris, aes(Species, Sepal.Width)) +
+  geom_boxplot()
+```
+
+---
+
+## One-way ANOVA, review
+
+```{r}
+oneway.test(iris$Sepal.Width ~ iris$Species, var.equal = T)
+```
+
+--
+
+```{r}
+summary(aov(iris$Sepal.Width ~ iris$Species))
+```
+
+--
+
+- Small $p$-value indicates that we should _reject_ the null hypothesis, i.e., population means are not the same for all species.
+- In other words, at least one mean is different from another.
+- Which pair(s) show difference?
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+```{r}
+anova_res <- aov(iris$Sepal.Width ~ iris$Species)
+TukeyHSD(anova_res) #<<
+```
+
+--
+
+All pairs show a significant difference in means.
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+**Example**: recall `crabs.tsv` which has data involving features of female horseshoe crabs.
+
+```{r}
+crabs <- read.table("crabs.tsv", header = T, sep = "\t") 
+crabs <- crabs %>%
+  mutate(color = factor(color)) %>%
+  mutate(spine = factor(spine)) %>%
+  mutate(id = paste0("obs", 1:nrow(crabs)))
+head(crabs)
+```
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+```{r, out.width = "50%"}
+ggplot(crabs, aes(color, weight)) +
+  geom_boxplot()
+```
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+```{r}
+anova_res <- aov(crabs$weight ~ crabs$color)
+summary(anova_res)
+```
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+```{r}
+hsd <- TukeyHSD(anova_res)
+print(hsd)
+names(hsd)
+```
+
+---
+
+## One-way ANOVA, post hoc analysis
+
+```{r}
+df <- hsd$`crabs$color` %>%
+  as.data.frame() %>%
+  rownames_to_column("Pair") %>%
+  mutate(Sig = ifelse(`p adj` < 0.05, "Sig.", "Not Sig."))
+```
+
+```{r, eval = F}
+ggplot(df, aes(Pair, color = Sig)) +
+  geom_hline(yintercept = 0) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.2) + #<<
+  labs(color = "") 
+```
+
+.pull-left[
+```{r, echo = F, fig.height = 3, out.width = "90%"}
+ggplot(df, aes(Pair, color = Sig)) +
+  geom_hline(yintercept = 0, lty = "dashed") +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.2) + #<<
+  labs(color = "") 
+```
+]
+
+.pull-right[
+- `lwr` is the lower limit of 95% confidence interval of mean difference.
+- `upr` is the upper limit of 95% confidence interval of mean difference.
+- The pair color 5 and color 3 shows a significant difference in weights.
+]
+
+---
+
+## Chi-squared distribution
+
+```{r, echo = F, fig.height = 3.5, fig.width = 5, out.width = "90%"}
+library(latex2exp)
+f1 = function(x) dchisq(x, df = 1)
+f2 = function(x) dchisq(x, df = 2)
+f3 = function(x) dchisq(x, df = 3)
+f5 = function(x) dchisq(x, df = 5)
+gf <- ggplot(data.frame(x = 1), aes(x)) +
+  scale_x_continuous(lim = c(0, 10), breaks = 1:10) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = f1, aes(color = "a")) + 
+  stat_function(fun = f2, aes(color = "b")) + 
+  stat_function(fun = f3, aes(color = "c")) + 
+  stat_function(fun = f5, aes(color = "d")) + 
+  ylim(0, 0.8) +
+  scale_color_manual(name = "Degrees of\nFreedom",
+                       values = c("blue", "red", "green", "black"), 
+                       labels = c("df = 1", "df = 2", "df = 3", "df = 5")) +
+  ggtitle(expression(chi^2))
+print(gf) 
+```
+
+---
+
 ## Chi-squared test
 
-$\chi^2$ test
+**Example**: 40 mice were randomly selected from 100 male mice and were castrated one day after birth. They were compared with the remaining 60 sham-operated mice. The mice were maintained for 140 days and blood samples were collected biweekly starting at 42 days old. The frequencies of mice with and without diabetes are recorded in the $2\times 2$ contingency table below:
 
+$$\begin{array}{c|ccc} & \text{Castrated Mice} & \text{Control Mice} & \text{Total} \\ \hline   
+\text{With Diabetes} & 22 & 15 & 37 \\  
+\text{Without Diabetes} & 18 & 45 & 63 \\
+\text{Total} & 40 & 60 & 100
+\end{array}$$
+It was shown that neonatal castration more than doubled the incidence of diabetes (22/40=55%) when compared with controls (15/60=25%). Is this difference significant? That is, can we say that two population proportions of diabetes are different?
 
+--
 
+This example is different in that the response variable is not continuous, but categorical (With/Without Diabetes).
 
+---
 
+## Chi-squared test, continued
+
+- Observed contingency table
+
+$$\begin{array}{c|ccc} & \text{Castrated Mice} & \text{Control Mice} & \text{Total} \\ \hline   
+\text{With Diabetes} & 22 & 15 & 37 \\  
+\text{Without Diabetes} & 18 & 45 & 63 \\
+\text{Total} & 40 & 60 & 100
+\end{array}$$
+
+--
+
+- Overall proportion of diabetes: 37%
+
+--
+
+- If two treatments (Castrated/Control) do not affect the incidence of diabetes, then the proportion diabetes in both treatments should be the same 37%. 
+
+--
+
+- In other words, the expected number of diabetic mice should be about 40 $\times$ 0.37 = 14.8 in castrated group and 60 $\times$ 0.37 = 22.2 in control group.
+
+--
+
+- Similarly, the expected number of non-diabetic mice should be about 40 $\times$ 0.63 = 25.2 in castrated group and 60 $\times$ 0.63 = 37.8 in control group.
+
+---
+
+## Chi-squared test, continued
+
+- Observed contingency table
+
+$$\begin{array}{c|ccc} & \text{Castrated Mice} & \text{Control Mice} & \text{Total} \\ \hline   
+\text{With Diabetes} & 22 & 15 & 37 \\  
+\text{Without Diabetes} & 18 & 45 & 63 \\
+\text{Total} & 40 & 60 & 100
+\end{array}$$
+
+--
+
+- Expected contingency table under the assumption that treatments do not affect the incidence of diabetes
+
+$$\begin{array}{c|ccc} & \text{Castrated Mice} & \text{Control Mice} & \text{Total} \\ \hline   
+\text{With Diabetes} & 14.8 & 22.2 & 37 \\  
+\text{Without Diabetes} & 25.2 & 37.8 & 63 \\
+\text{Total} & 40 & 60 & 100
+\end{array}$$
+
+---
+
+## Chi-squared test, continued
+
+If treatments do not affect the incidence of diabetes, then observed values should not be too different from expected. The following is true in general:
+
+--
+
+$$\begin{array}{c|ccc} & \text{X} & \text{Y} & \text{Total} \\ \hline   
+\text{Success} & a & b & a+b \\  
+\text{Failure} & c & d & c+d \\
+\text{Total} & n=a+c & m=b+d & n+m=a+b+c+d
+\end{array}$$
+
+Let $p_0=(a+b)/(a+b+c+d)=(a+b)/(n+m)$. Under the assumption that two treatments $X$ and $Y$ have the same success rate, 
+$$\chi^2 = \frac{(a-np_0)^2}{np_0}+\frac{(b-mp_0)^2}{mp_0}+\frac{(c-n(1-p_0))^2}{n(1-p_0)}+\frac{(d-m(1-p_0))^2}{m(1-p_0)}$$
+approximately follows a $\chi^2$-distribution with $1$ degree of freedom.
+
+---
+
+## Chi-squared test, continued
+
+- Observed contingency table
+
+$$\begin{array}{c|ccc} & \text{Castrated Mice} & \text{Control Mice} & \text{Total} \\ \hline   
+\text{With Diabetes} & 22 & 15 & 37 \\  
+\text{Without Diabetes} & 18 & 45 & 63 \\
+\text{Total} & 40 & 60 & 100
+\end{array}$$
+
+--
+
+- Expected contingency table
+
+$$\begin{array}{c|ccc} & \text{Castrated Mice} & \text{Control Mice} & \text{Total} \\ \hline   
+\text{With Diabetes} & 14.8 & 22.2 & 37 \\  
+\text{Without Diabetes} & 25.2 & 37.8 & 63 \\
+\text{Total} & 40 & 60 & 100
+\end{array}$$
+
+--
+
+```{r}
+X2 <- (22-14.8)^2/14.8 + (15-22.2)^2/22.2 +
+  (18-25.2)^2/25.2 + (45-37.8)^2/37.8; print(X2)
+```
+
+---
+
+## Chi-squared test, continued
+
+```{r, echo = F, fig.height = 3.5, fig.width = 5, out.width = "60%"}
+library(latex2exp)
+f1 = function(x) dchisq(x, df = 1)
+gf <- ggplot(data.frame(x = 1), aes(x)) +
+  scale_x_continuous(lim = c(0, 6), breaks = c(1, 4), labels = c(1, round(X2, 3))) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = f1, geom = "area", xlim = c(4, 6), fill = "red") + 
+  stat_function(fun = f1) + 
+  ylim(0, 0.8) +
+  ggtitle(expression(paste(chi^2, ", df = 1")))
+print(gf) 
+```
+
+```{r}
+pval <- 1-pchisq(X2, df = 1); print(pval)
+```
+
+With small $p$-value, we conclude that the treatments differently affect on diabetes. 
+
+---
+
+## Chi-squared test, Yates' continuity correction
+
+Instead of $$\chi^2 = \frac{(a-np_0)^2}{np_0}+\frac{(b-mp_0)^2}{mp_0}+\frac{(c-n(1-p_0))^2}{n(1-p_0)}+\frac{(d-m(1-p_0))^2}{m(1-p_0)},$$
+Yates suggested the use of 
+$$\chi^2 = \frac{(|a-np_0|-0.5)^2}{np_0}+\frac{(|b-mp_0|-0.5)^2}{mp_0} \\+\frac{(|c-n(1-p_0)|-0.5)^2}{n(1-p_0)}+\frac{(|d-m(1-p_0)|-0.5)^2}{m(1-p_0)}.$$
+
+```{r}
+X2_Yates <- 
+  (abs(22-14.8)-0.5)^2/14.8 + (abs(15-22.2)-0.5)^2/22.2 +
+  (abs(18-25.2)-0.5)^2/25.2 + (abs(45-37.8)-0.5)^2/37.8
+print(X2_Yates)
+```
+
+---
+
+## Chi-squared test, Yates' continuity correction
+
+```{r, echo = F, fig.height = 3.5, fig.width = 5, out.width = "60%"}
+library(latex2exp)
+f1 = function(x) dchisq(x, df = 1)
+gf <- ggplot(data.frame(x = 1), aes(x)) +
+  scale_x_continuous(lim = c(0, 6), breaks = c(1, 3.5), labels = c(1, round(X2_Yates, 3))) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = f1, geom = "area", xlim = c(3.5, 6), fill = "red") + 
+  stat_function(fun = f1) + 
+  ylim(0, 0.8) +
+  ggtitle(expression(paste(chi^2, ", df = 1")))
+print(gf) 
+```
+
+```{r}
+pval <- 1-pchisq(X2_Yates, df = 1); print(pval)
+```
+
+Again with small $p$-value, we conclude that the treatments differently affect on diabetes. 
+
+---
+
+## Chi-squared test, continued
+
+R time!
+
+$$\begin{array}{c|ccc} & \text{Castrated Mice} & \text{Control Mice} & \text{Total} \\ \hline   
+\text{With Diabetes} & 22 & 15 & 37 \\  
+\text{Without Diabetes} & 18 & 45 & 63 \\
+\text{Total} & 40 & 60 & 100
+\end{array}$$
+
+```{r}
+contingency <- matrix(c(22, 18, 15, 45), byrow = F, nrow = 2)
+print(contingency)
+```
+
+---
+
+## Chi-squared test, continued
+
+```{r}
+chisq.test(contingency, correct = F) # No Yates' correction
+```
+
+--
+
+```{r}
+chisq.test(contingency, correct = T) # With Yates' correction
+```
+
+Default: With Yates' correction
+
+---
+
+## Chi-squared test, continued
+
+**Example**: 993 cows were randomly assigned to one of three insemination methods. Each cow was inseminated once and the proportion of cows that became pregnant in each group is given in the following table:
+$$\begin{array}{c|cccc} & \text{Method I} & \text{Method II} & \text{Method III} & \text{Total} \\ \hline   
+\text{Pregnant} & 275 & 192 & 261 & 728 \\  
+\text{Not Pregnant} & 78 & 64 & 123 & 265 \\
+\text{Total} & 353 & 256 & 384 & 993
+\end{array}$$
+Is there any evidence for believing that the insemination methods show different proportions of pregnant animals?
+
+--
+
+Note that we have more than two treatments. 
+
+---
+
+## Chi-squared test, continued
+
+Suppose that the following $r\times c$ contingency table is given:
+$$\begin{array}{c|ccccccc} & G_1 & G_2 & \cdots & G_j & \cdots & G_c & \text{Total} \\ \hline   
+\text{Outcome 1} & n_{11} & n_{12} & \cdots & n_{1j} & \cdots & n_{1c} & n_{1+} \\  
+\text{Outcome 2} & n_{21} & n_{22} & \cdots & n_{2j} & \cdots & n_{2c} & n_{2+} \\  
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+\text{Outcome i} & n_{i1} & n_{i2} & \cdots & n_{ij} & \cdots & n_{ic} & n_{i+} \\ 
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+\text{Outcome r} & n_{r1} & n_{r2} & \cdots & n_{rj} & \cdots & n_{rc} & n_{r+} \\
+\text{Total} & n_{+1} & n_{+2} & \cdots & n_{+j} & \cdots & n_{+c} & n
+\end{array}$$
+Under the assumption that population outcome distributions are the same for all groups, 
+$\sum_{i=1}^r\sum_{j=1}^c \frac{(n_{ij}-n_{+j}\frac{n_{i+}}{n})^2}{n_{+j}\frac{n_{i+}}{n}} \quad \left(\sum \frac{(Observed-Expected)^2}{Expected}\right)$
+approximately follows a $\chi^2$-distribution with $(r-1)(c-1)$ degrees of freedom.
+
+---
+
+## Chi-squared test, continued
+
+```{r}
+obs <- matrix(c(275, 78, 192, 64, 261, 123), 
+               nrow = 2, byrow = F)
+n_1_plus <- 728; n_2_plus <- 265;
+n_plus_1 <- 353; n_plus_2 <- 256; n_plus_3 <- 384
+n <- 993
+expect <- matrix(1/n*c(n_plus_1*n_1_plus, n_plus_1*n_2_plus, 
+                       n_plus_2*n_1_plus, n_plus_2*n_2_plus,
+                       n_plus_3*n_1_plus, n_plus_3*n_2_plus), 
+                 nrow = 2, ncol = 3)
+print(obs)
+print(expect)
+```
+
+---
+
+## Chi-squared test, continued
+
+```{r}
+X2 <- sum((obs-expect)^2/expect) 
+# Yates' correction is only for 2 x 2
+pval <- 1-pchisq(X2, df = 2)
+print(c(X2, pval))
+```
+
+```{r, echo = F, fig.height = 3.5, fig.width = 5, out.width = "60%"}
+library(latex2exp)
+f2 = function(x) dchisq(x, df = 2)
+gf <- ggplot(data.frame(x = 1), aes(x)) +
+  scale_x_continuous(lim = c(0, 6), breaks = c(1, 5), labels = c(1, round(X2, 3))) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = f2, geom = "area", xlim = c(5, 6), fill = "red") + 
+  stat_function(fun = f2) + 
+  ylim(0, 0.6) +
+  ggtitle(expression(paste(chi^2, ", df = 2")))
+print(gf) 
+```
+
+---
+
+## Chi-squared test, continued
+
+```{r}
+chisq.test(obs)
+```
+
+--
+
+Conclusion: the insemination methods show different proportions of pregnant animals.
