@@ -1,0 +1,313 @@
+---
+title: "Lecture 9"
+author: "Jung-Jin Lee"
+date: "Mar 12, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Drexel.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## Correlation Coefficient
+
+- First step to linear regression 
+
+- Let $X$ and $Y$ be paired random variables (e.g. `weight` and `height` of a subject). What can you say about the association between $X$ and $Y$? (e.g. does `weight` increase as `height` increases?)
+
+- The population correlation coefficient is defined by
+$$\rho=\frac{Cov(X,Y)}{\sigma_X\sigma_Y}=\frac{E[(X-\mu_X)(Y-\mu_Y)]}{\sigma_X\sigma_Y},$$
+where $\mu_X$ (respectively, $\mu_Y$) is the mean of $X$ (respectively, $Y$) and $\sigma_X$ (respectively, $\sigma_Y$) is the standard deviation of $X$ (respectively, $Y$). 
+
+---
+
+## Correlation Coefficient -- Properties
+
+- It is known that $-1\leq \rho \leq 1$. 
+  - If $\rho$ is close to $1$, then it implies strong **positive** linear association between $X$ and $Y$. 
+  - If $\rho$ is close to $-1$, then it implies strong **negative** linear association between $X$ and $Y$. 
+  - If $\rho$ is close to $0$, then it implies weak or no linear association between $X$ and $Y$. 
+
+- When $\rho=0$, $X$ and $Y$ are said to be **uncorrelated**. 
+
+- In practice, the linear association between two populations is first examined by looking at the scatter plot of samples. 
+
+- Then the population correlation coefficient $\rho$ is more objectively estimated from a sample using the sample correlation coefficient.
+
+---
+
+## Sample Correlation Coefficient
+
+- Let $(x_1, y_1), (x_2, y_2), \ldots,(x_n, y_n)$ be a paired sample. The **sample correlation coefficient** or **Pearson's correlation coefficient** $r$ is a measure of the strength of the linear association between $x_1,x_2,\ldots,x_n$ and $y_1,y_2,\ldots,y_n$ defined by 
+$$r=\frac{\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2} \sqrt{\sum_{i=1}^n(y_i-\bar{y})^2}},$$ 
+where $\bar{x}=\frac{x_1+x_2+\cdots+x_n}{n}$ and $\bar{y}=\frac{y_1+y_2+\cdots+y_n}{n}$.
+
+- By Cauchy-Schwarz inequality, it follows that $-1\leq r\leq 1$. 
+
+---
+
+## Example: UK heights data
+
+```{r, out.width = "55%"}
+height <- read.table(file = "heights.txt", header = T, sep = " ")
+ggplot(height, aes(Mheight, Dheight)) + geom_point()
+```
+
+---
+
+## Example: UK heights data
+
+```{r}
+m <- height$Mheight; d <- height$Dheight
+top <- sum((m-mean(m))*(d-mean(d)))
+bottom <- sqrt(sum((m-mean(m))^2))*sqrt(sum((d-mean(d))^2))
+r <- top/bottom
+print(r)
+```
+
+--
+
+`cor()` computes Pearson's correlation coefficient:
+
+```{r}
+cor(m,d)
+```
+
+We observe a moderately positive linear association between `Mheight` and `Dheight`.
+
+---
+
+## Example: Horseshoe crabs
+
+```{r, out.width = "55%"}
+crabs <- read.table(file = "crabs.tsv", header = T, sep = "\t")
+ggplot(crabs, aes(width, satell)) + geom_point()
+```
+
+---
+
+## Example: Horseshoe crabs
+
+```{r}
+cor(crabs$width, crabs$satell)
+```
+
+Not very strong association is observed between `width` and `satell`.
+
+--
+
+```{r}
+cor(crabs$width, crabs$weight)
+```
+
+Strong positive association between `width` and `weight`.
+
+**Exercise**: verify this using a scatter plot.
+
+---
+
+## Example: Motor Trend Car Road Tests
+
+`mtcars` is one of built-in data sets in R:
+
+```{r}
+head(mtcars)
+dim(mtcars)
+names(mtcars)
+```
+
+---
+
+## Example: Motor Trend Car Road Tests
+
+`mtcars` is a data frame with row names (Note that make/model is not one of variable names). The make/model of cars can be obtained using `rownames()`:
+
+```{r}
+rownames(mtcars)
+```
+
+Type `?mtcars` to learn about variables in `mtcars`.
+
+---
+
+## Example: Motor Trend Car Road Tests
+
+What can you say about the association between `wt` and `mpg`? 
+
+--
+
+.pull-left[
+```{r}
+ggplot(mtcars, aes(wt, mpg)) + 
+  geom_point()
+```
+]
+
+--
+
+.pull-right[
+```{r}
+cor(mtcars$wt, mtcars$mpg)
+```
+
+Strong negative association is observed, as expected.
+]
+
+---
+
+## Hypothesis Testing for Correlation Coefficient
+ 
+Suppose that the sample $(x_1,x_2,\ldots,x_n)$ and $(y_1,y_2,\ldots,y_n)$ are taken from normal populations. Under the null hypothesis that the population correlation coefficient is $0$, 
+$$r\sqrt{\frac{n-2}{1-r^2}}$$
+follows a $t$-distribution with $n-2$ degrees of freedom. Moreover, the 95% confidence interval of the population correlation coefficient $\rho$ is given by 
+$$\left(\frac{e^{2z_1}-1}{e^{2z_1}+1}, \frac{e^{2z_2}-1}{e^{2z_2}+1}\right),$$
+where 
+$$z_1=\frac{1}{2}\log\frac{1+r}{1-r}-\frac{1.96}{\sqrt{n-3}}\quad \text{and} \quad z_2=\frac{1}{2}\log\frac{1+r}{1-r}+\frac{1.96}{\sqrt{n-3}}.$$
+
+---
+
+## Example: bone activity measures
+
+Jackson et al. (1996) were interested to know whether two measures of bone activity in adult horses, the wheatgerm lectin precipitated bone alkaline phosphatase activity (wBAP) and the carboxy-terminal propeptide of Type I collagen (PICP), are correlated. A sample of size 46 was taken and recorded below:
+
+```{r}
+wbap <- c(20, 31, 31, 22, 18, 16, 18, 55, 28, 32, 33, 38, 34, 
+          21, 41, 30, 36, 50, 54, 31, 35, 39, 36, 36, 40, 36, 
+          34, 41, 48, 50, 52, 61, 61, 57, 59, 63, 65, 62, 61, 
+          70, 71, 88, 90, 90, 110, 34)
+picp <- c(190, 186, 190, 205, 210, 290, 306, 1000, 170, 180, 
+          300, 303, 320, 360, 340, 400, 380, 405, 370, 490, 
+          470, 470, 580, 540, 520, 700, 800, 800, 850, 980, 
+          1005, 1100, 1070, 810, 720, 740, 700, 750, 700, 
+          570, 1300, 1050, 1100, 1200, 940, 360)
+c(length(wbap), length(picp))
+```
+
+Determine if wBAP and PICP were uncorrelated.
+
+---
+
+## Example: bone activity measures
+
+```{r}
+bone <- data.frame(wbap, picp) 
+```
+
+.pull-left[
+```{r}
+head(bone)
+```
+
+```{r, eval = F}
+bone %>%
+  ggplot(aes(wbap, picp)) +
+  geom_point()
+```
+]
+
+.pull-right[
+```{r, echo = F}
+bone %>%
+  ggplot(aes(wbap, picp)) +
+  geom_point()
+```
+]
+
+---
+
+## Example: bone activity measures
+
+```{r}
+n <- length(wbap)
+r <- cor(wbap, picp)
+print(r)
+t <- r*sqrt((n-2)/(1-r^2))
+print(t)
+z_values <- 0.5*log((1+r)/(1-r)) + 1.96/sqrt(n-3)*c(-1,1)
+CI95 <- (exp(2*z_values)-1)/(exp(2*z_values)+1)
+print(CI95)
+```
+
+---
+
+## Example: bone activity measures
+
+How to get $p$-value?
+
+--
+
+.pull-left[
+```{r, echo = F}
+tfun = function(x) dt(x, df = 44)
+gt <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(-1.8, 0, 1.8), labels = c("-8.22523", "0", "8.22523")) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun, xlim = c(-2, -1.8), geom = "area", fill = "red") + 
+  stat_function(fun = tfun, xlim = c(1.8, 2), geom = "area", fill = "red") + 
+  stat_function(fun = tfun) + 
+  ylim(0, 0.45) +
+  ggtitle(paste0("t, df = ", n-2))
+print(gt) 
+```
+]
+
+--
+
+.pull-right[
+```{r}
+pval = 2*(1-pt(t, df = n-2))
+print(pval)
+```
+
+With $p$-value less than 0.05, we reject the null hypothesis that two measures are uncorrelated and conclude that the population correlation coefficient is not equal to zero. 
+]
+
+---
+
+## Example: bone activity measures
+
+`cor.test()` is an R function that computes the $p$-value and other relevant output:
+
+```{r}
+cor.test(wbap, picp)
+```
+
+---
+
+## Misuse of Correlation Coefficient
+
+- The correlation coefficient is frequently misused. 
+
+- A significantly nonzero correlation coefficient does **NOT** necessarily provide evidence of a **causal** relationship between two variables. 
+
+- For example, just because the annual pet food consumption in the UK is correlated with the number of air-miles flown by UK resdients, this does not suggest that pets are using food as a comfort substitute for absent owners!
+
+<p align = "center">
+  <img src = corr.png width = "600">
+  <br/>
+  <a href="https://xkcd.com/552">https://xkcd.com/552</a>
+</p>  
+
+
+

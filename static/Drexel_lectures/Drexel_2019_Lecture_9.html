@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Lecture 9</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jung-Jin Lee" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Drexel.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 9
+### Jung-Jin Lee
+### Mar 12, 2019
+
+---
+
+ 
+
+
+## Correlation Coefficient
+
+- First step to linear regression 
+
+- Let `\(X\)` and `\(Y\)` be paired random variables (e.g. `weight` and `height` of a subject). What can you say about the association between `\(X\)` and `\(Y\)`? (e.g. does `weight` increase as `height` increases?)
+
+- The population correlation coefficient is defined by
+`$$\rho=\frac{Cov(X,Y)}{\sigma_X\sigma_Y}=\frac{E[(X-\mu_X)(Y-\mu_Y)]}{\sigma_X\sigma_Y},$$`
+where `\(\mu_X\)` (respectively, `\(\mu_Y\)`) is the mean of `\(X\)` (respectively, `\(Y\)`) and `\(\sigma_X\)` (respectively, `\(\sigma_Y\)`) is the standard deviation of `\(X\)` (respectively, `\(Y\)`). 
+
+---
+
+## Correlation Coefficient -- Properties
+
+- It is known that `\(-1\leq \rho \leq 1\)`. 
+  - If `\(\rho\)` is close to `\(1\)`, then it implies strong **positive** linear association between `\(X\)` and `\(Y\)`. 
+  - If `\(\rho\)` is close to `\(-1\)`, then it implies strong **negative** linear association between `\(X\)` and `\(Y\)`. 
+  - If `\(\rho\)` is close to `\(0\)`, then it implies weak or no linear association between `\(X\)` and `\(Y\)`. 
+
+- When `\(\rho=0\)`, `\(X\)` and `\(Y\)` are said to be **uncorrelated**. 
+
+- In practice, the linear association between two populations is first examined by looking at the scatter plot of samples. 
+
+- Then the population correlation coefficient `\(\rho\)` is more objectively estimated from a sample using the sample correlation coefficient.
+
+---
+
+## Sample Correlation Coefficient
+
+- Let `\((x_1, y_1), (x_2, y_2), \ldots,(x_n, y_n)\)` be a paired sample. The **sample correlation coefficient** or **Pearson's correlation coefficient** `\(r\)` is a measure of the strength of the linear association between `\(x_1,x_2,\ldots,x_n\)` and `\(y_1,y_2,\ldots,y_n\)` defined by 
+`$$r=\frac{\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2} \sqrt{\sum_{i=1}^n(y_i-\bar{y})^2}},$$` 
+where `\(\bar{x}=\frac{x_1+x_2+\cdots+x_n}{n}\)` and `\(\bar{y}=\frac{y_1+y_2+\cdots+y_n}{n}\)`.
+
+- By Cauchy-Schwarz inequality, it follows that `\(-1\leq r\leq 1\)`. 
+
+---
+
+## Example: UK heights data
+
+
+```r
+height &lt;- read.table(file = "heights.txt", header = T, sep = " ")
+ggplot(height, aes(Mheight, Dheight)) + geom_point()
+```
+
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-2-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Example: UK heights data
+
+
+```r
+m &lt;- height$Mheight; d &lt;- height$Dheight
+top &lt;- sum((m-mean(m))*(d-mean(d)))
+bottom &lt;- sqrt(sum((m-mean(m))^2))*sqrt(sum((d-mean(d))^2))
+r &lt;- top/bottom
+print(r)
+```
+
+```
+## [1] 0.4907094
+```
+
+--
+
+`cor()` computes Pearson's correlation coefficient:
+
+
+```r
+cor(m,d)
+```
+
+```
+## [1] 0.4907094
+```
+
+We observe a moderately positive linear association between `Mheight` and `Dheight`.
+
+---
+
+## Example: Horseshoe crabs
+
+
+```r
+crabs &lt;- read.table(file = "crabs.tsv", header = T, sep = "\t")
+ggplot(crabs, aes(width, satell)) + geom_point()
+```
+
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-5-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Example: Horseshoe crabs
+
+
+```r
+cor(crabs$width, crabs$satell)
+```
+
+```
+## [1] 0.3398903
+```
+
+Not very strong association is observed between `width` and `satell`.
+
+--
+
+
+```r
+cor(crabs$width, crabs$weight)
+```
+
+```
+## [1] 0.8868715
+```
+
+Strong positive association between `width` and `weight`.
+
+**Exercise**: verify this using a scatter plot.
+
+---
+
+## Example: Motor Trend Car Road Tests
+
+`mtcars` is one of built-in data sets in R:
+
+
+```r
+head(mtcars)
+```
+
+```
+##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
+```
+
+```r
+dim(mtcars)
+```
+
+```
+## [1] 32 11
+```
+
+```r
+names(mtcars)
+```
+
+```
+##  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear"
+## [11] "carb"
+```
+
+---
+
+## Example: Motor Trend Car Road Tests
+
+`mtcars` is a data frame with row names (Note that make/model is not one of variable names). The make/model of cars can be obtained using `rownames()`:
+
+
+```r
+rownames(mtcars)
+```
+
+```
+##  [1] "Mazda RX4"           "Mazda RX4 Wag"       "Datsun 710"         
+##  [4] "Hornet 4 Drive"      "Hornet Sportabout"   "Valiant"            
+##  [7] "Duster 360"          "Merc 240D"           "Merc 230"           
+## [10] "Merc 280"            "Merc 280C"           "Merc 450SE"         
+## [13] "Merc 450SL"          "Merc 450SLC"         "Cadillac Fleetwood" 
+## [16] "Lincoln Continental" "Chrysler Imperial"   "Fiat 128"           
+## [19] "Honda Civic"         "Toyota Corolla"      "Toyota Corona"      
+## [22] "Dodge Challenger"    "AMC Javelin"         "Camaro Z28"         
+## [25] "Pontiac Firebird"    "Fiat X1-9"           "Porsche 914-2"      
+## [28] "Lotus Europa"        "Ford Pantera L"      "Ferrari Dino"       
+## [31] "Maserati Bora"       "Volvo 142E"
+```
+
+Type `?mtcars` to learn about variables in `mtcars`.
+
+---
+
+## Example: Motor Trend Car Road Tests
+
+What can you say about the association between `wt` and `mpg`? 
+
+--
+
+.pull-left[
+
+```r
+ggplot(mtcars, aes(wt, mpg)) + 
+  geom_point()
+```
+
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-10-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+
+```r
+cor(mtcars$wt, mtcars$mpg)
+```
+
+```
+## [1] -0.8676594
+```
+
+Strong negative association is observed, as expected.
+]
+
+---
+
+## Hypothesis Testing for Correlation Coefficient
+ 
+Suppose that the sample `\((x_1,x_2,\ldots,x_n)\)` and `\((y_1,y_2,\ldots,y_n)\)` are taken from normal populations. Under the null hypothesis that the population correlation coefficient is `\(0\)`, 
+`$$r\sqrt{\frac{n-2}{1-r^2}}$$`
+follows a `\(t\)`-distribution with `\(n-2\)` degrees of freedom. Moreover, the 95% confidence interval of the population correlation coefficient `\(\rho\)` is given by 
+`$$\left(\frac{e^{2z_1}-1}{e^{2z_1}+1}, \frac{e^{2z_2}-1}{e^{2z_2}+1}\right),$$`
+where 
+`$$z_1=\frac{1}{2}\log\frac{1+r}{1-r}-\frac{1.96}{\sqrt{n-3}}\quad \text{and} \quad z_2=\frac{1}{2}\log\frac{1+r}{1-r}+\frac{1.96}{\sqrt{n-3}}.$$`
+
+---
+
+## Example: bone activity measures
+
+Jackson et al. (1996) were interested to know whether two measures of bone activity in adult horses, the wheatgerm lectin precipitated bone alkaline phosphatase activity (wBAP) and the carboxy-terminal propeptide of Type I collagen (PICP), are correlated. A sample of size 46 was taken and recorded below:
+
+
+```r
+wbap &lt;- c(20, 31, 31, 22, 18, 16, 18, 55, 28, 32, 33, 38, 34, 
+          21, 41, 30, 36, 50, 54, 31, 35, 39, 36, 36, 40, 36, 
+          34, 41, 48, 50, 52, 61, 61, 57, 59, 63, 65, 62, 61, 
+          70, 71, 88, 90, 90, 110, 34)
+picp &lt;- c(190, 186, 190, 205, 210, 290, 306, 1000, 170, 180, 
+          300, 303, 320, 360, 340, 400, 380, 405, 370, 490, 
+          470, 470, 580, 540, 520, 700, 800, 800, 850, 980, 
+          1005, 1100, 1070, 810, 720, 740, 700, 750, 700, 
+          570, 1300, 1050, 1100, 1200, 940, 360)
+c(length(wbap), length(picp))
+```
+
+```
+## [1] 46 46
+```
+
+Determine if wBAP and PICP were uncorrelated.
+
+---
+
+## Example: bone activity measures
+
+
+```r
+bone &lt;- data.frame(wbap, picp) 
+```
+
+.pull-left[
+
+```r
+head(bone)
+```
+
+```
+##   wbap picp
+## 1   20  190
+## 2   31  186
+## 3   31  190
+## 4   22  205
+## 5   18  210
+## 6   16  290
+```
+
+
+```r
+bone %&gt;%
+  ggplot(aes(wbap, picp)) +
+  geom_point()
+```
+]
+
+.pull-right[
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Example: bone activity measures
+
+
+```r
+n &lt;- length(wbap)
+r &lt;- cor(wbap, picp)
+print(r)
+```
+
+```
+## [1] 0.7784131
+```
+
+```r
+t &lt;- r*sqrt((n-2)/(1-r^2))
+print(t)
+```
+
+```
+## [1] 8.22523
+```
+
+```r
+z_values &lt;- 0.5*log((1+r)/(1-r)) + 1.96/sqrt(n-3)*c(-1,1)
+CI95 &lt;- (exp(2*z_values)-1)/(exp(2*z_values)+1)
+print(CI95)
+```
+
+```
+## [1] 0.6306133 0.8717270
+```
+
+---
+
+## Example: bone activity measures
+
+How to get `\(p\)`-value?
+
+--
+
+.pull-left[
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-18-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+
+```r
+pval = 2*(1-pt(t, df = n-2))
+print(pval)
+```
+
+```
+## [1] 1.919904e-10
+```
+
+With `\(p\)`-value less than 0.05, we reject the null hypothesis that two measures are uncorrelated and conclude that the population correlation coefficient is not equal to zero. 
+]
+
+---
+
+## Example: bone activity measures
+
+`cor.test()` is an R function that computes the `\(p\)`-value and other relevant output:
+
+
+```r
+cor.test(wbap, picp)
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  wbap and picp
+## t = 8.2252, df = 44, p-value = 1.92e-10
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.6306166 0.8717257
+## sample estimates:
+##       cor 
+## 0.7784131
+```
+
+---
+
+## Misuse of Correlation Coefficient
+
+- The correlation coefficient is frequently misused. 
+
+- A significantly nonzero correlation coefficient does **NOT** necessarily provide evidence of a **causal** relationship between two variables. 
+
+- For example, just because the annual pet food consumption in the UK is correlated with the number of air-miles flown by UK resdients, this does not suggest that pets are using food as a comfort substitute for absent owners!
+
+&lt;p align = "center"&gt;
+  &lt;img src = corr.png width = "600"&gt;
+  &lt;br/&gt;
+  &lt;a href="https://xkcd.com/552"&gt;https://xkcd.com/552&lt;/a&gt;
+&lt;/p&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
