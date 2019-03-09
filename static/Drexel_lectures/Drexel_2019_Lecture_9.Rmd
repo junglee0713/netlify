@@ -309,5 +309,103 @@ cor.test(wbap, picp)
   <a href="https://xkcd.com/552">https://xkcd.com/552</a>
 </p>  
 
+---
 
+## Best Fitting Line
 
+Consider the following pairs of data:
+
+```{r}
+x <- c(12.33, -3.66, -1.24, -7.75, -3.20, -1.42, -0.38, -1.24, 
+       -3.65, 6.85, -9.59, -10.78, -1.39, -15.78, -5.54, -0.52, 
+       -4.07, 3.88, -3.19, 6.90)
+y <- c(11.61, 1.81, 5.38, -0.12, 3.72, 6.71, 5.17, 4.50, 
+       3.41, 7.27, 0.65, -1.74, 5.31, -4.13, 2.55, 7.16, 
+       3.32, 7.07, 3.64, 7.30)
+df <- data.frame(x, y)
+head(df)
+```
+
+---
+
+## Best Fitting Line
+
+```{r, out.width = "50%"}
+ggplot(df, aes(x, y)) + geom_point()
+```
+
+--
+
+Apparent linear trend is observed. Which line best describes this trend?
+
+---
+
+## Best Fitting Line
+
+```{r, eval = F}
+ggplot(df, aes(x, y)) + geom_point() +
+  geom_abline(slope = 0.4, intercept = 6, color = "red") +
+  geom_abline(slope = 0.6, intercept = 3, color = "blue") +
+  geom_abline(slope = 0.2, intercept = 5, color = "green")
+```
+
+.pull-left[
+```{r, echo = F}
+ggplot(df, aes(x, y)) + geom_point() +
+  geom_abline(slope = 0.4, intercept = 6, color = "red") +
+  geom_abline(slope = 0.6, intercept = 3, color = "blue") +
+  geom_abline(slope = 0.2, intercept = 5, color = "green")
+```
+]
+
+--
+
+.pull-right[
+- There could be multiple definitions of _best fitting line_
+
+- Depending on the definition, different best fitting line is obtained
+
+- Will use best fitting line based on _least square_
+]
+
+---
+
+## Least Square Line
+
+```{r, echo = F, out.width = "55%"}
+x <- c(2, 4, 5, 9, 12); y <- c(3, 2, 4, 6, 5)
+label_x <- paste0("x[", 1:5, "]"); label_y <- paste0("y[", 1:5, "]")
+label <- paste0("phantom()(", label_x, ", ", label_y, ")")
+df <- data.frame(x, y)
+g0 <- ggplot(df, aes(x, y)) +
+  xlim(c(0, 13)) +
+  ylim(c(0, 7)) +
+  geom_point() +
+  geom_text(label = label, hjust = 0.5, vjust = 0.5*c(-1, 2.5, -1, -1, 2.5), parse = TRUE) + 
+  theme_bw() +
+  theme_classic()
+print(g0)
+```
+
+---
+
+## Least Square Line
+
+```{r, echo = F, out.width = "55%"}
+a <- 1.5; b <- 0.4
+g1 <- g0 + geom_abline(intercept = a, slope = b, color = "red")
+print(g1)
+```
+
+---
+
+## Least Square Line
+
+```{r, echo = F, out.width = "55%"}
+g2 <- g1 + 
+  geom_abline(intercept = a, slope = b, color = "red") +
+  geom_segment(x = x, xend = x, y = y, yend = a + b*x, color = "blue", lty = "dashed")
+print(g2)
+```
+
+Determine the $y$-intercept and slope of <font color="red"> red line </font> so that the sum of squares of the <font color="blue"> blue dashed line segment </font> is minimized.

@@ -415,7 +415,96 @@ cor.test(wbap, picp)
   &lt;img src = corr.png width = "600"&gt;
   &lt;br/&gt;
   &lt;a href="https://xkcd.com/552"&gt;https://xkcd.com/552&lt;/a&gt;
-&lt;/p&gt;
+&lt;/p&gt;  
+
+---
+
+## Best Fitting Line
+
+Consider the following pairs of data:
+
+
+```r
+x &lt;- c(12.33, -3.66, -1.24, -7.75, -3.20, -1.42, -0.38, -1.24, 
+       -3.65, 6.85, -9.59, -10.78, -1.39, -15.78, -5.54, -0.52, 
+       -4.07, 3.88, -3.19, 6.90)
+y &lt;- c(11.61, 1.81, 5.38, -0.12, 3.72, 6.71, 5.17, 4.50, 
+       3.41, 7.27, 0.65, -1.74, 5.31, -4.13, 2.55, 7.16, 
+       3.32, 7.07, 3.64, 7.30)
+df &lt;- data.frame(x, y)
+head(df)
+```
+
+```
+##       x     y
+## 1 12.33 11.61
+## 2 -3.66  1.81
+## 3 -1.24  5.38
+## 4 -7.75 -0.12
+## 5 -3.20  3.72
+## 6 -1.42  6.71
+```
+
+---
+
+## Best Fitting Line
+
+
+```r
+ggplot(df, aes(x, y)) + geom_point()
+```
+
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-22-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+--
+
+Apparent linear trend is observed. Which line best describes this trend?
+
+---
+
+## Best Fitting Line
+
+
+```r
+ggplot(df, aes(x, y)) + geom_point() +
+  geom_abline(slope = 0.4, intercept = 6, color = "red") +
+  geom_abline(slope = 0.6, intercept = 3, color = "blue") +
+  geom_abline(slope = 0.2, intercept = 5, color = "green")
+```
+
+.pull-left[
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-24-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+--
+
+.pull-right[
+- There could be multiple definitions of _best fitting line_
+
+- Depending on the definition, different best fitting line is obtained
+
+- Will use best fitting line based on _least square_
+]
+
+---
+
+## Least Square Line
+
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-25-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Least Square Line
+
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-26-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Least Square Line
+
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-27-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+
+Determine the `\(y\)`-intercept and slope of &lt;font color="red"&gt; red line &lt;/font&gt; so that the sum of squares of the &lt;font color="blue"&gt; blue dashed line segment &lt;/font&gt; is minimized.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
