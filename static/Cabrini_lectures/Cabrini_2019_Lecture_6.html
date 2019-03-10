@@ -536,6 +536,32 @@ t.test(high, low, paired = T)
 
 ---
 
+## Paired _t_-test, continued
+
+Paired `\(t\)`-test is just the same as one-sample `\(t\)`-test applied to difference!
+
+
+```r
+diff &lt;- high - low
+t.test(diff, mu = 0)
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  diff
+## t = -4.368, df = 10, p-value = 0.001404
+## alternative hypothesis: true mean is not equal to 0
+## 95 percent confidence interval:
+##  -5.750760 -1.865603
+## sample estimates:
+## mean of x 
+## -3.808182
+```
+
+---
+
 ## Paired _t_-test, exercise
 
 Create the following plot using the data set `heights.txt`.
@@ -545,7 +571,7 @@ Create the following plot using the data set `heights.txt`.
 ht &lt;- read.table(file = "heights.txt", header = T, sep = " ") 
 ```
 
-&lt;img src="Cabrini_2019_Lecture_6_files/figure-html/unnamed-chunk-22-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_6_files/figure-html/unnamed-chunk-23-1.png" width="40%" style="display: block; margin: auto;" /&gt;
 
 --
 

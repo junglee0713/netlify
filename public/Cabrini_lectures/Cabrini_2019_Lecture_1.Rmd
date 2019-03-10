@@ -398,6 +398,25 @@ sum(w4)
 
 ---
 
+## Recycling in R
+
+Operation between a single value and a vector.
+
+```{r}
+num3 <- 3
+vec5 <- 1:5
+vec6 <- vec5 + num3
+print(vec6)
+```
+
+```{r}
+vec7 <- paste0("Visitor_", vec5)
+print(vec7)
+```
+
+
+---
+
 ## Data frame
 
 Vectors of an equal length can be combined to form a data frame.
@@ -442,6 +461,23 @@ print(method1)
 # use "$" to extract a column
 method2 <- book$first
 print(method2)
+```
+
+---
+
+## Adding a variable in a data frame
+
+```{r}
+gender <- c("Female", "Male", "Male", "Unknown")
+book$sex <- gender
+print(book)
+```
+
+Recycling applies to a data frame
+
+```{r}
+book$remark <- "friend"
+print(book)
 ```
 
 ---

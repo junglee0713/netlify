@@ -393,6 +393,17 @@ t.test(high, low, paired = T)
 
 ---
 
+## Paired _t_-test, continued
+
+Paired $t$-test is just the same as one-sample $t$-test applied to difference!
+
+```{r}
+diff <- high - low
+t.test(diff, mu = 0)
+```
+
+---
+
 ## Paired _t_-test, exercise
 
 Create the following plot using the data set `heights.txt`.
