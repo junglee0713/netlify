@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Lecture 6</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jung-Jin Lee" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Cabrini.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 6
+### Jung-Jin Lee
+### Mar 13, 2019
+
+---
+
+ 
+
+
+## One-sample _t_-test, review
+
+Under the assumption that the population follows `\(N(\mu, \sigma^2)\)`, we test the null hypothesis `\(H_0: \mu = \mu_0\)`. 
+
+--
+
+- From samples `\(X_1,X_2,\ldots, X_n\)`, compute `\(t=\frac{\bar{X}-\mu_0}{S/\sqrt{n}}\)`, where `\(\bar{X}\)` and `\(S\)` denote the sample mean and sample standard deviation, respectively. 
+
+--
+
+- It is known that `\(t\)` follows a `\(t\)`-distribution with `\(n-1\)` degrees of freedom.
+
+--
+
+- If `\(t\)` seems to be unlikely to have been generated from a `\(t\)`-distribution with `\(n-1\)` degrees of freedom (e.g. `\(p\)`-value is small), then maybe it is because our null hypothesis `\(H_0\)` is not valid. 
+
+--
+
+- In general, if `\(p\)`-value is less than `\(0.05\)`, we reject the null hypothesis. If `\(p\)`-value is greater than `\(0.05\)`, then we do not reject the null hypothesis.
+
+---
+
+## One-sample _t_-test, example
+
+Download a tab-delimited file [donkey.tsv](donkey.tsv). 
+
+
+```r
+donkey &lt;- read.table("donkey.tsv", header = T, sep = "\t") 
+dim(donkey)
+```
+
+```
+## [1] 386   8
+```
+
+```r
+head(donkey)
+```
+
+```
+##   Donkey  Sex Age Bodywt Heartgirth Umbgirth Length Height
+## 1     s1 male 3.5    128        111      126     95    106
+## 2     s2 male 2.0    102        106      120     75    101
+## 3     s3 male 3.0    100        103      125     76    101
+## 4     s4 male 3.0     92        102      121     73    101
+## 5     s5 male 3.0     98        105      121     70    101
+## 6     s6 male 4.0    110        101      126     80    101
+```
+
+---
+
+## One-sample _t_-test, example
+
+- Donkey: donkey ID
+
+- Sex: sex
+
+- Age: age in years
+
+- Bodywt: body weight in kg
+
+- Heartgirth: girth at the level of the heart (cm)
+
+- Umbgirth: girth at the umbilicus (cm)
+
+- Length: length from the olecranon to the tuber ischii (cm)
+
+- Height: height at the withers (cm)
+
+---
+
+## One-sample _t_-test, example
+
+Assume that body weights of donkeys follow a normal distribution `\(N(\mu, \sigma^2)\)` and test the null hypothesis `\(H_0: \mu = 125\)`.
+
+.pull-left[
+
+```r
+ggplot(donkey, aes(Bodywt)) + 
+  geom_histogram(bins = 25) +
+* geom_vline(xintercept = 125,
+*            lty = "dashed",
+*            color = "red") +
+* theme_classic()
+```
+]
+
+.pull-right[
+&lt;img src="Cabrini_2019_Lecture_6_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## One-sample _t_-test, example
+
+
+```r
+t.test(donkey$Bodywt, mu = 125)
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  donkey$Bodywt
+## t = -1.8962, df = 385, p-value = 0.05868
+## alternative hypothesis: true mean is not equal to 125
+## 95 percent confidence interval:
+##  120.1189 125.0884
+## sample estimates:
+## mean of x 
+##  122.6036
+```
+
+--
+
+Based on the `\(p\)`-value, we do NOT reject the null hypothesis. 
+
+---
+
+## One-sample _t_-test, example
+
+What if `\(H_0: \mu = 130\)`?
+
+
+```r
+t.test(donkey$Bodywt, mu = 130)
+```
+
+```
+## 
+## 	One Sample t-test
+## 
+## data:  donkey$Bodywt
+## t = -5.8527, df = 385, p-value = 1.036e-08
+## alternative hypothesis: true mean is not equal to 130
+## 95 percent confidence interval:
+##  120.1189 125.0884
+## sample estimates:
+## mean of x 
+##  122.6036
+```
+
+--
+
+Notice that `\(130\)` is not captured by the 95% confidence interval. This is consistent with the interpretation of the 95% confidence interval. 
+
+---
+
+## Inference on proportion
+
+**Example**: 
+
+A sample of 1150 cattle is randomly selected from the population in an area. Among those 1150 cattle, 361 were found to have been exposed to *Leptospira* infection. What can you say about the true proportion of cattle exposed to *Leptospira* infection among the whole population in the area? 
+
+--
+
+- Point estimate
+
+--
+
+- Confidence interval
+
+--
+
+- Hypothesis test
+
+---
+
+## Inference on proportion, continued
+
+- Point estimate
+
+
+```r
+infected &lt;- 361
+n &lt;- 1150
+p &lt;- infected/n # sample proportion
+print(p)
+```
+
+```
+## [1] 0.313913
+```
+
+--
+
+- 95% confidence interval is _approximately_ given by
+
+`$$\left(p - 1.96\times \sqrt{\frac{p(1-p)}{n}},~p + 1.96\times \sqrt{\frac{p(1-p)}{n}}\right)$$`
+
+
+```r
+p + 1.96*sqrt(p*(1-p)/n)*c(-1,1) # 1.96 from qnorm(1-0.025)
+```
+
+```
+## [1] 0.2870904 0.3407357
+```
+
+--
+
+We are 95% certain that the true proportion is captured by this interval.
+
+---
+
+## Inference on proportion, continued
+
+- Hypothesis test
+
+--
+
+  - Assume that `\(H_0: \pi = 0.34\)`, where `\(\pi\)` denotes the true population proportion of the infected. 
+  
+--
+  
+  - Is our data for `\(H_0\)`? or against `\(H_0\)`?
+  
+--
+  
+  - Our decision is based on `\(p\)`-value. If `\(p\)`-value &lt; 0.05, reject `\(H_0\)`. Otherwise, do not reject `\(H_0\)`.
+  
+--
+
+  - `\(p\)`-value can be obtained from `prop.test()` function.
+  
+---
+
+## Inference on proportion, continued
+
+If the sample size `\(n\)` is large enough, then 
+
+- The sample proportion `\(p\)` approximately follows `\(N\left(\pi,\frac{\pi(1-\pi)}{n}\right)\)` (a consequence of *the Central Limit Theorem*). 
+
+- The `\((1-\alpha)\times 100\)`% confidence interval of `\(\pi\)` is approximately given by 
+`$$\left(p-z_{\alpha/2}\sqrt{\frac{p(1-p)}{n}}, p+z_{\alpha/2}\sqrt{\frac{p(1-p)}{n}}\right).$$`
+Here `\(z_{\alpha/2}\)` denotes the quantile value such that the probability `\(Z\geq z_{\alpha/2}=\alpha/2\)`, where `\(Z\)` follows the standard normal distribution `\(N(0,1^2)\)`.
+
+---
+
+## Inference on proportion, continued
+  
+
+```r
+prop.test(infected, n, p = 0.34)
+```
+
+```
+## 
+## 	1-sample proportions test with continuity correction
+## 
+## data:  infected out of n, null probability 0.34
+## X-squared = 3.3723, df = 1, p-value = 0.0663
+## alternative hypothesis: true p is not equal to 0.34
+## 95 percent confidence interval:
+##  0.2873247 0.3417605
+## sample estimates:
+##        p 
+## 0.313913
+```
+  
+--
+
+Based on the `\(p\)`-value, we do not reject `\(H_0\)`.
+
+--
+
+Check this out: [https://en.wikipedia.org/wiki/Margin_of_error](https://en.wikipedia.org/wiki/Margin_of_error)
+
+---
+
+## Two-sample _t_-test
+
+**Example**: consider the comparison of the mean body weights at the time of mating in one group of ewes which have been flushed (put on a high plane of nutrition for 2-3 weeks prior to mating) and another group which have
+not.
+
+
+```r
+cont&lt;- c(62.5, 63.9, 69.2, 66.8, 65.7, 62.6, 69.5, 67.2, 61.1, 
+         64.1, 65.2, 61.8, 65.3, 63.5, 69.6, 65.6, 65.3, 71.1, 
+         66.4, 65.1, 67.0, 66.1, 64.8, 67.5, 68.6, 67.4, 68.2, 
+         62.5, 66.0, 63.6)
+fl &lt;- c(70.7, 67.8, 69.8, 71.8, 66.8, 68.1, 64.9, 67.0, 66.0, 
+        68.2, 67.1, 69.4, 69.4, 67.6, 69.8, 64.4, 66.1, 67.9, 
+        66.9, 62.7, 66.2, 69.4, 64.6, 64.2)
+c(length(cont), length(fl)); c(mean(cont), mean(fl))
+```
+
+```
+## [1] 30 24
+```
+
+```
+## [1] 65.77333 67.36667
+```
+
+What is your point estimate for the difference of means? 95% confidence interval? Can we say that there is no difference in the mean body weights in the
+two populations?
+
+---
+
+## Two-sample _t_-test, continued
+
+
+```r
+## make group, a variable for membership
+group &lt;- c(rep("ctrl", length(cont)), rep("flshd", length(fl)))
+weight &lt;- c(cont, fl)
+df &lt;- data.frame(group, weight)
+dim(df)
+```
+
+```
+## [1] 54  2
+```
+
+--
+
+.pull-left[
+
+```r
+head(df)
+```
+
+```
+##   group weight
+## 1  ctrl   62.5
+## 2  ctrl   63.9
+## 3  ctrl   69.2
+## 4  ctrl   66.8
+## 5  ctrl   65.7
+## 6  ctrl   62.6
+```
+]
+
+--
+
+.pull-right[
+
+```r
+tail(df)
+```
+
+```
+##    group weight
+## 49 flshd   66.9
+## 50 flshd   62.7
+## 51 flshd   66.2
+## 52 flshd   69.4
+## 53 flshd   64.6
+## 54 flshd   64.2
+```
+]
+
+---
+
+## Two-sample _t_-test, continued 
+
+
+```r
+ggplot(df, aes(group, weight)) + 
+  geom_boxplot() +
+* geom_point(stat = "summary", fun.y = mean,
+*            color = "red", size = 5)
+```
+
+&lt;img src="Cabrini_2019_Lecture_6_files/figure-html/unnamed-chunk-14-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Two-sample _t_-test, continued
+
+Suppose that `\(X_1,X_2,\ldots,X_n\)` (respectively, `\(Y_1,Y_2,\ldots,Y_m\)`) are taken from a populaion that follows `\(N(\mu_X,\sigma^2)\)` (respectively, `\(N(\mu_Y,\sigma^2)\)`). Let 
+`$$\bar{X}=\frac{X_1+X_2+\cdots+X_n}{n}, \quad \bar{Y}=\frac{Y_1+Y_2+\cdots+Y_m}{m},$$`  
+and
+`$$S_X^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar{X})^2, \quad S_Y^2=\frac{1}{m-1}\sum_{j=1}^m(Y_j-\bar{Y})^2.$$`  
+Then
+`\(\displaystyle{\frac{\bar{X}-\bar{Y}-(\mu_X-\mu_Y)}{\sqrt{S_p^2\left(\frac{1}{n}+\frac{1}{m}\right)}}}\)` follows a `\(t\)`-distribution with `\(n+m-2\)` degrees of freedom, where `\(\displaystyle{S_p^2=\frac{(n-1)S_X^2+(m-1)S_Y^2}{n+m-2}}\)`. Here `\(S_p^2\)` is called *pooled variance*.  
+
+---
+
+## Two-sample _t_-test, continued
+
+
+```r
+t.test(cont, fl, var.equal = TRUE)
+```
+
+```
+## 
+## 	Two Sample t-test
+## 
+## data:  cont and fl
+## t = -2.4323, df = 52, p-value = 0.01848
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.9078519 -0.2788147
+## sample estimates:
+## mean of x mean of y 
+##  65.77333  67.36667
+```
+
+---
+
+## Two-sample _t_-test: Welch's test
+
+Suppose that `\(X_1,X_2,\ldots,X_n\)` (respectively, `\(Y_1,Y_2,\ldots,Y_m\)`) are taken from a populaion that follows `\(N(\mu_X,\sigma_X^2)\)` (respectively, `\(N(\mu_Y,\sigma_Y^2)\)`). Let 
+`$$\bar{X}=\frac{X_1+X_2+\cdots+X_n}{n}, \quad \bar{Y}=\frac{Y_1+Y_2+\cdots+Y_m}{m},$$` 
+and
+`$$S_X^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar{X})^2, \quad S_Y^2=\frac{1}{m-1}\sum_{j=1}^m(Y_j-\bar{Y})^2.$$` 
+Then `\(\displaystyle{\frac{\bar{X}-\bar{Y}-(\mu_X-\mu_Y)}{\sqrt{\frac{S_X^2}{n}+\frac{S_Y^2}{m}}}}\)` follows a `\(t\)`-distribution with `\(r\)` degrees of freedom, where `\(\displaystyle{r=\frac{\left(\frac{S_X^2}{n}+\frac{S_Y^2}{m}\right)^2}{\frac{1}{n-1}\left(\frac{S_X^2}{n}\right)^2+\frac{1}{m-1}\left(\frac{S_Y^2}{m}\right)^2}}\)`.
+
+---
+
+## Two-sample _t_-test: Welch's test, continued
+
+
+```r
+t.test(cont, fl, var.equal = F)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  cont and fl
+## t = -2.4607, df = 51.204, p-value = 0.01728
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.8931261 -0.2935406
+## sample estimates:
+## mean of x mean of y 
+##  65.77333  67.36667
+```
+
+---
+
+## Two-sample _t_-test, exercise
+
+Recall `iris` data set and create the following plot. 
+
+&lt;img src="Cabrini_2019_Lecture_6_files/figure-html/unnamed-chunk-17-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+Based on this data, can you say that mean `Sepal.Width` is associated with `Species`? Test with and without equal population variance assumption.
+
+---
+
+## Paired _t_-test
+
+Serum glucose levels in 11 dogs with insulin-dependent diabetes mellitus were measured when they received diets that contained either low insoluble fiber or high insoluble fiber.
+
+
+```r
+low = c(9.44, 17.61, 8.89, 16.94, 10.39, 11.78, 15.06, 7.06, 
+        19.56, 8.22, 23.17)
+high = c(9.28, 8.67, 6.28, 12.67, 6.67, 7.28, 15.39, 5.61, 
+         11.94, 5.11, 17.33)
+```
+
+Can we say that there is a difference in the serum glucose levels between the low-fiber and high-fiber diets?
+
+--
+
+This is a bit different from the previous examples in that the data are paired. 
+
+---
+
+## Paired _t_-test, continued
+
+
+```r
+df &lt;- data.frame(low, high) %&gt;%
+  mutate(obs = paste0("obs", 1:length(low))) %&gt;%
+* gather(key = diet, value = glucose, -obs) # long form
+
+ggplot(df, aes(diet, glucose)) +
+  geom_point() +
+* geom_line(aes(group = obs)) # connect the match
+```
+
+&lt;img src="Cabrini_2019_Lecture_6_files/figure-html/unnamed-chunk-19-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Paired _t_-test, continued
+
+Let `\(X_1,X_2,\ldots,X_n\)` and `\(Y_1,Y_2,\ldots,Y_n\)` be paired measurements from  population with mean `\(\mu_X\)` and `\(\mu_Y\)`, respectively. Define `\(W_i=X_i-Y_i\)` for `\(1\leq i \leq n\)`. Let `$$\bar{W}=\frac{1}{n}\sum_{i=1}^n W_i=\frac{W_1+W_2+\cdots+W_n}{n}$$` and 
+`$$S_W^2=\frac{1}{n-1}\sum_{i=1}^n (W_i-\bar{W})^2.$$` Then `$$\frac{\bar{W}-(\mu_X-\mu_Y)}{S_W/\sqrt{n}}$$` follows a `\(t\)`-distribution with `\(n-1\)` degrees of freedom.  
+
+---
+
+## Paired _t_-test, continued
+
+
+```r
+t.test(high, low, paired = T)
+```
+
+```
+## 
+## 	Paired t-test
+## 
+## data:  high and low
+## t = -4.368, df = 10, p-value = 0.001404
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -5.750760 -1.865603
+## sample estimates:
+## mean of the differences 
+##               -3.808182
+```
+
+---
+
+## Paired _t_-test, exercise
+
+Create the following plot using the data set `heights.txt`.
+
+
+```r
+ht &lt;- read.table(file = "heights.txt", header = T, sep = " ") 
+```
+
+&lt;img src="Cabrini_2019_Lecture_6_files/figure-html/unnamed-chunk-22-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+--
+
+Can we say that there is a difference between mom's heights and daughter's heights?
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
