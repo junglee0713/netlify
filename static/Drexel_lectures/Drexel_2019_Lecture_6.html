@@ -489,6 +489,61 @@ This is a bit different from the previous examples in that the data are paired.
 
 ---
 
+## Long and wide form of data frame
+
+
+```r
+df &lt;- data.frame(low, high) %&gt;%
+  mutate(obs = paste0("obs", 1:length(low)))
+head(df)
+```
+
+```
+##     low  high  obs
+## 1  9.44  9.28 obs1
+## 2 17.61  8.67 obs2
+## 3  8.89  6.28 obs3
+## 4 16.94 12.67 obs4
+## 5 10.39  6.67 obs5
+## 6 11.78  7.28 obs6
+```
+
+The above data frame has multiple columns (`low`, `high`) representing the glucose level of each dog. This can be transformed to _long form_ which can be more useful.
+
+`gather()` takes multiple columns and collapses into key-value pairs, duplicating all other columns as needed.
+
+---
+
+## Long and wide form of data frame
+
+
+```r
+df_long &lt;- df %&gt;%
+* gather(key = diet, value = glucose, low, high)
+slice(df_long, 1:15) # Showing the first 15 rows of data
+```
+
+```
+##      obs diet glucose
+## 1   obs1  low    9.44
+## 2   obs2  low   17.61
+## 3   obs3  low    8.89
+## 4   obs4  low   16.94
+## 5   obs5  low   10.39
+## 6   obs6  low   11.78
+## 7   obs7  low   15.06
+## 8   obs8  low    7.06
+## 9   obs9  low   19.56
+## 10 obs10  low    8.22
+## 11 obs11  low   23.17
+## 12  obs1 high    9.28
+## 13  obs2 high    8.67
+## 14  obs3 high    6.28
+## 15  obs4 high   12.67
+```
+
+---
+
 ## Paired _t_-test, continued
 
 
@@ -502,7 +557,7 @@ ggplot(df, aes(diet, glucose)) +
 * geom_line(aes(group = obs)) # connect the match
 ```
 
-&lt;img src="Drexel_2019_Lecture_6_files/figure-html/unnamed-chunk-19-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_6_files/figure-html/unnamed-chunk-21-1.png" width="40%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -571,7 +626,7 @@ Create the following plot using the data set `heights.txt`.
 ht &lt;- read.table(file = "heights.txt", header = T, sep = " ") 
 ```
 
-&lt;img src="Drexel_2019_Lecture_6_files/figure-html/unnamed-chunk-23-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_6_files/figure-html/unnamed-chunk-25-1.png" width="40%" style="display: block; margin: auto;" /&gt;
 
 --
 

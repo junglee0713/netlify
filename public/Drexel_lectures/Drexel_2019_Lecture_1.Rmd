@@ -414,6 +414,10 @@ vec7 <- paste0("Visitor_", vec5)
 print(vec7)
 ```
 
+```{r}
+vec8 <- 5 + 2*c(-1, 1)
+print(vec8)
+```
 
 ---
 

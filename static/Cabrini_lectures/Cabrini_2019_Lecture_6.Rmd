@@ -364,6 +364,30 @@ This is a bit different from the previous examples in that the data are paired.
 
 ---
 
+## Long and wide form of data frame
+
+```{r}
+df <- data.frame(low, high) %>%
+  mutate(obs = paste0("obs", 1:length(low)))
+head(df)
+```
+
+The above data frame has multiple columns (`low`, `high`) representing the glucose level of each dog. This can be transformed to _long form_ which can be more useful.
+
+`gather()` takes multiple columns and collapses into key-value pairs, duplicating all other columns as needed.
+
+---
+
+## Long and wide form of data frame
+
+```{r}
+df_long <- df %>%
+  gather(key = diet, value = glucose, low, high)  #<<
+slice(df_long, 1:15) # Showing the first 15 rows of data
+```
+
+---
+
 ## Paired _t_-test, continued
 
 ```{r, out.width = "40%"}
