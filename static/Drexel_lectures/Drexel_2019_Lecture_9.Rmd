@@ -391,24 +391,46 @@ print(g0)
 
 ## Least Square Line
 
-```{r, echo = F, out.width = "55%"}
+.pull-left[
+```{r, echo = F}
 a <- 1.5; b <- 0.4
 g1 <- g0 + geom_abline(intercept = a, slope = b, color = "red")
 print(g1)
 ```
+]
 
+.pull-right[
+```{r, echo = F}
+a <- 4; b <- -0.2
+g2 <- g0 + geom_abline(intercept = a, slope = b, color = "green")
+print(g2)
+```
+]
+
+Which is better in describing the trends? <font color="red">red</font> or <font color="green">green</font>?
 ---
 
 ## Least Square Line
 
-```{r, echo = F, out.width = "55%"}
-g2 <- g1 + 
-  geom_abline(intercept = a, slope = b, color = "red") +
+.pull-left[
+```{r, echo = F}
+a <- 1.5; b <- 0.4
+g3 <- g0 + geom_abline(intercept = a, slope = b, color = "red") +
   geom_segment(x = x, xend = x, y = y, yend = a + b*x, color = "blue", lty = "dashed")
-print(g2)
+print(g3)
 ```
+]
 
-Determine the $y$-intercept and slope of <font color="red"> red line </font> so that the sum of squares of the <font color="blue"> blue dashed line segment </font> is minimized.
+.pull-right[
+```{r, echo = F}
+a <- 4; b <- -0.2
+g4 <- g0 + geom_abline(intercept = a, slope = b, color = "green") +
+  geom_segment(x = x, xend = x, y = y, yend = a + b*x, color = "blue", lty = "dashed")
+print(g4)
+```
+]
+
+Determine the $y$-intercept and slope so that the sum of squares of the <font color="blue"> blue dashed line segment </font> is minimized.
 
 ---
 
@@ -435,13 +457,13 @@ $$\hat{a} = \bar{y}-\hat{b}\bar{x}$$
 ## Least Square Line
 
 ```{r}
-b <- sum((x-mean(x))*(y-mean(y)))/sum((x-mean(x))^2)
-a <- mean(y)-b*mean(x); print(c(a, b))
+slope <- sum((x-mean(x))*(y-mean(y)))/sum((x-mean(x))^2)
+y.int <- mean(y)-slope*mean(x); print(c(slope, y.int))
 ```
 
 ```{r, echo = F, out.width = "50%"}
 g3 <- g0 + 
-  geom_abline(intercept = a, slope = b, color = "purple") 
+  geom_abline(intercept = y.int, slope = slope, color = "purple") 
 print(g3)
 ```
 

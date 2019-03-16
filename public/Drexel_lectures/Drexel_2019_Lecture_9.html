@@ -496,15 +496,28 @@ ggplot(df, aes(x, y)) + geom_point() +
 
 ## Least Square Line
 
-&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-26-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+.pull-left[
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-26-1.png" style="display: block; margin: auto;" /&gt;
+]
 
+.pull-right[
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-27-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+Which is better in describing the trends? &lt;font color="red"&gt;red&lt;/font&gt; or &lt;font color="green"&gt;green&lt;/font&gt;?
 ---
 
 ## Least Square Line
 
-&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-27-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+.pull-left[
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-28-1.png" style="display: block; margin: auto;" /&gt;
+]
 
-Determine the `\(y\)`-intercept and slope of &lt;font color="red"&gt; red line &lt;/font&gt; so that the sum of squares of the &lt;font color="blue"&gt; blue dashed line segment &lt;/font&gt; is minimized.
+.pull-right[
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-29-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+Determine the `\(y\)`-intercept and slope so that the sum of squares of the &lt;font color="blue"&gt; blue dashed line segment &lt;/font&gt; is minimized.
 
 ---
 
@@ -532,15 +545,15 @@ Determine the `\(y\)`-intercept and slope of &lt;font color="red"&gt; red line &
 
 
 ```r
-b &lt;- sum((x-mean(x))*(y-mean(y)))/sum((x-mean(x))^2)
-a &lt;- mean(y)-b*mean(x); print(c(a, b))
+slope &lt;- sum((x-mean(x))*(y-mean(y)))/sum((x-mean(x))^2)
+y.int &lt;- mean(y)-slope*mean(x); print(c(slope, y.int))
 ```
 
 ```
-## [1] 2.0368098 0.3067485
+## [1] 0.3067485 2.0368098
 ```
 
-&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-29-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-31-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -555,7 +568,7 @@ g &lt;- ggplot(df, aes(x,y)) + geom_point() +
 print(g)
 ```
 
-&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-30-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-32-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -635,7 +648,7 @@ dim(sheep)
 ggplot(sheep, aes(girth, weight)) + geom_point()
 ```
 
-&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-33-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-35-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -670,7 +683,7 @@ ggplot(sheep, aes(girth, weight)) +
   geom_abline(intercept = beta0, slope = beta1, color = "red")
 ```
 
-&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-36-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-38-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -683,7 +696,7 @@ ggplot(sheep, aes(girth, weight)) +
   geom_smooth(method = "lm", se = FALSE)
 ```
 
-&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-37-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_9_files/figure-html/unnamed-chunk-39-1.png" width="50%" style="display: block; margin: auto;" /&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

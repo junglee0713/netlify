@@ -101,7 +101,7 @@ Using $\chi^2$-test _with Yates' correction_, determine whether tumor developmen
 
 ```{r, eval = F}
 mat <- matrix(c(67, 53, 45, 18), nrow = 2, byrow = F)
-chisq.test(mat, correct = F)
+chisq.test(mat, correct = T)
 ```
 
 
