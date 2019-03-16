@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Lecture 7</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jung-Jin Lee" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Cabrini.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 7
+### Jung-Jin Lee
+### Mar 20, 2019
+
+---
+
+ 
+
+
+## _t_-test: review
+
+- One-sample `\(t\)`-test
+
+  - Given sample, test `\(H_0: \mu = \mu_0\)`.
+
+- Two-sample `\(t\)`-test:
+
+  - With equal variance assumption
+  
+  - Without equal variance assumption (Welch's test)
+  
+  - Test `\(H_0\)`: two populations have the same mean. 
+  
+- Paired `\(t\)`-test
+
+  - Need paired samples
+  
+  - Test `\(H_0\)`: two populations have the same mean. 
+
+- In all cases, use `t.test()`
+
+---
+
+## _F_-test
+
+- Comparison of two variances (Levene's test)
+
+- Comparison of two or more means (one-way ANOVA)
+
+---
+
+## _F_-distribution
+
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-2-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Levene's test
+
+**Example**: A biologist is interested in comparing the lengths of female and male green lynx spiders. Assume that the length of male spiders follows `\(N(\mu_m, \sigma_m^2)\)` and the length female spiders follows `\(N(\mu_f, \sigma_f^2)\)`. 
+
+
+```r
+male = c(5.20, 4.70, 5.75, 7.50, 6.45, 6.55, 4.70, 4.80, 5.95, 
+         5.20, 6.35, 6.95, 5.70, 6.20, 5.40, 6.20, 5.85, 6.80, 
+         5.65, 5.50, 5.65, 5.85, 5.75, 6.35, 5.75, 5.95, 5.90, 
+         7.00, 6.10, 5.80)
+female = c(8.25, 9.95, 5.90, 7.05, 8.45, 7.55, 9.80, 10.80, 6.60, 
+           7.55, 8.10, 9.10, 6.10, 9.30, 8.75, 7.00, 7.80, 8.00, 
+           9.00, 6.30, 8.35, 8.70, 8.00, 7.50, 9.50)
+c(length(male), length(female))
+```
+
+```
+## [1] 30 25
+```
+
+```r
+c(mean(male), mean(female))
+```
+
+```
+## [1] 5.916667 8.136000
+```
+
+---
+
+## Levene's test, continued
+
+
+```r
+# ggplot needs a dataframe
+male_df &lt;- data.frame(sex = "male", length = male)
+female_df &lt;- data.frame(sex = "female", length = female)
+*spider &lt;- rbind(male_df, female_df)
+```
+
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-5-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Levene's test, continued
+
+What can we say about variances? 
+
+.pull-left[
+
+```r
+v_df &lt;- spider %&gt;%
+* group_by(sex) %&gt;%
+* summarize(va = var(length))
+v_df
+```
+
+```
+## # A tibble: 2 x 2
+##   sex       va
+##   &lt;fct&gt;  &lt;dbl&gt;
+## 1 male   0.440
+## 2 female 1.56
+```
+
+```r
+ggplot(v_df, aes(sex, va)) +
+* geom_col()
+```
+]
+
+.pull-right[
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+Can we say that the population variances are the same between male and female spiders? (i.e., `\(\sigma_m^2 = \sigma_f^2\)`?)
+
+---
+
+## Levene's test, continued
+
+Suppose that `\(X_1,X_2,\ldots,X_n\)` (respectively, `\(Y_1,Y_2,\ldots,Y_m\)`) are taken from a population that follows `\(N(\mu_X,\sigma_X^2)\)` (respectively, `\(N(\mu_Y,\sigma_Y^2)\)`). Let 
+`$$\bar{X}=\frac{X_1+X_2+\cdots+X_n}{n}, \quad \bar{Y}=\frac{Y_1+Y_2+\cdots+Y_m}{m},$$` 
+and
+`$$S_X^2=\frac{1}{n-1}\sum_{i=1}^n(X_i-\bar{X})^2, \quad S_Y^2=\frac{1}{m-1}\sum_{j=1}^m(Y_j-\bar{Y})^2.$$` 
+Then
+`$$\frac{S_X^2/\sigma_X^2}{S_Y^2/\sigma_Y^2}$$` follows an `\(F\)`-distribution with `\(df1=n-1\)` and `\(df2=m-1\)` degrees of freedom.
+
+---
+
+## Levene's test, continued
+
+Going back to `spider` data, under the hypothesis `\(H_0: \sigma_m^2 = \sigma_f^2\)`, the fraction
+`$$\frac{S_m^2/\sigma_m^2}{S_f^2/\sigma_f^2} = \frac{S_m^2}{S_f^2}$$` should follow an `\(F\)`-distribution with `$$df1=30-1=29 \quad \text{and}\quad df2=25-1=24$$` degrees of freedom.
+
+
+```r
+n &lt;- length(male); m &lt;- length(female)
+var_m &lt;- var(male); var_f &lt;- var(female)
+f &lt;- var_m/var_f
+print(f)
+```
+
+```
+## [1] 0.2816196
+```
+
+How likely or unlikely is this?
+
+---
+
+## Levene's test, continued
+
+Under the null hypothesis `\(H_0: \sigma_m^2 = \sigma_f^2\)`, one would expect that `f` is close to 1. 
+
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Levene's test, continued
+
+The probability of an event that is as extreme as or more extreme than the current observation (red area) seems to be small.
+
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-11-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Levene's test, continued
+
+
+```r
+lower_red = pf(f, df1 = n-1, df2 = m-1)
+pval = 2*lower_red
+print(pval)
+```
+
+```
+## [1] 0.001424841
+```
+
+--
+
+`\(p\)`-value can be easily obtained by `var.test()`:
+
+
+```r
+var.test(male, female)
+```
+
+```
+## 
+## 	F test to compare two variances
+## 
+## data:  male and female
+## F = 0.28162, num df = 29, denom df = 24, p-value = 0.001425
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.1270020 0.6066102
+## sample estimates:
+## ratio of variances 
+##          0.2816196
+```
+
+---
+
+## Aside: one-sample variance test
+
+One-sample variance test is based on `\(\chi^2\)`-test and can be done using `VarTest()` in `DescTools` package. 
+
+
+```r
+#install.packages("DescTools")
+library(DescTools)
+# To test if population variance equals 0.5
+VarTest(male, sigma.squared = 0.5) 
+```
+
+```
+## 
+## 	One Sample Chi-Square test on variance
+## 
+## data:  male
+## X-squared = 25.513, df = 29, p-value = 0.6973
+## alternative hypothesis: true variance is not equal to 0.5
+## 95 percent confidence interval:
+##  0.2790033 0.7949529
+## sample estimates:
+## variance of x 
+##     0.4398851
+```
+
+---
+
+## One-way ANOVA
+
+ANOVA: ANalysis Of VAriance
+
+--
+
+**Example**: Dogs were fed a dry diet coated with different agents that were believed to affect the build-up of calculus on the teeth. Calculus accumulation was measured by an index that combined estimates of both the proportion of the teeth covered by the deposit and the thickness of the deposit. 26 dogs were randomly allocated to three treatments: `control`, soluble pyrophosphate (`p2o7`), and sodium hexametaphosphate (`hmp`). The data are presented in the following:
+
+
+```r
+control &lt;- c(0.49, 1.05, 0.79, 1.35, 0.55, 1.36, 1.55, 1.66, 1.00)
+p2o7 &lt;- c(0.34, 0.76, 0.45, 0.69, 0.87, 0.94, 0.22, 1.07, 1.38)
+hmp &lt;- c(0.34, 0.05, 0.53, 0.19, 0.28, 0.45, 0.71, 0.95)
+```
+
+Can we say that all the three means are equal?
+
+---
+
+## One-way ANOVA, continued
+
+
+```r
+ctrl_df &lt;- data.frame(diet = "control", index = control)
+pyro_df &lt;- data.frame(diet = "p2o7", index = p2o7)
+sod_hexa_df &lt;- data.frame(diet = "hmp", index = hmp)
+dogs &lt;- rbind(ctrl_df, pyro_df, sod_hexa_df)
+mean_df &lt;- dogs %&gt;%
+* group_by(diet) %&gt;%
+* summarize(count = n(), mean_index = mean(index))
+mean_df
+```
+
+```
+## # A tibble: 3 x 3
+##   diet    count mean_index
+##   &lt;fct&gt;   &lt;int&gt;      &lt;dbl&gt;
+## 1 control     9      1.09 
+## 2 p2o7        9      0.747
+## 3 hmp         8      0.438
+```
+
+---
+
+## One-way ANOVA, continued
+
+
+```r
+ggplot(dogs, aes(diet, index)) +
+  geom_boxplot() +
+* geom_jitter(width = 0.2)
+```
+
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-17-1.png" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## One-way ANOVA, continued
+
+- Suppose that `\(k\)` groups of real numbers are given as in the following table:
+`$$\begin{array}{cccccc} 1 &amp; 2 &amp; \cdots &amp; i &amp; \cdots &amp; k \\ \hline   
+x_{11} &amp; x_{21} &amp; \cdots &amp; x_{i1} &amp; \cdots &amp; x_{k1} \\ 
+x_{12} &amp; x_{22} &amp; \cdots &amp; x_{i2} &amp; \cdots &amp; x_{k2} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+x_{1n_1}&amp;&amp;&amp;&amp;&amp; \\
+&amp;&amp;&amp;x_{in_i}&amp;&amp; \\
+&amp;&amp;&amp;&amp;&amp; x_{kn_k} \\ 
+&amp;x_{2n_2}&amp;&amp;&amp;&amp; \end{array}$$`
+- Let `\(N\)` denote the total number: `\(N=\sum_{i=1}^k n_{i}\)`.
+- For `\(1\leq i \leq k\)`, let `\(\bar{x}_i=\frac{1}{n_i}\sum_{j=1}^{n_i} x_{ij}\)` (group mean). 
+- Let `\(\bar{x}=\frac{1}{N}\sum_{i=1}^k\sum_{j=1}^{n_j}x_{ij}\)` (global mean).
+
+---
+
+## One-way ANOVA, continued
+
+- Let `\(x_{ij}\)` be as above. Then
+`$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2+\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2.$$`
+--
+
+- One can prove it using the following: `$$\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2=\sum_{i=1}^k \sum_{j=1}^{n_i} ((x_{ij}-\bar{x}_i)+(\bar{x}_i-\bar{x}))^2.$$`
+
+--
+
+- SS: sum of squares
+
+`$$\underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2}_{\text{total SS}} = \underbrace{\sum_{i=1}^k n_i(\bar{x}_i-\bar{x})^2}_{\text{between group SS}} + \underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x}_i)^2}_{\text{within group SS}}.$$`
+
+---
+
+## One-way ANOVA, continued
+
+Let `\(1\leq i \leq k\)` and suppose that `\(X_{ij}\)`, `\(1\leq j \leq n_i\)` is a sample from `\(N(\mu_i, \sigma^2)\)` (Note that identical `\(\sigma\)` is assumed). Under the null hypothesis that `\(H_0:\mu_1=\mu_2=\cdots=\mu_k\)`, 
+`$$\frac{(\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2)/(k-1)}{(\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2)/(N-k)}$$`
+follows an `\(F\)`-distribution with `\(k-1\)` and `\(N-k\)` degrees of freedom.
+
+---
+
+## One-way ANOVA, continued
+
+Roughly speaking: under the null hypothesis that `\(H_0:\mu_1=\mu_2=\cdots=\mu_k\)` (no difference in groups),
+`$$\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2,$$`
+should be small compared to 
+`$$\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2.$$`
+In other words, if `\(H_0:\mu_1=\mu_2=\cdots=\mu_k\)` is valid, then 
+`$$\frac{(\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2)/(k-1)}{(\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2)/(N-k)}$$` should be a small number.
+
+---
+
+## One-way ANOVA, continued
+
+Back to dog diet and calculus on the teeth example:
+
+
+```r
+all &lt;- dogs$index
+top &lt;- length(control)*(mean(control)-mean(all))^2 + 
+  length(p2o7)*(mean(p2o7)-mean(all))^2 + 
+  length(hmp)*(mean(hmp)-mean(all))^2
+bottom &lt;- sum((control-mean(control))^2) +
+  sum((p2o7-mean(p2o7))^2) + 
+  sum((hmp-mean(hmp))^2)
+top_frac &lt;- top/2 # 2 comes from 3-1
+bottom_frac &lt;- bottom/(length(all)-3) 
+f &lt;- top_frac/bottom_frac
+print(f)
+```
+
+```
+## [1] 6.668443
+```
+
+---
+
+## One-way ANOVA, continued
+
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+```r
+pval &lt;- 1- pf(f, df1 = 2, df2 = 23)
+print(pval)
+```
+
+```
+## [1] 0.005198423
+```
+
+---
+
+## One-way ANOVA, continued
+
+`\(p\)`-value can also be obtained in two different ways:
+
+- By using `oneway.test(, var.equal = T)`
+
+
+```r
+oneway.test(dogs$index ~ dogs$diet, var.equal = T)
+```
+
+```
+## 
+## 	One-way analysis of means
+## 
+## data:  dogs$index and dogs$diet
+## F = 6.6684, num df = 2, denom df = 23, p-value = 0.005198
+```
+
+--
+
+- By combining `summary()` and `aov()`.
+
+
+```r
+summary(aov(dogs$index ~ dogs$diet))
+```
+
+```
+##             Df Sum Sq Mean Sq F value Pr(&gt;F)   
+## dogs$diet    2  1.805  0.9023   6.668 0.0052 **
+## Residuals   23  3.112  0.1353                  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+## One-way ANOVA, exercise
+
+Back to spider example: under the assumption that the lengths of male and female spiders have the same population variances, test if their population means are the same.
+
+--
+
+
+```r
+t.test(male, female, var.equal = T)
+```
+
+```
+## 
+## 	Two Sample t-test
+## 
+## data:  male and female
+## t = -8.4172, df = 53, p-value = 2.426e-11
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -2.748183 -1.690484
+## sample estimates:
+## mean of x mean of y 
+##  5.916667  8.136000
+```
+
+---
+
+## One-way ANOVA, exercise
+
+
+```r
+oneway.test(spider$length ~ spider$sex, var.equal = T)
+```
+
+```
+## 
+## 	One-way analysis of means
+## 
+## data:  spider$length and spider$sex
+## F = 70.849, num df = 1, denom df = 53, p-value = 2.426e-11
+```
+
+--
+
+
+```r
+summary(aov(spider$length ~ spider$sex))
+```
+
+```
+##             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## spider$sex   1  67.17   67.17   70.85 2.43e-11 ***
+## Residuals   53  50.24    0.95                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
