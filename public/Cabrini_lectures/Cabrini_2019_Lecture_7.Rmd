@@ -325,6 +325,53 @@ $$\underbrace{\sum_{i=1}^k \sum_{j=1}^{n_i} (x_{ij}-\bar{x})^2}_{\text{total SS}
 
 ## One-way ANOVA, continued
 
+In the following examples, <font color="blue"> blue dashed line </font> represents the global mean.
+
+```{r, echo = F}
+set.seed(2)
+n <- 10
+
+df1 <- data.frame(Group1 = rnorm(n, mean = 6),
+                  Group2 = rnorm(n, mean = 6.2),
+                  Group3 = rnorm(n, mean = 5.9)) %>%
+  gather(key = Group, value = Measure)
+
+g1 <- df1  %>%
+  ggplot(aes(Group, Measure)) +
+  geom_point(stat = "summary", fun.y = mean, color = "red", size = 5) +
+  geom_hline(yintercept = mean(df1$Measure), color = "blue", lty = "dashed") + 
+  geom_point()
+
+df2 <- data.frame(Group1 = rnorm(n, mean = 7),
+                  Group2 = rnorm(n, mean = 3),
+                  Group3 = rnorm(n, mean = 6)) %>%
+  gather(key = Group, value = Measure) 
+
+g2 <- df2  %>%
+  ggplot(aes(Group, Measure)) +
+  geom_point(stat = "summary", fun.y = mean, color = "red", size = 5) +
+  geom_hline(yintercept = mean(df2$Measure), color = "blue", lty = "dashed") + 
+  geom_point()
+```
+
+.pull-left[
+```{r, echo = F}
+print(g1)
+```
+]
+
+.pull-right[
+```{r, echo = F}
+print(g2)
+```
+]
+
+On the left, between group SS is small compared to within group SS. The ratio (between group SS)/(within group SS) is a measure of similarity among groups (small ratio indicates that groups are similar).
+
+---
+
+## One-way ANOVA, continued
+
 Let $1\leq i \leq k$ and suppose that $X_{ij}$, $1\leq j \leq n_i$ is a sample from $N(\mu_i, \sigma^2)$ (Note that identical $\sigma$ is assumed). Under the null hypothesis that $H_0:\mu_1=\mu_2=\cdots=\mu_k$, 
 $$\frac{(\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2)/(k-1)}{(\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2)/(N-k)}$$
 follows an $F$-distribution with $k-1$ and $N-k$ degrees of freedom.

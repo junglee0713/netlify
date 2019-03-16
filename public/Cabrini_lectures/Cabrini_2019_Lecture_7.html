@@ -344,6 +344,24 @@ x_{1n_1}&amp;&amp;&amp;&amp;&amp; \\
 
 ## One-way ANOVA, continued
 
+In the following examples, &lt;font color="blue"&gt; blue dashed line &lt;/font&gt; represents the global mean.
+
+
+
+.pull-left[
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-19-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-20-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+On the left, between group SS is small compared to within group SS. The ratio (between group SS)/(within group SS) is a measure of similarity among groups (small ratio indicates that groups are similar).
+
+---
+
+## One-way ANOVA, continued
+
 Let `\(1\leq i \leq k\)` and suppose that `\(X_{ij}\)`, `\(1\leq j \leq n_i\)` is a sample from `\(N(\mu_i, \sigma^2)\)` (Note that identical `\(\sigma\)` is assumed). Under the null hypothesis that `\(H_0:\mu_1=\mu_2=\cdots=\mu_k\)`, 
 `$$\frac{(\sum_{i=1}^k n_i(\bar{X}_i-\bar{X})^2)/(k-1)}{(\sum_{i=1}^k \sum_{j=1}^{n_i} (X_{ij}-\bar{X}_i)^2)/(N-k)}$$`
 follows an `\(F\)`-distribution with `\(k-1\)` and `\(N-k\)` degrees of freedom.
@@ -388,7 +406,7 @@ print(f)
 
 ## One-way ANOVA, continued
 
-&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_7_files/figure-html/unnamed-chunk-22-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 
 ```r
