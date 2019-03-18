@@ -14,6 +14,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+After spending hours of despair and confusion, I came across an [excellent illustration given at Stack Exchange](https://math.stackexchange.com/questions/1792351/sequential-anova-r).
+
 There are various $p$-values coming out of `lm()`, `anova()`, and `Anova()`. First of all, `car` library is loaded for use of `Anova()`:
 
 ```{r}
@@ -72,7 +74,23 @@ However, notice that `anova()` <font color="red"> **does not** </font> give the 
 anova(fit_full)
 ```
 
-This is because `anova()` uses a different $F$ statistic to compute $p$-value when a `lm` object with two or more predictors is provided as a single argument -- refer to an [excellent illustration given at Stack Exchange](https://math.stackexchange.com/questions/1792351/sequential-anova-r).
+Well, at least this result is _sequential_ as can be seen in the following:
+
+```{r}
+anova(fit_null, fit_cyl, fit_cyl_hp, fit_full)
+```
+
+Where did the $p$-values `5.093e-12`, `0.1185183`, and `0.0001995` come from? Maybe comparing `fit_null` vs `fit_cyl`, `fit_cyl` vs `fit_cyl_hp`, and `fit_cyl_hp` vs `fit_full`, respectively?  
+
+```{r}
+anova(fit_null, fit_cyl)
+anova(fit_cyl, fit_cyl_hp)
+anova(fit_cyl_hp, fit_full)
+```
+
+Only the last one gives the same $p$-value. Why is it?
+
+This is because `anova()` uses a different $F$ statistic to compute $p$-value when a `lm` object with two or more predictors is provided as a single argument -- again, refer to an [excellent illustration given at Stack Exchange](https://math.stackexchange.com/questions/1792351/sequential-anova-r).
 
 Note that `anova()` and `Anova()` agree in case of simple linear regression:
 

@@ -17,9 +17,10 @@
       <pubDate>Sun, 17 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/2019/03/17/anova-and-anova/</guid>
-      <description>There are various \(p\)-values coming out of lm(), anova(), and Anova(). First of all, car library is loaded for use of Anova():
+      <description>After spending hours of despair and confusion, I came across an excellent illustration given at Stack Exchange.
+There are various \(p\)-values coming out of lm(), anova(), and Anova(). First of all, car library is loaded for use of Anova():
 library(car) # for Anova() The built-in mtcars will be used as an example.
-attach(mtcars) head(mtcars) ## mpg cyl disp hp drat wt qsec vs am gear carb ## Mazda RX4 21.0 6 160 110 3.90 2.620 16.46 0 1 4 4 ## Mazda RX4 Wag 21.0 6 160 110 3.</description>
+attach(mtcars) head(mtcars) ## mpg cyl disp hp drat wt qsec vs am gear carb ## Mazda RX4 21.</description>
     </item>
     
     <item>

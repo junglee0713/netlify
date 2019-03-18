@@ -9,6 +9,7 @@ tags: []
 
 
 
+<p>After spending hours of despair and confusion, I came across an <a href="https://math.stackexchange.com/questions/1792351/sequential-anova-r">excellent illustration given at Stack Exchange</a>.</p>
 <p>There are various <span class="math inline">\(p\)</span>-values coming out of <code>lm()</code>, <code>anova()</code>, and <code>Anova()</code>. First of all, <code>car</code> library is loaded for use of <code>Anova()</code>:</p>
 <pre class="r"><code>library(car) # for Anova()</code></pre>
 <p>The built-in <code>mtcars</code> will be used as an example.</p>
@@ -116,7 +117,52 @@ fit_full &lt;- lm(mpg ~ cyl + hp + wt)</code></pre>
 ## Residuals 28 176.62    6.31                       
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>This is because <code>anova()</code> uses a different <span class="math inline">\(F\)</span> statistic to compute <span class="math inline">\(p\)</span>-value when a <code>lm</code> object with two or more predictors is provided as a single argument – refer to an <a href="https://math.stackexchange.com/questions/1792351/sequential-anova-r">excellent illustration given at Stack Exchange</a>.</p>
+<p>Well, at least this result is <em>sequential</em> as can be seen in the following:</p>
+<pre class="r"><code>anova(fit_null, fit_cyl, fit_cyl_hp, fit_full)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mpg ~ 1
+## Model 2: mpg ~ cyl
+## Model 3: mpg ~ cyl + hp
+## Model 4: mpg ~ cyl + hp + wt
+##   Res.Df     RSS Df Sum of Sq        F    Pr(&gt;F)    
+## 1     31 1126.05                                    
+## 2     30  308.33  1    817.71 129.6336 5.093e-12 ***
+## 3     29  291.97  1     16.36   2.5935 0.1185183    
+## 4     28  176.62  1    115.35  18.2873 0.0001995 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Where did the <span class="math inline">\(p\)</span>-values <code>5.093e-12</code>, <code>0.1185183</code>, and <code>0.0001995</code> come from? Maybe comparing <code>fit_null</code> vs <code>fit_cyl</code>, <code>fit_cyl</code> vs <code>fit_cyl_hp</code>, and <code>fit_cyl_hp</code> vs <code>fit_full</code>, respectively?</p>
+<pre class="r"><code>anova(fit_null, fit_cyl)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mpg ~ 1
+## Model 2: mpg ~ cyl
+##   Res.Df     RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1     31 1126.05                                  
+## 2     30  308.33  1    817.71 79.561 6.113e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(fit_cyl, fit_cyl_hp)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mpg ~ cyl
+## Model 2: mpg ~ cyl + hp
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     30 308.33                           
+## 2     29 291.98  1     16.36 1.6249 0.2125</code></pre>
+<pre class="r"><code>anova(fit_cyl_hp, fit_full)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mpg ~ cyl + hp
+## Model 2: mpg ~ cyl + hp + wt
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1     29 291.98                                  
+## 2     28 176.62  1    115.35 18.287 0.0001995 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>Only the last one gives the same <span class="math inline">\(p\)</span>-value. Why is it?</p>
+<p>This is because <code>anova()</code> uses a different <span class="math inline">\(F\)</span> statistic to compute <span class="math inline">\(p\)</span>-value when a <code>lm</code> object with two or more predictors is provided as a single argument – again, refer to an <a href="https://math.stackexchange.com/questions/1792351/sequential-anova-r">excellent illustration given at Stack Exchange</a>.</p>
 <p>Note that <code>anova()</code> and <code>Anova()</code> agree in case of simple linear regression:</p>
 <pre class="r"><code>summary(fit_cyl)</code></pre>
 <pre><code>## 
