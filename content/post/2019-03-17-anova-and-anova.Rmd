@@ -1,0 +1,86 @@
+---
+title: anova( ) and Anova( )
+author: Jung-Jin Lee
+date: '2019-03-17'
+slug: anova-and-anova
+categories: []
+tags: []
+---
+
+```{r, message = F, warning = F, echo = F}
+knitr::opts_chunk$set(
+  message = F,
+  warning = F
+)
+```
+
+There are various $p$-values coming out of `lm()`, `anova()`, and `Anova()`. First of all, `car` library is loaded for use of `Anova()`:
+
+```{r}
+library(car) # for Anova()
+```
+
+The built-in `mtcars` will be used as an example.
+
+```{r}
+attach(mtcars)
+head(mtcars)
+```
+
+Various linear models for comparison, the full model being `mpg ~ cyl + hp + wt`.
+
+```{r}
+fit_null <- lm(mpg ~ 1) 
+fit_cyl <- lm(mpg ~ cyl)
+fit_hp <- lm(mpg ~ hp)
+fit_wt <- lm(mpg ~ wt)
+fit_cyl_hp <- lm(mpg ~ cyl + hp)
+fit_cyl_wt <- lm(mpg ~ cyl + wt)
+fit_hp_wt <- lm(mpg ~ hp + wt)
+fit_full <- lm(mpg ~ cyl + hp + wt)
+```
+
+We are starting off with the summary of the full model:
+
+```{r}
+summary(fit_full)
+```
+
+First of all, the $p$-value `2.184e-11` in the bottom comes from comparing the null model to the full model:
+
+```{r}
+anova(fit_null, fit_full)
+```
+
+The $p$-values from the coefficients are from comparing the full model with the model missing the respective term:
+
+```{r}
+anova(fit_hp_wt, fit_full) # missing cyl
+anova(fit_cyl_wt, fit_full) # missing hp
+anova(fit_cyl_hp, fit_full) # missing wt
+```
+
+These $p$-values are the same as what is obtained from `Anova()`:
+
+```{r}
+Anova(fit_full)
+```
+
+However, notice that `anova()` <font color="red"> **does not** </font> give the same result:
+
+```{r}
+anova(fit_full)
+```
+
+This is because `anova()` uses a different $F$ statistic to compute $p$-value when a `lm` object with two or more predictors is provided as a single argument -- refer to an [excellent illustration given at Stack Exchange](https://math.stackexchange.com/questions/1792351/sequential-anova-r).
+
+Note that `anova()` and `Anova()` agree in case of simple linear regression:
+
+```{r}
+summary(fit_cyl)
+anova(fit_cyl)
+Anova(fit_cyl)
+```
+
+
+

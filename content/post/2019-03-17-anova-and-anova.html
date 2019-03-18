@@ -1,0 +1,157 @@
+---
+title: anova( ) and Anova( )
+author: Jung-Jin Lee
+date: '2019-03-17'
+slug: anova-and-anova
+categories: []
+tags: []
+---
+
+
+
+<p>There are various <span class="math inline">\(p\)</span>-values coming out of <code>lm()</code>, <code>anova()</code>, and <code>Anova()</code>. First of all, <code>car</code> library is loaded for use of <code>Anova()</code>:</p>
+<pre class="r"><code>library(car) # for Anova()</code></pre>
+<p>The built-in <code>mtcars</code> will be used as an example.</p>
+<pre class="r"><code>attach(mtcars)
+head(mtcars)</code></pre>
+<pre><code>##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</code></pre>
+<p>Various linear models for comparison, the full model being <code>mpg ~ cyl + hp + wt</code>.</p>
+<pre class="r"><code>fit_null &lt;- lm(mpg ~ 1) 
+fit_cyl &lt;- lm(mpg ~ cyl)
+fit_hp &lt;- lm(mpg ~ hp)
+fit_wt &lt;- lm(mpg ~ wt)
+fit_cyl_hp &lt;- lm(mpg ~ cyl + hp)
+fit_cyl_wt &lt;- lm(mpg ~ cyl + wt)
+fit_hp_wt &lt;- lm(mpg ~ hp + wt)
+fit_full &lt;- lm(mpg ~ cyl + hp + wt)</code></pre>
+<p>We are starting off with the summary of the full model:</p>
+<pre class="r"><code>summary(fit_full)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl + hp + wt)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.9290 -1.5598 -0.5311  1.1850  5.8986 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 38.75179    1.78686  21.687  &lt; 2e-16 ***
+## cyl         -0.94162    0.55092  -1.709 0.098480 .  
+## hp          -0.01804    0.01188  -1.519 0.140015    
+## wt          -3.16697    0.74058  -4.276 0.000199 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.512 on 28 degrees of freedom
+## Multiple R-squared:  0.8431, Adjusted R-squared:  0.8263 
+## F-statistic: 50.17 on 3 and 28 DF,  p-value: 2.184e-11</code></pre>
+<p>First of all, the <span class="math inline">\(p\)</span>-value <code>2.184e-11</code> in the bottom comes from comparing the null model to the full model:</p>
+<pre class="r"><code>anova(fit_null, fit_full)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mpg ~ 1
+## Model 2: mpg ~ cyl + hp + wt
+##   Res.Df     RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1     31 1126.05                                  
+## 2     28  176.62  3    949.43 50.172 2.184e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The <span class="math inline">\(p\)</span>-values from the coefficients are from comparing the full model with the model missing the respective term:</p>
+<pre class="r"><code>anova(fit_hp_wt, fit_full) # missing cyl</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mpg ~ hp + wt
+## Model 2: mpg ~ cyl + hp + wt
+##   Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)  
+## 1     29 195.05                              
+## 2     28 176.62  1    18.427 2.9213 0.09848 .
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>anova(fit_cyl_wt, fit_full) # missing hp</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mpg ~ cyl + wt
+## Model 2: mpg ~ cyl + hp + wt
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1     29 191.17                           
+## 2     28 176.62  1    14.551 2.3069   0.14</code></pre>
+<pre class="r"><code>anova(fit_cyl_hp, fit_full) # missing wt</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: mpg ~ cyl + hp
+## Model 2: mpg ~ cyl + hp + wt
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1     29 291.98                                  
+## 2     28 176.62  1    115.35 18.287 0.0001995 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>These <span class="math inline">\(p\)</span>-values are the same as what is obtained from <code>Anova()</code>:</p>
+<pre class="r"><code>Anova(fit_full)</code></pre>
+<pre><code>## Anova Table (Type II tests)
+## 
+## Response: mpg
+##            Sum Sq Df F value    Pr(&gt;F)    
+## cyl        18.427  1  2.9213 0.0984801 .  
+## hp         14.551  1  2.3069 0.1400152    
+## wt        115.354  1 18.2873 0.0001995 ***
+## Residuals 176.621 28                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>However, notice that <code>anova()</code> <font color="red"> <strong>does not</strong> </font> give the same result:</p>
+<pre class="r"><code>anova(fit_full)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: mpg
+##           Df Sum Sq Mean Sq  F value    Pr(&gt;F)    
+## cyl        1 817.71  817.71 129.6336 5.093e-12 ***
+## hp         1  16.36   16.36   2.5935 0.1185183    
+## wt         1 115.35  115.35  18.2873 0.0001995 ***
+## Residuals 28 176.62    6.31                       
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>This is because <code>anova()</code> uses a different <span class="math inline">\(F\)</span> statistic to compute <span class="math inline">\(p\)</span>-value when a <code>lm</code> object with two or more predictors is provided as a single argument – refer to an <a href="https://math.stackexchange.com/questions/1792351/sequential-anova-r">excellent illustration given at Stack Exchange</a>.</p>
+<p>Note that <code>anova()</code> and <code>Anova()</code> agree in case of simple linear regression:</p>
+<pre class="r"><code>summary(fit_cyl)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.9814 -2.1185  0.2217  1.0717  7.5186 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  37.8846     2.0738   18.27  &lt; 2e-16 ***
+## cyl          -2.8758     0.3224   -8.92 6.11e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.206 on 30 degrees of freedom
+## Multiple R-squared:  0.7262, Adjusted R-squared:  0.7171 
+## F-statistic: 79.56 on 1 and 30 DF,  p-value: 6.113e-10</code></pre>
+<pre class="r"><code>anova(fit_cyl)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: mpg
+##           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## cyl        1 817.71  817.71  79.561 6.113e-10 ***
+## Residuals 30 308.33   10.28                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>Anova(fit_cyl)</code></pre>
+<pre><code>## Anova Table (Type II tests)
+## 
+## Response: mpg
+##           Sum Sq Df F value    Pr(&gt;F)    
+## cyl       817.71  1  79.561 6.113e-10 ***
+## Residuals 308.33 30                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>

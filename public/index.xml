@@ -6,10 +6,21 @@
     <description>Recent content on Jung-Jin Lee&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 10 Feb 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 17 Mar 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>anova( ) and Anova( )</title>
+      <link>/2019/03/17/anova-and-anova/</link>
+      <pubDate>Sun, 17 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/03/17/anova-and-anova/</guid>
+      <description>There are various \(p\)-values coming out of lm(), anova(), and Anova(). First of all, car library is loaded for use of Anova():
+library(car) # for Anova() The built-in mtcars will be used as an example.
+attach(mtcars) head(mtcars) ## mpg cyl disp hp drat wt qsec vs am gear carb ## Mazda RX4 21.0 6 160 110 3.90 2.620 16.46 0 1 4 4 ## Mazda RX4 Wag 21.0 6 160 110 3.</description>
+    </item>
     
     <item>
       <title>Arithmetic sequences of prime numbers</title>

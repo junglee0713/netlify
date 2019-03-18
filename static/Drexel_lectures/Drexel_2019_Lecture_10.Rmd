@@ -11,6 +11,9 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+```{r}
+
+```
  
 ```{r, message = F, echo = F, warning = F}
 library(tidyverse) 
@@ -30,3 +33,23 @@ opts_chunk$set(
 ```
 
 ## Simple Linear Regression
+
+---
+
+## Test
+
+```{r}
+lm_0 <- lm(mpg ~ 1, data = mtcars)
+
+lm_all <- lm(mpg ~ wt + hp + cyl, data = mtcars)
+
+lm_cyl <- lm(mpg ~ cyl, data = mtcars)
+lm_wt <- lm(mpg ~ wt, data = mtcars)
+lm_hp <- lm(mpg ~ hp, data = mtcars)
+
+lm_wt_hp <- lm(mpg ~ wt + hp, data = mtcars)
+lm_cyl_hp <- lm(mpg ~ cyl + hp, data = mtcars)
+lm_wt_cyl <- lm(mpg ~ wt + cyl, data = mtcars)
+```
+
+
