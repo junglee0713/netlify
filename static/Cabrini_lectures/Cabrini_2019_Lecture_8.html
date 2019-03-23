@@ -252,14 +252,34 @@ sam &lt;- sample(c("H", "T"), size = 100, replace = T)
 df &lt;- matrix(sam, ncol = 5) %&gt;%  
   as.data.frame() %&gt;%  
   setNames(paste0("Toss", 1:5))
+
+dim(df)
+```
+
+```
+## [1] 20  5
+```
+
+```r
+head(df)
+```
+
+```
+##   Toss1 Toss2 Toss3 Toss4 Toss5
+## 1     T     H     T     H     H
+## 2     T     T     H     H     T
+## 3     H     T     T     T     T
+## 4     T     H     T     H     H
+## 5     H     H     T     T     T
+## 6     H     H     H     T     H
 ```
 
 ---
 
 ## Multiple comparisons
 
-<div id="htmlwidget-226b61c5e3c164f772d5" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-226b61c5e3c164f772d5">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"],["T","T","H","T","H","H","T","H","H","T","T","T","H","H","T","T","H","T","H","H"],["H","T","T","H","H","H","T","T","T","H","T","H","T","H","H","H","H","H","H","T"],["T","H","T","T","T","H","T","T","H","H","H","H","H","H","T","H","T","T","H","H"],["H","H","T","H","T","T","H","H","T","T","H","H","H","H","T","T","H","T","H","T"],["H","T","T","H","T","H","T","T","T","H","T","T","T","H","T","T","H","T","H","T"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Toss1<\/th>\n      <th>Toss2<\/th>\n      <th>Toss3<\/th>\n      <th>Toss4<\/th>\n      <th>Toss5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":7,"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}],"lengthMenu":[7,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7aca68d55ea43992310d" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7aca68d55ea43992310d">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"],["T","T","H","T","H","H","T","H","H","T","T","T","H","H","T","T","H","T","H","H"],["H","T","T","H","H","H","T","T","T","H","T","H","T","H","H","H","H","H","H","T"],["T","H","T","T","T","H","T","T","H","H","H","H","H","H","T","H","T","T","H","H"],["H","H","T","H","T","T","H","H","T","T","H","H","H","H","T","T","H","T","H","T"],["H","T","T","H","T","H","T","T","T","H","T","T","T","H","T","T","H","T","H","T"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Toss1<\/th>\n      <th>Toss2<\/th>\n      <th>Toss3<\/th>\n      <th>Toss4<\/th>\n      <th>Toss5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":7,"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}],"lengthMenu":[7,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 
 ---
 

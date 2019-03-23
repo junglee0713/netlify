@@ -112,7 +112,7 @@ These verbs, when combined with the pipe operator `%&gt;%`, become even more pow
 
 ## select()
 
-**Example**: create a data set consising only of `Sepal.Length` and `Sepal.Width`.
+**Example**: create a data set consisting only of `Sepal.Length` and `Sepal.Width`.
 
 
 ```r
@@ -142,7 +142,7 @@ head(s1)
  
 ## select(), continued
 
-**Exercise**: create a data set consising of `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width`.
+**Exercise**: create a data set consisting of `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width`.
 
 --
 
@@ -194,7 +194,7 @@ head(s3)
 
 ## filter()
 
-**Example**: create a data set consising only of `setosa` species.
+**Example**: create a data set consisting only of `setosa` species.
 
 
 ```r
@@ -224,7 +224,7 @@ head(f1)
 
 ## filter(), continued
 
-**Exercise**: create a data set consising only of `setosa` and `virginica` species.
+**Exercise**: create a data set consisting only of `setosa` and `virginica` species.
 
 --
 
@@ -532,6 +532,198 @@ head(r)
 
 ---
 
+## group_by() / summarize()
+
+**Exercise**: find the mean `Sepal.Length` for each `Species`.
+
+
+```r
+setosa_df &lt;- iris %&gt;% 
+  filter(Species == "setosa")
+mean(setosa_df$Sepal.Length)
+```
+
+```
+## [1] 5.006
+```
+
+```r
+versi_df &lt;- iris %&gt;% 
+  filter(Species == "versicolor")
+mean(versi_df$Sepal.Length)
+```
+
+```
+## [1] 5.936
+```
+
+```r
+virgi_df &lt;- iris %&gt;% 
+  filter(Species == "virginica")
+mean(virgi_df$Sepal.Length)
+```
+
+```
+## [1] 6.588
+```
+
+---
+
+## group_by() / summarize()
+
+`group_by()` and `summarize()` combination: summary of data (e.g. mean, max, min, median) by each category of a categorical variable. 
+
+
+```r
+iris %&gt;% group_by(Species) %&gt;%
+  summarize(SL.mean = mean(Sepal.Length))
+```
+
+```
+## # A tibble: 3 x 2
+##   Species    SL.mean
+##   &lt;fct&gt;        &lt;dbl&gt;
+## 1 setosa        5.01
+## 2 versicolor    5.94
+## 3 virginica     6.59
+```
+
+---
+
+## group_by() / summarize()
+
+**Exercise**: What is the maximum (and minimum) of `Sepal.Length` in each `Species`?
+
+--
+
+
+```r
+iris %&gt;% group_by(Species) %&gt;%
+  summarize(SL.max = max(Sepal.Length), SL.min= min(Sepal.Length))
+```
+
+```
+## # A tibble: 3 x 3
+##   Species    SL.max SL.min
+##   &lt;fct&gt;       &lt;dbl&gt;  &lt;dbl&gt;
+## 1 setosa        5.8    4.3
+## 2 versicolor    7      4.9
+## 3 virginica     7.9    4.9
+```
+
+---
+
+## Wide and long form of data
+
+Calories taken by four patients on a certain day:
+
+
+```r
+cal_wide &lt;- data.frame(subject = paste0("Patient", 1:4),
+                      breakfast = c(300, 350, 300, 250),
+                      lunch = c(500, 500, 500, 450),
+                      dinner = c(600, 650, 450, 500))
+print(cal_wide)
+```
+
+```
+##    subject breakfast lunch dinner
+## 1 Patient1       300   500    600
+## 2 Patient2       350   500    650
+## 3 Patient3       300   500    450
+## 4 Patient4       250   450    500
+```
+
+---
+
+## Wide and long form of data
+
+At times, _long_ format of data is more convenient to deal with:
+
+`$$\begin{array}{c|c|c} \text{subject} &amp; \text{meal} &amp; \text{calorie} \\ \hline   
+\text{Patient1} &amp; \text{breakfast} &amp; 300   \\  
+\text{Patient1} &amp; \text{lunch} &amp; 500  \\
+\text{Patient1} &amp; \text{dinner} &amp; 600  \\
+\text{Patient2} &amp; \text{breakfast} &amp; 350   \\  
+\text{Patient2} &amp; \text{lunch} &amp; 500  \\
+\text{Patient2} &amp; \text{dinner} &amp; 650  \\
+\vdots &amp; \vdots &amp; \vdots
+\end{array}$$`
+
+---
+
+## Wide and long form of data
+
+`gather()` transforms wide format into long format:
+
+
+```r
+cal_long &lt;- cal_wide %&gt;%
+  gather(key = meal, value = calorie, breakfast, lunch, dinner) %&gt;%
+  arrange(subject)
+
+head(cal_long)
+```
+
+```
+##    subject      meal calorie
+## 1 Patient1 breakfast     300
+## 2 Patient1     lunch     500
+## 3 Patient1    dinner     600
+## 4 Patient2 breakfast     350
+## 5 Patient2     lunch     500
+## 6 Patient2    dinner     650
+```
+
+---
+
+## Wide and long form of data
+
+`gather()` can be used in a way excluding column(s) not to be transformed into `key`:
+
+
+```r
+cal_long_2 &lt;- cal_wide %&gt;%
+  gather(key = meal, value = calorie, -subject) %&gt;%
+  arrange(subject)
+
+head(cal_long_2)
+```
+
+```
+##    subject      meal calorie
+## 1 Patient1 breakfast     300
+## 2 Patient1     lunch     500
+## 3 Patient1    dinner     600
+## 4 Patient2 breakfast     350
+## 5 Patient2     lunch     500
+## 6 Patient2    dinner     650
+```
+
+---
+
+## Wide and long form of data
+
+`spread()` transforms long format to wide format:
+
+
+```r
+cal_wide_2 &lt;- cal_long %&gt;%
+  spread(key = meal, value = calorie)
+
+head(cal_wide_2)
+```
+
+```
+##    subject breakfast dinner lunch
+## 1 Patient1       300    600   500
+## 2 Patient2       350    650   500
+## 3 Patient3       300    450   500
+## 4 Patient4       250    500   450
+```
+
+---
+
 ## Box plot
 
 **Example**: describe the distribution of `Sepal.Length` using box plot.
@@ -543,7 +735,7 @@ g &lt;- ggplot(d, aes(x = Species, y = Sepal.Length)) +
 print(g)
 ```
 
-&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-26-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-33-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -551,7 +743,7 @@ print(g)
 
 - The thick line indicates the median.
 - The lower and upper hinges correspond to the 25% and 75% quantiles. 
-- The upper whisker extends from the hinge to the largest value no further than 1.5 `\(\times\)` IQR from the hinge, where IQR is the inter-quartile range (distance between the 25% and 75% quantiles). Similary for the lower whisker. 
+- The upper whisker extends from the hinge to the largest value no further than 1.5 `\(\times\)` IQR from the hinge, where IQR is the inter-quartile range (distance between the 25% and 75% quantiles). Similarly for the lower whisker. 
 
 --
 
@@ -577,7 +769,7 @@ quantile(ds$Sepal.Length)
 
 **Exercise**: create the following plots.
 
-&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-28-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-35-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -594,7 +786,7 @@ g &lt;- ggplot(d, aes(x = Sepal.Length, y = Sepal.Width)) +
 print(g)
 ```
 
-&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-29-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-36-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -607,7 +799,7 @@ g &lt;- ggplot(d, aes(Sepal.Length, Sepal.Width, color = Species)) +
 print(g)
 ```
 
-&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-30-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-37-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -619,7 +811,7 @@ g2 &lt;- g + theme(aspect.ratio = 1)
 print(g2)
 ```
 
-&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-31-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Cabrini_2019_Lecture_3_files/figure-html/unnamed-chunk-38-1.png" width="60%" style="display: block; margin: auto;" /&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

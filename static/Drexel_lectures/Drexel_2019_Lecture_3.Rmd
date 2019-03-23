@@ -93,7 +93,7 @@ These verbs, when combined with the pipe operator `%>%`, become even more powerf
 
 ## select()
 
-**Example**: create a data set consising only of `Sepal.Length` and `Sepal.Width`.
+**Example**: create a data set consisting only of `Sepal.Length` and `Sepal.Width`.
 
 ```{r}
 s1 <- select(d, Sepal.Length, Sepal.Width)
@@ -105,7 +105,7 @@ head(s1)
  
 ## select(), continued
 
-**Exercise**: create a data set consising of `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width`.
+**Exercise**: create a data set consisting of `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width`.
 
 --
 
@@ -128,7 +128,7 @@ head(s3)
 
 ## filter()
 
-**Example**: create a data set consising only of `setosa` species.
+**Example**: create a data set consisting only of `setosa` species.
 
 ```{r}
 f1 <- filter(d, Species == "setosa") # note use of ==, not =
@@ -140,7 +140,7 @@ head(f1)
 
 ## filter(), continued
 
-**Exercise**: create a data set consising only of `setosa` and `virginica` species.
+**Exercise**: create a data set consisting only of `setosa` and `virginica` species.
 
 --
 
@@ -295,6 +295,121 @@ head(r)
 
 ---
 
+## group_by() / summarize()
+
+**Exercise**: find the mean `Sepal.Length` for each `Species`.
+
+```{r}
+setosa_df <- iris %>% 
+  filter(Species == "setosa")
+mean(setosa_df$Sepal.Length)
+
+versi_df <- iris %>% 
+  filter(Species == "versicolor")
+mean(versi_df$Sepal.Length)
+
+virgi_df <- iris %>% 
+  filter(Species == "virginica")
+mean(virgi_df$Sepal.Length)
+```
+
+---
+
+## group_by() / summarize()
+
+`group_by()` and `summarize()` combination: summary of data (e.g. mean, max, min, median) by each category of a categorical variable. 
+
+```{r}
+iris %>% group_by(Species) %>%
+  summarize(SL.mean = mean(Sepal.Length))
+```
+
+---
+
+## group_by() / summarize()
+
+**Exercise**: What is the maximum (and minimum) of `Sepal.Length` in each `Species`?
+
+--
+
+```{r}
+iris %>% group_by(Species) %>%
+  summarize(SL.max = max(Sepal.Length), SL.min= min(Sepal.Length))
+```
+
+---
+
+## Wide and long form of data
+
+Calories taken by four patients on a certain day:
+
+```{r}
+cal_wide <- data.frame(subject = paste0("Patient", 1:4),
+                      breakfast = c(300, 350, 300, 250),
+                      lunch = c(500, 500, 500, 450),
+                      dinner = c(600, 650, 450, 500))
+print(cal_wide)
+```
+
+---
+
+## Wide and long form of data
+
+At times, _long_ format of data is more convenient to deal with:
+
+$$\begin{array}{c|c|c} \text{subject} & \text{meal} & \text{calorie} \\ \hline   
+\text{Patient1} & \text{breakfast} & 300   \\  
+\text{Patient1} & \text{lunch} & 500  \\
+\text{Patient1} & \text{dinner} & 600  \\
+\text{Patient2} & \text{breakfast} & 350   \\  
+\text{Patient2} & \text{lunch} & 500  \\
+\text{Patient2} & \text{dinner} & 650  \\
+\vdots & \vdots & \vdots
+\end{array}$$
+
+---
+
+## Wide and long form of data
+
+`gather()` transforms wide format into long format:
+
+```{r}
+cal_long <- cal_wide %>%
+  gather(key = meal, value = calorie, breakfast, lunch, dinner) %>%
+  arrange(subject)
+
+head(cal_long)
+```
+
+---
+
+## Wide and long form of data
+
+`gather()` can be used in a way excluding column(s) not to be transformed into `key`:
+
+```{r}
+cal_long_2 <- cal_wide %>%
+  gather(key = meal, value = calorie, -subject) %>%
+  arrange(subject)
+
+head(cal_long_2)
+```
+
+---
+
+## Wide and long form of data
+
+`spread()` transforms long format to wide format:
+
+```{r}
+cal_wide_2 <- cal_long %>%
+  spread(key = meal, value = calorie)
+
+head(cal_wide_2)
+```
+
+---
+
 ## Box plot
 
 **Example**: describe the distribution of `Sepal.Length` using box plot.
@@ -311,7 +426,7 @@ print(g)
 
 - The thick line indicates the median.
 - The lower and upper hinges correspond to the 25% and 75% quantiles. 
-- The upper whisker extends from the hinge to the largest value no further than 1.5 $\times$ IQR from the hinge, where IQR is the inter-quartile range (distance between the 25% and 75% quantiles). Similary for the lower whisker. 
+- The upper whisker extends from the hinge to the largest value no further than 1.5 $\times$ IQR from the hinge, where IQR is the inter-quartile range (distance between the 25% and 75% quantiles). Similarly for the lower whisker. 
 
 --
 

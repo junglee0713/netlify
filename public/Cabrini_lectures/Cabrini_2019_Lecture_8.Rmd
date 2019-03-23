@@ -158,6 +158,9 @@ sam <- sample(c("H", "T"), size = 100, replace = T)
 df <- matrix(sam, ncol = 5) %>%  
   as.data.frame() %>%  
   setNames(paste0("Toss", 1:5))
+
+dim(df)
+head(df)
 ```
 
 ---
