@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 
 # Lecture 10
 ### Jung-Jin Lee
-### Mar 26, 2019
+### Apr 2, 2019
 
 ---
 
@@ -23,25 +23,6 @@ class: center, middle, inverse, title-slide
 
 
 ## Simple Linear Regression
-
----
-
-## Test
-
-
-```r
-lm_0 &lt;- lm(mpg ~ 1, data = mtcars)
-
-lm_all &lt;- lm(mpg ~ wt + hp + cyl, data = mtcars)
-
-lm_cyl &lt;- lm(mpg ~ cyl, data = mtcars)
-lm_wt &lt;- lm(mpg ~ wt, data = mtcars)
-lm_hp &lt;- lm(mpg ~ hp, data = mtcars)
-
-lm_wt_hp &lt;- lm(mpg ~ wt + hp, data = mtcars)
-lm_cyl_hp &lt;- lm(mpg ~ cyl + hp, data = mtcars)
-lm_wt_cyl &lt;- lm(mpg ~ wt + cyl, data = mtcars)
-```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

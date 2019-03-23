@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
     <title>Lecture 8</title>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <meta name="author" content="Jung-Jin Lee" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+    <script src="libs/jquery-1.12.4/jquery.min.js"></script>
+    <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="libs/datatables-binding-0.5/datatables.js"></script>
+    <link href="libs/dt-core-1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="libs/dt-core-1.10.16/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="libs/dt-core-1.10.16/js/jquery.dataTables.min.js"></script>
+    <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+    <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
     <link rel="stylesheet" href="Drexel.css" type="text/css" />
   </head>
   <body>
@@ -94,6 +103,182 @@ summary(aov(iris$Sepal.Width ~ iris$Species))
 
 ---
 
+## Pairwise _t_-tests
+
+- Compare all possible pairs
+
+- Done by applying two-sample `\(t\)`-tests for each pair
+
+
+```r
+setosa.SW &lt;- iris %&gt;% 
+  filter(Species == "setosa") %&gt;%
+  pull(Sepal.Width)
+
+versicolor.SW &lt;- iris %&gt;% 
+  filter(Species == "versicolor") %&gt;%
+  pull(Sepal.Width)
+
+virginica.SW &lt;- iris %&gt;% 
+  filter(Species == "virginica") %&gt;%
+  pull(Sepal.Width)
+```
+
+---
+
+## Pairwise _t_-tests
+
+
+```r
+t.test(setosa.SW, versicolor.SW)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  setosa.SW and versicolor.SW
+## t = 9.455, df = 94.698, p-value = 2.484e-15
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.5198348 0.7961652
+## sample estimates:
+## mean of x mean of y 
+##     3.428     2.770
+```
+
+---
+
+## Pairwise _t_-tests
+
+
+```r
+t.test(setosa.SW, virginica.SW)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  setosa.SW and virginica.SW
+## t = 6.4503, df = 95.547, p-value = 4.571e-09
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.3142808 0.5937192
+## sample estimates:
+## mean of x mean of y 
+##     3.428     2.974
+```
+
+---
+
+## Pairwise _t_-tests
+
+
+```r
+t.test(versicolor.SW, virginica.SW)
+```
+
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  versicolor.SW and virginica.SW
+## t = -3.2058, df = 97.927, p-value = 0.001819
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.33028364 -0.07771636
+## sample estimates:
+## mean of x mean of y 
+##     2.770     2.974
+```
+
+---
+
+## Pairwise _t_-tests
+
+Short cut for all pairwise comparisons using `pairwise.t.test()`:
+
+
+```r
+*pairwise.t.test(iris$Sepal.Width, iris$Species,
+*               pool.sd = F, p.adjust.method = "none")
+```
+
+```
+## 
+## 	Pairwise comparisons using t tests with non-pooled SD 
+## 
+## data:  iris$Sepal.Width and iris$Species 
+## 
+##            setosa  versicolor
+## versicolor 2.5e-15 -         
+## virginica  4.6e-09 0.0018    
+## 
+## P value adjustment method: none
+```
+
+---
+
+## Multiple comparisons
+
+- Suppose we want to test if a coin is fair (i.e. probability of getting `\(H\)` is `\(\frac{1}{2}\)`)
+
+--
+
+- As a test:
+
+  - Toss a coin five times, and say the outcome is `\(\{H,H,H,H,H\}\)`
+  - If the coin is fair, the probability of getting `\(\{H,H,H,H,H\}\)` is given by 
+  `$$\frac{1}{2} \times \frac{1}{2} \times \frac{1}{2} \times \frac{1}{2} \times \frac{1}{2} = \frac{1}{32} = 0.03125,$$` or 3.125%
+  - It is a rare event and so we have an evidence to claim that the coin is not biased in favor of `\(H\)`.
+
+--
+
+- Still it is possible this happened by chance 
+
+  - About 1 out of 20 fair coins (notice that `\(\frac{1}{20}\)` = 5%) can show this behavior. 
+
+---
+
+## Multiple comparisons
+
+Simulation of 20 unbiased coins, five tosses each
+
+
+```r
+set.seed(2019)  
+sam &lt;- sample(c("H", "T"), size = 100, replace = T)  
+df &lt;- matrix(sam, ncol = 5) %&gt;%  
+  as.data.frame() %&gt;%  
+  setNames(paste0("Toss", 1:5))
+```
+
+---
+
+## Multiple comparisons
+
+<div id="htmlwidget-7aca68d55ea43992310d" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7aca68d55ea43992310d">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"],["T","T","H","T","H","H","T","H","H","T","T","T","H","H","T","T","H","T","H","H"],["H","T","T","H","H","H","T","T","T","H","T","H","T","H","H","H","H","H","H","T"],["T","H","T","T","T","H","T","T","H","H","H","H","H","H","T","H","T","T","H","H"],["H","H","T","H","T","T","H","H","T","T","H","H","H","H","T","T","H","T","H","T"],["H","T","T","H","T","H","T","T","T","H","T","T","T","H","T","T","H","T","H","T"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Toss1<\/th>\n      <th>Toss2<\/th>\n      <th>Toss3<\/th>\n      <th>Toss4<\/th>\n      <th>Toss5<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":7,"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}],"lengthMenu":[7,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+
+---
+
+## Multiple comparisons
+
+- Coin 14 (and 19) should not be viewed as a biased coin!
+
+  - https://xkcd.com/882/
+
+--
+
+- False discovery (or Type I error): rejecting the null hypothesis when it should not be
+
+--
+
+- `\(p\)`-values from multiple comparisons should be penalized to reduce false discoveries
+
+---
+
 ## One-way ANOVA, post hoc analysis
 
 
@@ -155,7 +340,7 @@ ggplot(crabs, aes(color, weight)) +
   geom_boxplot()
 ```
 
-&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-8-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-15-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -230,7 +415,7 @@ ggplot(df, aes(Pair, color = Sig)) +
 ```
 
 .pull-left[
-&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-13-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-20-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
@@ -241,9 +426,35 @@ ggplot(df, aes(Pair, color = Sig)) +
 
 ---
 
+## False discoveries
+
+
+```r
+pairwise.t.test(crabs$weight, crabs$color, 
+                pool.sd = F, p.adjust = "none")
+```
+
+```
+## 
+## 	Pairwise comparisons using t tests with non-pooled SD 
+## 
+## data:  crabs$weight and crabs$color 
+## 
+##   2      3      4     
+## 3 0.4845 -      -     
+## 4 0.0259 0.0233 -     
+## 5 0.0049 0.0029 0.3284
+## 
+## P value adjustment method: none
+```
+
+Without penalties on `\(p\)`-values, we could have false discoveries that the color pairs (2, 4), (3, 4), (2, 5) are also showing differences in weight.
+
+---
+
 ## Chi-squared distribution
 
-&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-14-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-22-1.png" width="90%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -368,7 +579,7 @@ X2 &lt;- (22-14.8)^2/14.8 + (15-22.2)^2/22.2 +
 
 ## Chi-squared test, continued
 
-&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-16-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-24-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 
 ```r
@@ -405,7 +616,7 @@ print(X2_Yates)
 
 ## Chi-squared test, Yates' continuity correction
 
-&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-27-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 
 ```r
@@ -560,7 +771,7 @@ print(c(X2, pval))
 ## [1] 9.780370691 0.007520029
 ```
 
-&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-26-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_8_files/figure-html/unnamed-chunk-34-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 ---
 

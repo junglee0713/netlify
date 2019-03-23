@@ -25,3 +25,5 @@ slug: cabrini-lectures-spring-2019
 
 [Lecture 7](/Cabrini_lectures/Cabrini_2019_Lecture_7.html)
 
+[Lecture 8](/Cabrini_lectures/Cabrini_2019_Lecture_8.html)
+

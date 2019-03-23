@@ -70,6 +70,124 @@ summary(aov(iris$Sepal.Width ~ iris$Species))
 
 ---
 
+## Pairwise _t_-tests
+
+- Compare all possible pairs
+
+- Done by applying two-sample $t$-tests for each pair
+
+```{r}
+setosa.SW <- iris %>% 
+  filter(Species == "setosa") %>%
+  pull(Sepal.Width)
+
+versicolor.SW <- iris %>% 
+  filter(Species == "versicolor") %>%
+  pull(Sepal.Width)
+
+virginica.SW <- iris %>% 
+  filter(Species == "virginica") %>%
+  pull(Sepal.Width)
+```
+
+---
+
+## Pairwise _t_-tests
+
+```{r}
+t.test(setosa.SW, versicolor.SW)
+```
+
+---
+
+## Pairwise _t_-tests
+
+```{r}
+t.test(setosa.SW, virginica.SW)
+```
+
+---
+
+## Pairwise _t_-tests
+
+```{r}
+t.test(versicolor.SW, virginica.SW)
+```
+
+---
+
+## Pairwise _t_-tests
+
+Short cut for all pairwise comparisons using `pairwise.t.test()`:
+
+```{r}
+pairwise.t.test(iris$Sepal.Width, iris$Species, #<<
+                pool.sd = F, p.adjust.method = "none") #<<
+```
+
+---
+
+## Multiple comparisons
+
+- Suppose we want to test if a coin is fair (i.e. probability of getting $H$ is $\frac{1}{2}$)
+
+--
+
+- As a test:
+
+  - Toss a coin five times, and say the outcome is $\{H,H,H,H,H\}$
+  - If the coin is fair, the probability of getting $\{H,H,H,H,H\}$ is given by 
+  $$\frac{1}{2} \times \frac{1}{2} \times \frac{1}{2} \times \frac{1}{2} \times \frac{1}{2} = \frac{1}{32} = 0.03125,$$ or 3.125%
+  - It is a rare event and so we have an evidence to claim that the coin is not biased in favor of $H$.
+
+--
+
+- Still it is possible this happened by chance 
+
+  - About 1 out of 20 fair coins (notice that $\frac{1}{20}$ = 5%) can show this behavior. 
+
+---
+
+## Multiple comparisons
+
+Simulation of 20 unbiased coins, five tosses each
+
+```{r} 
+set.seed(2019)  
+sam <- sample(c("H", "T"), size = 100, replace = T)  
+df <- matrix(sam, ncol = 5) %>%  
+  as.data.frame() %>%  
+  setNames(paste0("Toss", 1:5))
+```
+
+---
+
+## Multiple comparisons
+
+```{r eval=require('DT'), tidy = FALSE, echo = F}
+DT::datatable(
+  df, fillContainer = FALSE, options = list(pageLength = 7)
+)
+```
+
+---
+
+## Multiple comparisons
+
+- Coin 14 (and 19) should not be viewed as a biased coin!
+
+  - https://xkcd.com/882/
+
+--
+
+- False discovery (or Type I error): rejecting the null hypothesis when it should not be
+
+--
+
+- $p$-values from multiple comparisons should be penalized to reduce false discoveries
+
+---
+
 ## One-way ANOVA, post hoc analysis
 
 ```{r}
@@ -156,6 +274,17 @@ ggplot(df, aes(Pair, color = Sig)) +
 - `upr` is the upper limit of 95% confidence interval of mean difference.
 - The pair color 5 and color 3 shows a significant difference in weights.
 ]
+
+---
+
+## False discoveries
+
+```{r}
+pairwise.t.test(crabs$weight, crabs$color, 
+                pool.sd = F, p.adjust = "none")
+```
+
+Without penalties on $p$-values, we could have false discoveries that the color pairs (2, 4), (3, 4), (2, 5) are also showing differences in weight.
 
 ---
 
