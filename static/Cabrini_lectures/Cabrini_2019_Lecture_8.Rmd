@@ -138,7 +138,7 @@ pairwise.t.test(iris$Sepal.Width, iris$Species, #<<
   - Toss a coin five times, and say the outcome is $\{H,H,H,H,H\}$
   - If the coin is fair, the probability of getting $\{H,H,H,H,H\}$ is given by 
   $$\frac{1}{2} \times \frac{1}{2} \times \frac{1}{2} \times \frac{1}{2} \times \frac{1}{2} = \frac{1}{32} = 0.03125,$$ or 3.125%
-  - It is a rare event and so we have an evidence to claim that the coin is not biased in favor of $H$.
+  - It is a rare event and so we have an evidence to claim that the coin IS biased in favor of $H$.
 
 --
 
