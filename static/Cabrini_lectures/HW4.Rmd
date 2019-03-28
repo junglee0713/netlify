@@ -1,0 +1,109 @@
+---
+title: "Homework 4"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  fig.align = "center")
+library(tidyverse)
+```
+
+\bigskip
+
+(For questions **1, 2**) The following data show the liver weights (kg) taken from randomly selected cattle in two farms in southwest England during outbreaks of liver fluke disease.
+
+```{r, echo = T}
+farm1 <- c(18.0, 18.5, 18.9, 18.2, 17.9, 15.9, 16.8, 18.2, 17.3, 17.5, 17.7, 17.8, 17.1,
+           17.0, 16.3)
+farm2 <- c(14.3, 13.2, 17.3, 14.9, 16.4, 16.0, 18.6, 17.3, 15.5, 16.8, 15.7, 18.0, 15.2)
+```
+
+**1.** (a) Create the following data frame:
+
+```{r}
+df1 <- data.frame(farm = "farm1", liver_weight = farm1)
+df2 <- data.frame(farm = "farm2", liver_weight = farm2)
+df <- rbind(df1, df2)
+print(df)
+```
+
+(b) Using `group_by()` and `summarize()` combination, create the following summary table:
+
+```{r}
+df2 <- df %>%
+  group_by(farm) %>%
+  summarize(sample_mean = mean(liver_weight), sample_var = var(liver_weight))
+print(df2)
+```
+
+**2.** (a) As a preliminary to testing the null hypothesis that the mean liver weights of the cattle in the two farms are the same, check if the population variances in the two farms can be assumed to be similar. 
+
+```{r, eval = F}
+var.test(farm1, farm2)
+```
+
+(b) Use an appropriate test to check if `farm1` population mean is the same as `farm2` population mean.
+
+```{r, eval = F}
+t.test(farm1, farm2, var.equal = F)
+```
+
+(For questions **3, 4**),  In the following, the measurements of the mean fluorescence intensity of sperm cells stained with a fluorescent marker, 1-anilinonaphthalene-8-sulphonate (ANS), showing the effect of the presence of egg yolk in the diluent solution. ANS fluoresces only when bound to the sperm membrane. Each value represents the mean of 10 individual spermatozoa and is estimated by a densitometer from photographic film.
+
+```{r, echo = T}
+egg_yolk_1_percent <- c(0.944, 1.048, 1.026, 1.007, 0.933, 0.998, 1.035)
+egg_yolk_5_percent <- c(0.865, 1.000, 1.001, 0.900, 0.923, 0.876, 1.046, 0.990)
+egg_yolk_25_percent <- c(0.811, 0.862, 0.910, 0.799, 0.837, 0.854)
+```
+
+**3.** (a) Create the following box plot:
+
+```{r, fig.align = "center", fig.height = 3}
+df1 <- data.frame(percent = "1%", intensity = egg_yolk_1_percent)
+df5 <- data.frame(percent = "5%", intensity = egg_yolk_5_percent)
+df25 <- data.frame(percent = "25%", intensity = egg_yolk_25_percent)
+df <- rbind(df1, df5, df25)
+ggplot(df, aes(percent, intensity)) + 
+  geom_boxplot() +
+  geom_jitter(width = 0.2) +
+  theme(aspect.ratio = 1)
+```
+
+(b) What evidence is there that the egg yolk percentage affects the fluorescence intensity of sperm cells? Use an appropriate test to support your answer. You may assume that the population variances of the intensity in each group are the same.
+
+```{r, eval = F}
+oneway.test(df$intensity ~ df$percent, var.equal = T)
+## or
+anova_res <- aov(df$intensity ~ df$percent)
+summary(anova_res)
+```
+
+**4.** Based on the result from **3** (b) above, perform post hoc analyses, that is, determine which pair(s) of percentages, if any, shows difference in fluorescence intensity. 
+
+```{r, eval = F}
+TukeyHSD(anova_res)
+```
+
+**5.** Out of 183 female Beagles, 120 randomly selected dogs were given 0.026-106 kBq plutonium per kg by intravenous injection and compared with remaining 63 female control dogs with a view to determining whether plutonium deposit in bone affects the appearance of mammary tumors. 45 of the control dogs developed mammary tumors of any kind whereas 67 of the dogs given plutonium developed mammary tumors of any kind. The following is a $2\times 2$ contingency table describing the outcome:
+
+$$\begin{array}{c|ccc} & \text{Plutonium} & \text{Control} & \text{Total} \\ \hline   
+\text{Tumor} & 67 & 45 & 112 \\  
+\text{No tumor} & 53 & 18 & 71 \\
+\text{Total} & 120 & 63 & 183
+\end{array}$$
+
+Using $\chi^2$-test _with Yates' correction_, determine whether tumor development is associated with plutonium deposit in bone. 
+
+```{r, eval = F}
+mat <- matrix(c(67, 53, 45, 18), nrow = 2, byrow = F)
+chisq.test(mat, correct = T)
+```
+
+
+
+
