@@ -1,0 +1,578 @@
+---
+title: "Lecture 9"
+author: "Jung-Jin Lee"
+date: "Apr 10, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Cabrini.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## Correlation Coefficient
+
+- First step to linear regression 
+
+- Let $X$ and $Y$ be paired random variables (e.g. `weight` and `height` of a subject). What can you say about the association between $X$ and $Y$? (e.g. does `weight` increase as `height` increases?)
+
+- The population correlation coefficient is defined by
+$$\rho=\frac{Cov(X,Y)}{\sigma_X\sigma_Y}=\frac{E[(X-\mu_X)(Y-\mu_Y)]}{\sigma_X\sigma_Y},$$
+where $\mu_X$ (respectively, $\mu_Y$) is the mean of $X$ (respectively, $Y$) and $\sigma_X$ (respectively, $\sigma_Y$) is the standard deviation of $X$ (respectively, $Y$). 
+
+---
+
+## Correlation Coefficient -- Properties
+
+- It is known that $-1\leq \rho \leq 1$. 
+  - If $\rho$ is close to $1$, then it implies strong **positive** linear association between $X$ and $Y$. 
+  - If $\rho$ is close to $-1$, then it implies strong **negative** linear association between $X$ and $Y$. 
+  - If $\rho$ is close to $0$, then it implies weak or no linear association between $X$ and $Y$. 
+
+- When $\rho=0$, $X$ and $Y$ are said to be **uncorrelated**. 
+
+- In practice, the linear association between two populations is first examined by looking at the scatter plot of samples. 
+
+- Then the population correlation coefficient $\rho$ is more objectively estimated from a sample using the sample correlation coefficient.
+
+---
+
+## Sample Correlation Coefficient
+
+- Let $(x_1, y_1), (x_2, y_2), \ldots,(x_n, y_n)$ be a paired sample. The **sample correlation coefficient** or **Pearson's correlation coefficient** $r$ is a measure of the strength of the linear association between $x_1,x_2,\ldots,x_n$ and $y_1,y_2,\ldots,y_n$ defined by 
+$$r=\frac{\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^n(x_i-\bar{x})^2} \sqrt{\sum_{i=1}^n(y_i-\bar{y})^2}},$$ 
+where $\bar{x}=\frac{x_1+x_2+\cdots+x_n}{n}$ and $\bar{y}=\frac{y_1+y_2+\cdots+y_n}{n}$.
+
+- By Cauchy-Schwarz inequality, it follows that $-1\leq r\leq 1$. 
+
+---
+
+## Example: UK heights data
+
+```{r, out.width = "55%"}
+height <- read.table(file = "heights.txt", header = T, sep = " ")
+ggplot(height, aes(Mheight, Dheight)) + geom_point()
+```
+
+---
+
+## Example: UK heights data
+
+```{r}
+m <- height$Mheight; d <- height$Dheight
+top <- sum((m-mean(m))*(d-mean(d)))
+bottom <- sqrt(sum((m-mean(m))^2))*sqrt(sum((d-mean(d))^2))
+r <- top/bottom
+print(r)
+```
+
+--
+
+`cor()` computes Pearson's correlation coefficient:
+
+```{r}
+cor(m,d)
+```
+
+We observe a moderately positive linear association between `Mheight` and `Dheight`.
+
+---
+
+## Example: Horseshoe crabs
+
+```{r, out.width = "55%"}
+crabs <- read.table(file = "crabs.tsv", header = T, sep = "\t")
+ggplot(crabs, aes(width, satell)) + geom_point()
+```
+
+---
+
+## Example: Horseshoe crabs
+
+```{r}
+cor(crabs$width, crabs$satell)
+```
+
+Not very strong association is observed between `width` and `satell`.
+
+--
+
+```{r}
+cor(crabs$width, crabs$weight)
+```
+
+Strong positive association between `width` and `weight`.
+
+**Exercise**: verify this using a scatter plot.
+
+---
+
+## Example: Motor Trend Car Road Tests
+
+`mtcars` is one of built-in data sets in R:
+
+```{r}
+head(mtcars)
+dim(mtcars)
+names(mtcars)
+```
+
+---
+
+## Example: Motor Trend Car Road Tests
+
+`mtcars` is a data frame with row names (Note that make/model is not one of variable names). The make/model of cars can be obtained using `rownames()`:
+
+```{r}
+rownames(mtcars)
+```
+
+Type `?mtcars` to learn about variables in `mtcars`.
+
+---
+
+## Example: Motor Trend Car Road Tests
+
+What can you say about the association between `wt` and `mpg`? 
+
+--
+
+.pull-left[
+```{r}
+ggplot(mtcars, aes(wt, mpg)) + 
+  geom_point()
+```
+]
+
+--
+
+.pull-right[
+```{r}
+cor(mtcars$wt, mtcars$mpg)
+```
+
+Strong negative association is observed, as expected.
+]
+
+---
+
+## Hypothesis Testing for Correlation Coefficient
+ 
+Suppose that the sample $(x_1,x_2,\ldots,x_n)$ and $(y_1,y_2,\ldots,y_n)$ are taken from normal populations. Under the null hypothesis that the population correlation coefficient is $0$, 
+$$r\sqrt{\frac{n-2}{1-r^2}}$$
+follows a $t$-distribution with $n-2$ degrees of freedom. Moreover, the 95% confidence interval of the population correlation coefficient $\rho$ is given by 
+$$\left(\frac{e^{2z_1}-1}{e^{2z_1}+1}, \frac{e^{2z_2}-1}{e^{2z_2}+1}\right),$$
+where 
+$$z_1=\frac{1}{2}\log\frac{1+r}{1-r}-\frac{1.96}{\sqrt{n-3}}\quad \text{and} \quad z_2=\frac{1}{2}\log\frac{1+r}{1-r}+\frac{1.96}{\sqrt{n-3}}.$$
+
+---
+
+## Example: bone activity measures
+
+Jackson et al. (1996) were interested to know whether two measures of bone activity in adult horses, the wheatgerm lectin precipitated bone alkaline phosphatase activity (wBAP) and the carboxy-terminal propeptide of Type I collagen (PICP), are correlated. A sample of size 46 was taken and recorded below:
+
+```{r}
+wbap <- c(20, 31, 31, 22, 18, 16, 18, 55, 28, 32, 33, 38, 34, 
+          21, 41, 30, 36, 50, 54, 31, 35, 39, 36, 36, 40, 36, 
+          34, 41, 48, 50, 52, 61, 61, 57, 59, 63, 65, 62, 61, 
+          70, 71, 88, 90, 90, 110, 34)
+picp <- c(190, 186, 190, 205, 210, 290, 306, 1000, 170, 180, 
+          300, 303, 320, 360, 340, 400, 380, 405, 370, 490, 
+          470, 470, 580, 540, 520, 700, 800, 800, 850, 980, 
+          1005, 1100, 1070, 810, 720, 740, 700, 750, 700, 
+          570, 1300, 1050, 1100, 1200, 940, 360)
+c(length(wbap), length(picp))
+```
+
+Determine if wBAP and PICP were uncorrelated.
+
+---
+
+## Example: bone activity measures
+
+```{r}
+bone <- data.frame(wbap, picp) 
+```
+
+.pull-left[
+```{r}
+head(bone)
+```
+
+```{r, eval = F}
+bone %>%
+  ggplot(aes(wbap, picp)) +
+  geom_point()
+```
+]
+
+.pull-right[
+```{r, echo = F}
+bone %>%
+  ggplot(aes(wbap, picp)) +
+  geom_point()
+```
+]
+
+---
+
+## Example: bone activity measures
+
+```{r}
+n <- length(wbap)
+r <- cor(wbap, picp)
+print(r)
+t <- r*sqrt((n-2)/(1-r^2))
+print(t)
+z_values <- 0.5*log((1+r)/(1-r)) + 1.96/sqrt(n-3)*c(-1,1)
+CI95 <- (exp(2*z_values)-1)/(exp(2*z_values)+1)
+print(CI95)
+```
+
+---
+
+## Example: bone activity measures
+
+How to get $p$-value?
+
+--
+
+.pull-left[
+```{r, echo = F}
+tfun = function(x) dt(x, df = 44)
+gt <- ggplot(data.frame(x = 0), aes(x)) +
+  scale_x_continuous(lim = c(-2, 2), breaks = c(-1.8, 0, 1.8), labels = c("-8.22523", "0", "8.22523")) +
+  theme_bw() + 
+  theme_classic() +
+  stat_function(fun = tfun, xlim = c(-2, -1.8), geom = "area", fill = "red") + 
+  stat_function(fun = tfun, xlim = c(1.8, 2), geom = "area", fill = "red") + 
+  stat_function(fun = tfun) + 
+  ylim(0, 0.45) +
+  ggtitle(paste0("t, df = ", n-2))
+print(gt) 
+```
+]
+
+--
+
+.pull-right[
+```{r}
+pval = 2*(1-pt(t, df = n-2))
+print(pval)
+```
+
+With $p$-value less than 0.05, we reject the null hypothesis that two measures are uncorrelated and conclude that the population correlation coefficient is not equal to zero. 
+]
+
+---
+
+## Example: bone activity measures
+
+`cor.test()` is an R function that computes the $p$-value and other relevant output:
+
+```{r}
+cor.test(wbap, picp)
+```
+
+---
+
+## Misuse of Correlation Coefficient
+
+- The correlation coefficient is frequently misused. 
+
+- A significantly nonzero correlation coefficient does **NOT** necessarily provide evidence of a **causal** relationship between two variables. 
+
+- For example, just because the annual pet food consumption in the UK is correlated with the number of air-miles flown by UK residents, this does not suggest that pets are using food as a comfort substitute for absent owners!
+
+<p align = "center">
+  <img src = corr.png width = "600">
+  <br/>
+  <a href="https://xkcd.com/552">https://xkcd.com/552</a>
+</p>  
+
+---
+
+## Best Fitting Line
+
+Consider the following pairs of data:
+
+```{r}
+x <- c(12.33, -3.66, -1.24, -7.75, -3.20, -1.42, -0.38, -1.24, 
+       -3.65, 6.85, -9.59, -10.78, -1.39, -15.78, -5.54, -0.52, 
+       -4.07, 3.88, -3.19, 6.90)
+y <- c(11.61, 1.81, 5.38, -0.12, 3.72, 6.71, 5.17, 4.50, 
+       3.41, 7.27, 0.65, -1.74, 5.31, -4.13, 2.55, 7.16, 
+       3.32, 7.07, 3.64, 7.30)
+df <- data.frame(x, y)
+head(df)
+```
+
+---
+
+## Best Fitting Line
+
+```{r, out.width = "50%"}
+ggplot(df, aes(x, y)) + geom_point()
+```
+
+--
+
+Apparent linear trend is observed. Which line best describes this trend?
+
+---
+
+## Best Fitting Line
+
+```{r, eval = F}
+ggplot(df, aes(x, y)) + geom_point() +
+  geom_abline(slope = 0.4, intercept = 6, color = "red") +
+  geom_abline(slope = 0.6, intercept = 3, color = "blue") +
+  geom_abline(slope = 0.2, intercept = 5, color = "green")
+```
+
+.pull-left[
+```{r, echo = F}
+ggplot(df, aes(x, y)) + geom_point() +
+  geom_abline(slope = 0.4, intercept = 6, color = "red") +
+  geom_abline(slope = 0.6, intercept = 3, color = "blue") +
+  geom_abline(slope = 0.2, intercept = 5, color = "green")
+```
+]
+
+--
+
+.pull-right[
+- There could be multiple definitions of _best fitting line_
+
+- Depending on the definition, different best fitting line is obtained
+
+- Will use best fitting line based on _least square_
+]
+
+---
+
+## Least Square Line
+
+```{r, echo = F, out.width = "55%"}
+x <- c(2, 4, 5, 9, 12); y <- c(3, 2, 4, 6, 5)
+label_x <- paste0("x[", 1:5, "]"); label_y <- paste0("y[", 1:5, "]")
+label <- paste0("phantom()(", label_x, ", ", label_y, ")")
+df <- data.frame(x, y)
+g0 <- ggplot(df, aes(x, y)) +
+  xlim(c(0, 13)) +
+  ylim(c(0, 7)) +
+  geom_point() +
+  geom_text(label = label, hjust = 0.5, vjust = 0.5*c(-1, 2.5, -1, -1, 2.5), parse = TRUE) + 
+  theme_bw() +
+  theme_classic()
+print(g0)
+```
+
+---
+
+## Least Square Line
+
+.pull-left[
+```{r, echo = F}
+a <- 1.5; b <- 0.4
+g1 <- g0 + geom_abline(intercept = a, slope = b, color = "red")
+print(g1)
+```
+]
+
+.pull-right[
+```{r, echo = F}
+a <- 4; b <- -0.2
+g2 <- g0 + geom_abline(intercept = a, slope = b, color = "green")
+print(g2)
+```
+]
+
+Which is better in describing the trends? <font color="red">red</font> or <font color="green">green</font>?
+---
+
+## Least Square Line
+
+.pull-left[
+```{r, echo = F}
+a <- 1.5; b <- 0.4
+g3 <- g0 + geom_abline(intercept = a, slope = b, color = "red") +
+  geom_segment(x = x, xend = x, y = y, yend = a + b*x, color = "blue", lty = "dashed")
+print(g3)
+```
+]
+
+.pull-right[
+```{r, echo = F}
+a <- 4; b <- -0.2
+g4 <- g0 + geom_abline(intercept = a, slope = b, color = "green") +
+  geom_segment(x = x, xend = x, y = y, yend = a + b*x, color = "blue", lty = "dashed")
+print(g4)
+```
+]
+
+Determine the $y$-intercept and slope so that the sum of squares of the <font color="blue"> blue dashed line segment </font> is minimized.
+
+---
+
+## Least Square Line
+
+- A line is determined by slope and intercept
+
+--
+
+- Multivariable calculus and/or linear algebra can be used to minimize a quadratic function $$S(a,b)=\sum_{i=1}^n|y_i-(a+bx_i)|^2=\sum_{i=1}^n\left(y_i-(a+bx_i)\right)^2$$
+
+--
+
+- slope: 
+$$\hat{b} = \frac{\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^n (x_i-\bar{x})^2}$$
+
+--
+
+- intercept:
+$$\hat{a} = \bar{y}-\hat{b}\bar{x}$$
+
+---
+
+## Least Square Line
+
+```{r}
+slope <- sum((x-mean(x))*(y-mean(y)))/sum((x-mean(x))^2)
+y.int <- mean(y)-slope*mean(x); print(c(slope, y.int))
+```
+
+```{r, echo = F, out.width = "50%"}
+g3 <- g0 + 
+  geom_abline(intercept = y.int, slope = slope, color = "purple") 
+print(g3)
+```
+
+---
+
+## Least Square Line
+
+`ggplot` time!
+
+```{r, out.width = "50%"}
+g <- ggplot(df, aes(x,y)) + geom_point() +
+  geom_smooth(method = "lm", se = F) #<<
+print(g)
+```
+
+---
+
+## Simple Linear Regression
+
+- In simple linear regression, we describe the relationship between two numerical variables, $x$ and $y$, by determining the straight line that approximates the data points on a scatter diagram most closely. 
+
+--
+
+- We call $y$ the **outcome**, **dependent**, or **response** variable and we represent this on the vertical axis of the scatter diagram.
+
+--
+
+- We call $x$ the **explanatory**, **independent**, or **predictor** variable, or **regressor**.
+
+---
+
+## Simple Linear Regression
+
+- We regard the $x$ variable as one whose values can be measured without error. On the other hand, the $y$ variable is a random variable which is subject to experimental variation. 
+
+--
+
+- To be more precise, we assume that $y_i=\beta_0+\beta_1 x_i+e_i$, where $e_i$ is a random variable following $N(0,\sigma^2)$. 
+
+--
+
+- Roughly speaking, simple linear regression is a combination of parameter estimation and best fitting line. 
+
+--
+
+-  We will estimate the unknown true parameters $\beta_0$, $\beta_1$, and $\sigma^2$ based on our sample, just like we estimate the population mean $\mu$ and population variance $\sigma^2$ with the sample mean $\bar{X}$ and the sample variance $S^2$, respectively.
+
+---
+
+## Example: girth vs weight
+
+It is necessary from time to time to estimate the body weight of sheep; for example, for accurate drug dosing. Unfortunately, weighing sheep is difficult, so it is helpful to be able to estimate the sheep's weight from some other, more easily obtained, measure such as chest girth.
+
+Download a tab-delimited file [sheep.tsv](sheep.tsv). It consists of 66 observations and 2 variables. 
+ 
+```{r}
+sheep <- read.table("sheep.tsv", header = T, sep = "\t") 
+dim(sheep)
+```
+
+.pull-left[
+```{r}
+slice(sheep, 1:3) #<<
+```
+]
+
+.pull-right[
+- `weight`: live weight of a sheep (in kg)
+- `girth`: chest girth (in cm)
+]
+
+---
+
+## Example: girth vs weight
+
+```{r, out.width = "50%"}
+ggplot(sheep, aes(girth, weight)) + geom_point()
+```
+
+---
+
+## Example: girth vs weight
+
+```{r}
+fit <- lm(sheep$weight ~ sheep$girth) #<<
+# or fit <- lm(weight ~ girth, data = sheep)
+summary(fit)$coef 
+```
+
+```{r}
+beta0 <- -46.041373; beta1 <- 1.043237
+```
+
+---
+
+## Example: girth vs weight
+
+```{r, out.width = "50%"}
+ggplot(sheep, aes(girth, weight)) +
+  geom_point() +
+  geom_abline(intercept = beta0, slope = beta1, color = "red")
+```
+
+---
+
+## Example: girth vs weight
+
+```{r, out.width = "50%"}
+ggplot(sheep, aes(girth, weight)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
