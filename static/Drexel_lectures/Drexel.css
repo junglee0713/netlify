@@ -30,4 +30,14 @@
   width: 37%;
 }
 
+.pull-left-80 {
+  float: left;
+  width: 77%;
+}
+
+.pull-right-20 {
+  float: left;
+  width: 17%;
+}
+
 
