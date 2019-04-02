@@ -1,0 +1,39 @@
+---
+title: "Homework 5"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  fig.align = "center")
+library(tidyverse)
+```
+
+\bigskip
+
+(For questions **1, 2**) Consider the following paired data sets of length $20$:
+
+```{r, echo = T}
+x <- c(6.82, 1.44, 9.39,  8.51, 10.38,  4.59, 14.96,  9.68, 13.54,  6.42, 11.03,  
+       3.53, 16.91,  9.52,  8.16,  8.97,  8.32,  3.58, 13.57,  9.99)
+y <- c(36.69, 6.39, 49.59, 45.65, 52.18, 27.66, 79.35, 54.10, 71.01, 34.60, 61.17, 
+       22.79, 91.20, 50.57, 44.11, 53.51, 45.96, 22.20, 73.01, 55.70)
+```
+
+**1.** (a) Create a scatter plot to visualize the data (_Hint_: you may want to start with making a data frame and then use `geom_point()`). Do you think there is a strong linear association between `x` and `y`? 
+
+(b) Compute the sample correlation coefficient between `x` and `y`. Is your result consisent with your answer in (a)?
+
+\bigskip
+
+**2.** (a) Assume that `y` is an outcome in a certain experiment, and `x` is a predictor. Find the best fitting
+line describing the association between `x` and `y` by specifying its $y$-intercept ($\beta_0$) and slope ($\beta_1$).
+
+(b) Suppose that a new `x` value came in, say 13. Estimate the corresponding `y` value using the best fitting
+line you obtained in part (a) above.
+
+(For questions **3, 4, 5**) [snowgeese.tsv](https://junglee0713.netlify.com/Drexel_lectures/snowgeese.tsv)
