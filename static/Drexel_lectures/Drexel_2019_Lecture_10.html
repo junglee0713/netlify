@@ -364,7 +364,7 @@ summary(fit)$r.squared
 
 ## Interpretation of `lm()` output
 
-- Estimate of `\(\sigma\)`: it is well known that `$$\frac{RSS}{n-2}$$` is an _unbiased_ estimator of `\(\sigma\)`, where `\(n\)` is the sample size.
+- Estimate of `\(\sigma\)`: it is well known that `$$\frac{RSS}{n-2}$$` is an _unbiased_ estimator of `\(\sigma^2\)`, where `\(n\)` is the sample size.
 
 --
 
@@ -551,15 +551,15 @@ tss
 
 
 ```r
-r2 &lt;- ssreg/tss
+r2 &lt;- ssreg/tss; print(r2)
 ```
 
---
-
-Alternatively, one can use output from `summary(fit)`:
-
+```
+## [1] 0.897782
+```
 
 ```r
+# or alternatively
 summary(fit)$r.squared
 ```
 
@@ -570,6 +570,8 @@ summary(fit)$r.squared
 --
 
 - Estimate `\(\sigma\)`
+
+--
 
 
 ```r
@@ -736,7 +738,7 @@ Researchers were interested in estimating the **weight** of donkeys using other 
 ggplot(donkey, aes(Length, Bodywt)) + geom_point()
 ```
 
-&lt;img src="Drexel_2019_Lecture_10_files/figure-html/unnamed-chunk-42-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_10_files/figure-html/unnamed-chunk-41-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -779,7 +781,63 @@ ggplot(donkey, aes(Length, Bodywt)) + geom_point() +
   geom_smooth(method = "lm", se = F)
 ```
 
+&lt;img src="Drexel_2019_Lecture_10_files/figure-html/unnamed-chunk-43-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Multiple linear regression
+
+- Simple linear regression using Height
+
+
+```r
+ggplot(donkey, aes(Height, Bodywt)) + geom_point()
+```
+
 &lt;img src="Drexel_2019_Lecture_10_files/figure-html/unnamed-chunk-44-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Multiple linear regression
+
+
+```r
+fit_Height &lt;- lm(Bodywt ~ Height, data = donkey)
+summary(fit_Height)
+```
+
+```
+## 
+## Call:
+## lm(formula = Bodywt ~ Height, data = donkey)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -105.241   -9.825   -0.825    8.505   75.131 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -137.2379    11.7708  -11.66   &lt;2e-16 ***
+## Height         2.5055     0.1132   22.13   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 16.48 on 384 degrees of freedom
+## Multiple R-squared:  0.5605,	Adjusted R-squared:  0.5594 
+## F-statistic: 489.8 on 1 and 384 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+## Multiple linear regression
+
+
+```r
+ggplot(donkey, aes(Height, Bodywt)) + geom_point() +
+  geom_smooth(method = "lm", se = F)
+```
+
+&lt;img src="Drexel_2019_Lecture_10_files/figure-html/unnamed-chunk-46-1.png" width="50%" style="display: block; margin: auto;" /&gt;
 
 ---
 

@@ -302,7 +302,7 @@ summary(fit)$r.squared
 
 ## Interpretation of `lm()` output
 
-- Estimate of $\sigma$: it is well known that $$\frac{RSS}{n-2}$$ is an _unbiased_ estimator of $\sigma$, where $n$ is the sample size.
+- Estimate of $\sigma$: it is well known that $$\frac{RSS}{n-2}$$ is an _unbiased_ estimator of $\sigma^2$, where $n$ is the sample size.
 
 --
 
@@ -423,20 +423,16 @@ tss
 --
 
 ```{r}
-r2 <- ssreg/tss
-```
-
---
-
-Alternatively, one can use output from `summary(fit)`:
-
-```{r}
+r2 <- ssreg/tss; print(r2)
+# or alternatively
 summary(fit)$r.squared
 ```
 
 --
 
 - Estimate $\sigma$
+
+--
 
 ```{r}
 sqrt(rss/(length(sheep$girth)-2))
@@ -567,6 +563,34 @@ summary(fit_Length)
 
 ```{r, out.width = "50%"}
 ggplot(donkey, aes(Length, Bodywt)) + geom_point() +
+  geom_smooth(method = "lm", se = F)
+```
+
+---
+
+## Multiple linear regression
+
+- Simple linear regression using Height
+
+```{r, out.width = "50%"}
+ggplot(donkey, aes(Height, Bodywt)) + geom_point()
+```
+
+---
+
+## Multiple linear regression
+
+```{r}
+fit_Height <- lm(Bodywt ~ Height, data = donkey)
+summary(fit_Height)
+```
+
+---
+
+## Multiple linear regression
+
+```{r, out.width = "50%"}
+ggplot(donkey, aes(Height, Bodywt)) + geom_point() +
   geom_smooth(method = "lm", se = F)
 ```
 
