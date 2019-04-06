@@ -29,5 +29,160 @@ opts_chunk$set(
   )
 ```
 
-## CONTINUE
+## Multiple linear regression, review
+
+```{r}
+donkey <- read.table("donkey.tsv", header = T, sep = "\t") 
+dim(donkey)
+head(donkey)
+```
+
+---
+
+## Multiple linear regression, review
+
+```{r}
+fit <- lm(Bodywt ~ Length + Heartgirth + Height, data = donkey)
+summary(fit)$coefficients
+```
+
+--
+
+Based on the output, we conclude that 
+
+\begin{align}
+Bodywt = &-217.706 \\
+  &+0.916 \times Length    \\
+  &+2.124 \times Heartgirth    \\
+  &+0.261 \times Height  
+\end{align}
+
+---
+
+## Multiple linear regression, review
+
+- Interpretation: 0.916 represents the change in Bodywt for a unit change in Length, when **the other explanatory variables, Heartgirth and Height, are held constant** (i.e. after controlling for these variables)
+
+--
+
+- Similarly, when **Length and Height** are fixed, a unit increase in `Heartgirth` will result in increase of `Bodywt` by 2.124.
+
+--
+
+- Prediction: a donkey with `Length` 85cm, `Heartgirth` 110cm, and `Height` 96cm will weigh approximately 
+$$ -217.706 + 0.916 \times 85 + 2.124 \times 110 + 0.261 \times 96 = 118.85 \text{ kg}.$$ 
+
+---
+
+## Model comparison
+
+- Consider a model
+$$\textbf{Model 1: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Length}.$$
+How good is this model?
+
+--
+
+- One approach to assess a model is to compute $R^2$.
+  - A good model will yield an $R^2$ close to 1. 
+
+```{r}
+fit1 <- lm(Bodywt ~ Length, data = donkey) ## Model 1
+r.squared1 <- summary(fit1)$r.squared
+r.squared1
+```
+
+---
+
+## Model comparison
+
+- Consider another model
+$$\textbf{Model 2: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Height}.$$
+
+```{r}
+fit2 <- lm(Bodywt ~ Height, data = donkey) ## Model 2
+r.squared2 <- summary(fit2)$r.squared
+r.squared2
+```
+
+- **Model 1** has bigger $R^2$ than **Model 2**, so we might conclude that **Model 1** is a better model than **Model 2**.
+
+---
+
+## Model comparison
+
+.pull-left[
+```{r, echo = F}
+ggplot(donkey, aes(Length, Bodywt)) + 
+  geom_point() + 
+  geom_abline(intercept = fit1$coefficients[1], slope = fit1$coefficients[2], color = "red")
+```
+]
+
+.pull-right[
+```{r, echo = F}
+ggplot(donkey, aes(Height, Bodywt)) + 
+  geom_point() + 
+  geom_abline(intercept = fit2$coefficients[1], slope = fit2$coefficients[2], color = "blue")
+```
+]
+
+---
+
+## Model comparison
+
+- Now consider the model
+$$\textbf{Model 3: } \texttt{Bodywt}=\beta_0+\beta_1\texttt{Length}+\beta_2\texttt{Height}.$$
+How good is this model?
+
+--
+
+```{r}
+fit3 <- lm(Bodywt ~ Length + Height, data = donkey) ## Model 3
+r.squared3 <- summary(fit3)$r.squared
+r.squared3
+```
+
+- This has the biggest $R^2$ so far. Is this surprising?
+
+--
+
+- **Model 1** and **Model 2** are _nested_ within **Model 3**, so $R^2$ being the bigger in **Model 3** than **Model 1** or **Model 2** is expected. 
+
+--
+
+- In general, the more predictors are added, the bigger $R^2$ is. 
+
+---
+
+## Model comparison
+
+- Now consider yet another model
+
+\begin{align}
+\textbf{Model 4: } \texttt{Bodywt} = & \beta_0 +  \beta_1\texttt{Length} + \beta_2\texttt{Height} \\
+  & +\beta_3\texttt{Heartgirth} + \beta_4\texttt{Umbgirth}
+\end{align}
+
+```{r}
+fit4 <- lm(Bodywt ~ Length + Height + Heartgirth + Umbgirth, data = donkey) ## Model 4
+r.squared4 <- summary(fit4)$r.squared
+r.squared4
+```
+
+--
+
+- Although this model the biggest $R^2$ so far, it is more complex than other models. 
+
+--
+
+- Need to consider trade-off beween simple model (less number of variables) vs good fit (higher $R^2$)
+
+--
+
+- Idea: if a bigger model does not considerably increase $R^2$, then stick to simpler model. 
+
+---
+
+## Comparison of nested models
+
 

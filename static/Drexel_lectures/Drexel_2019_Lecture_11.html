@@ -21,7 +21,200 @@ class: center, middle, inverse, title-slide
  
 
 
-## CONTINUE
+## Multiple linear regression, review
+
+
+```r
+donkey &lt;- read.table("donkey.tsv", header = T, sep = "\t") 
+dim(donkey)
+```
+
+```
+## [1] 386   8
+```
+
+```r
+head(donkey)
+```
+
+```
+##   Donkey  Sex Age Bodywt Heartgirth Umbgirth Length Height
+## 1     s1 male 3.5    128        111      126     95    106
+## 2     s2 male 2.0    102        106      120     75    101
+## 3     s3 male 3.0    100        103      125     76    101
+## 4     s4 male 3.0     92        102      121     73    101
+## 5     s5 male 3.0     98        105      121     70    101
+## 6     s6 male 4.0    110        101      126     80    101
+```
+
+---
+
+## Multiple linear regression, review
+
+
+```r
+fit &lt;- lm(Bodywt ~ Length + Heartgirth + Height, data = donkey)
+summary(fit)$coefficients
+```
+
+```
+##                 Estimate Std. Error    t value     Pr(&gt;|t|)
+## (Intercept) -217.7061239  7.6606181 -28.418872 2.913804e-96
+## Length         0.9163415  0.1193591   7.677181 1.375154e-13
+## Heartgirth     2.1241803  0.1017086  20.884954 3.681853e-65
+## Height         0.2608338  0.1117453   2.334182 2.010392e-02
+```
+
+--
+
+Based on the output, we conclude that 
+
+`\begin{align}
+Bodywt = &amp;-217.706 \\
+  &amp;+0.916 \times Length    \\
+  &amp;+2.124 \times Heartgirth    \\
+  &amp;+0.261 \times Height  
+\end{align}`
+
+---
+
+## Multiple linear regression, review
+
+- Interpretation: 0.916 represents the change in Bodywt for a unit change in Length, when **the other explanatory variables, Heartgirth and Height, are held constant** (i.e. after controlling for these variables)
+
+--
+
+- Similarly, when **Length and Height** are fixed, a unit increase in `Heartgirth` will result in increase of `Bodywt` by 2.124.
+
+--
+
+- Prediction: a donkey with `Length` 85cm, `Heartgirth` 110cm, and `Height` 96cm will weigh approximately 
+$$ -217.706 + 0.916 \times 85 + 2.124 \times 110 + 0.261 \times 96 = 118.85 \text{ kg}.$$ 
+
+---
+
+## Model comparison
+
+- Consider a model
+`$$\textbf{Model 1: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Length}.$$`
+How good is this model?
+
+--
+
+- One approach to assess a model is to compute `\(R^2\)`.
+  - A good model will yield an `\(R^2\)` close to 1. 
+
+
+```r
+fit1 &lt;- lm(Bodywt ~ Length, data = donkey) ## Model 1
+r.squared1 &lt;- summary(fit1)$r.squared
+r.squared1
+```
+
+```
+## [1] 0.5949296
+```
+
+---
+
+## Model comparison
+
+- Consider another model
+`$$\textbf{Model 2: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Height}.$$`
+
+
+```r
+fit2 &lt;- lm(Bodywt ~ Height, data = donkey) ## Model 2
+r.squared2 &lt;- summary(fit2)$r.squared
+r.squared2
+```
+
+```
+## [1] 0.5605374
+```
+
+- **Model 1** has bigger `\(R^2\)` than **Model 2**, so we might conclude that **Model 1** is a better model than **Model 2**.
+
+---
+
+## Model comparison
+
+.pull-left[
+&lt;img src="Drexel_2019_Lecture_11_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="Drexel_2019_Lecture_11_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Model comparison
+
+- Now consider the model
+`$$\textbf{Model 3: } \texttt{Bodywt}=\beta_0+\beta_1\texttt{Length}+\beta_2\texttt{Height}.$$`
+How good is this model?
+
+--
+
+
+```r
+fit3 &lt;- lm(Bodywt ~ Length + Height, data = donkey) ## Model 3
+r.squared3 &lt;- summary(fit3)$r.squared
+r.squared3
+```
+
+```
+## [1] 0.6669952
+```
+
+- This has the biggest `\(R^2\)` so far. Is this surprising?
+
+--
+
+- **Model 1** and **Model 2** are _nested_ within **Model 3**, so `\(R^2\)` being the bigger in **Model 3** than **Model 1** or **Model 2** is expected. 
+
+--
+
+- In general, the more predictors are added, the bigger `\(R^2\)` is. 
+
+---
+
+## Model comparison
+
+- Now consider yet another model
+
+`\begin{align}
+\textbf{Model 4: } \texttt{Bodywt} = &amp; \beta_0 +  \beta_1\texttt{Length} + \beta_2\texttt{Height} \\
+  &amp; +\beta_3\texttt{Heartgirth} + \beta_4\texttt{Umbgirth}
+\end{align}`
+
+
+```r
+fit4 &lt;- lm(Bodywt ~ Length + Height + Heartgirth + Umbgirth, data = donkey) ## Model 4
+r.squared4 &lt;- summary(fit4)$r.squared
+r.squared4
+```
+
+```
+## [1] 0.8561892
+```
+
+--
+
+- Although this model the biggest `\(R^2\)` so far, it is more complex than other models. 
+
+--
+
+- Need to consider trade-off beween simple model (less number of variables) vs good fit (higher `\(R^2\)`)
+
+--
+
+- Idea: if a bigger model does not considerably increase `\(R^2\)`, then stick to simpler model. 
+
+---
+
+## Comparison of nested models
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

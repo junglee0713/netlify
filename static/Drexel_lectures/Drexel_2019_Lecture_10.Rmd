@@ -439,7 +439,6 @@ sqrt(rss/(length(sheep$girth)-2))
 summary(fit)$sigma # alternatively 
 ```
 
-
 ---
 
 ## Example: weight/girth of sheep
