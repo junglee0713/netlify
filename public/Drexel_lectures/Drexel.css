@@ -17,6 +17,8 @@
   padding-right: 80px;
   padding-bottom: 25px;
   font-size: 70%; }
+  
+.tiny { font-size: 50%; }
 
 .large { font-size: 140%; }
 

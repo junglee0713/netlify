@@ -93,6 +93,103 @@ $$ -217.706 + 0.916 \times 85 + 2.124 \times 110 + 0.261 \times 96 = 118.85 \tex
 
 ---
 
+## Multiple linear regression, review
+
+- RSS (residual sum of squares): sum of the squares of residuals:
+`$$RSS=\sum_i r_i^2 = \sum_i\left[y_i - \text{fitted value}\right]^2$$`
+
+
+```r
+rss &lt;- sum(fit$residuals^2)
+rss
+```
+
+```
+## [1] 36901.12
+```
+
+
+```r
+## Or alternatively
+rss2 &lt;- sum((donkey$Bodywt-fit$fitted.values)^2)
+rss2
+```
+
+```
+## [1] 36901.12
+```
+
+---
+
+## Multiple linear regression, review
+
+- SSreg (regression sum of squares): sum of squares of the difference between fitted value and `\(\bar{y}\)`:
+`$$SSreg = \sum_i \left[\text{fitted value}-\bar{y}\right]^2$$`
+
+
+```r
+ssreg &lt;- sum((fit$fitted.values-mean(donkey$Bodywt))^2)
+ssreg
+```
+
+```
+## [1] 200441.2
+```
+
+---
+
+## Multiple linear regression, review
+
+- TSS (total sum of squares): sum of the squares of the difference between each `\(y_i\)` value and the mean `\(\bar{y}\)`:
+`$$TSS=\sum_i\left(y_i-\bar{y}\right)^2$$`
+
+
+```r
+tss &lt;- sum((donkey$Bodywt-mean(donkey$Bodywt))^2)
+tss
+```
+
+```
+## [1] 237342.4
+```
+
+
+```r
+## It is known that TSS = RSS + SSreg
+rss + ssreg
+```
+
+```
+## [1] 237342.4
+```
+
+---
+
+## Multiple linear regression, review
+
+- `\(R^2\)` (R-squared or coefficient of determination): measure of goodness of a model
+`$$R^2 = \frac{SSreg}{TSS} = 1 - \frac{RSS}{TSS}$$`
+
+```r
+r2 &lt;- ssreg/tss
+r2
+```
+
+```
+## [1] 0.8445237
+```
+
+
+```r
+summary(fit)$r.squared # r.squared is from summary(fit), not fit
+```
+
+```
+## [1] 0.8445237
+```
+
+---
+
 ## Model comparison
 
 - Consider a model
@@ -133,18 +230,18 @@ r.squared2
 ## [1] 0.5605374
 ```
 
-- **Model 1** has bigger `\(R^2\)` than **Model 2**, so we might conclude that **Model 1** is a better model than **Model 2**.
+- **Model 1** has bigger `\(R^2\)` than **Model 2**, so we can conclude that **Model 1** is a better model than **Model 2**.
 
 ---
 
 ## Model comparison
 
 .pull-left[
-&lt;img src="Drexel_2019_Lecture_11_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_11_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 .pull-right[
-&lt;img src="Drexel_2019_Lecture_11_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2019_Lecture_11_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
 ]
 
 ---
@@ -206,7 +303,7 @@ r.squared4
 
 --
 
-- Need to consider trade-off beween simple model (less number of variables) vs good fit (higher `\(R^2\)`)
+- Need to consider trade-off between simple model (less number of variables) vs good fit (higher `\(R^2\)`)
 
 --
 
@@ -215,6 +312,503 @@ r.squared4
 ---
 
 ## Comparison of nested models
+
+- Which is better? `\(\textbf{Model 3}\)` or `\(\textbf{Model 4}\)`?
+
+`$$\textbf{Model 3: } \texttt{Bodywt}=\beta_0+\beta_1\texttt{Length}+\beta_2\texttt{Height}$$`
+
+`\begin{align}
+\textbf{Model 4: } \texttt{Bodywt} = &amp; \beta_0 +  \beta_1\texttt{Length} + \beta_2\texttt{Height} \\
+  &amp; +\beta_3\texttt{Heartgirth} + \beta_4\texttt{Umbgirth}
+\end{align}`
+
+--
+
+- Recall that `\(\textbf{Model 4}\)` had a bigger `\(R^2\)` than `\(\textbf{Model 3}\)`:
+
+
+```r
+r.squared3
+```
+
+```
+## [1] 0.6669952
+```
+
+```r
+r.squared4
+```
+
+```
+## [1] 0.8561892
+```
+
+--
+
+- However, `\(\textbf{Model 4}\)` is more complicated. 
+
+---
+
+## Comparison of nested models
+
+- Idea: if both estimated `\(\beta_3\)` and `\(\beta_4\)` turn out to be close to `\(0\)`, then it would mean that `Heartgirth`
+
+--
+
+- Fact: Under the assumption that both `\(\beta_3=\beta_4=0\)`,
+
+  - It is known that 
+`$$F = \frac{(RSS_{M3}-RSS_{M4})/2}{RSS_{M4}/(386-5)}$$`
+follows an `\(F\)`-distribution with `\(df1=2\)` and `\(df2=386-5=381\)` degrees of freedom
+
+  - Here `\(RSS_{M3}\)` (respectively, `\(RSS_{M4}\)`) is the RSS from `\(\textbf{Model 3}\)` (respectively, from `\(\textbf{Model 4}\)`)
+  
+  - 2 comes from how many more `\(\beta\)`s `\(\textbf{Model 4}\)` has compared to `\(\textbf{Model 3}\)`, 386 from sample size, 5 from the number of `\(\beta\)`s in `\(\textbf{Model 4}\)`.
+  
+---
+
+## Comparison of nested models
+
+
+```r
+rss3 &lt;- sum(fit3$residuals^2)
+rss4 &lt;- sum(fit4$residuals^2)
+f &lt;- ((rss3-rss4)/2)/(rss4/(386-5))
+print(rss3)
+```
+
+```
+## [1] 79036.14
+```
+
+```r
+print(rss4)
+```
+
+```
+## [1] 34132.38
+```
+
+```r
+print(f)
+```
+
+```
+## [1] 250.6173
+```
+
+---
+
+## Comparison of nested models
+
+&lt;img src="Drexel_2019_Lecture_11_files/figure-html/unnamed-chunk-19-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+
+```r
+1-pf(f, df1 = 2, df2 = 381)
+```
+
+```
+## [1] 0
+```
+
+---
+
+## Comparison of nested models
+
+- With this extremely small `\(p\)`-value, we reject the null hypothesis that `\(\beta_3=\beta_4=0\)`. 
+
+--
+
+- This leads to either `\(\beta_3\neq 0\)` or `\(\beta_4\neq 0\)`.
+
+--
+
+- So either `Heartgirth` or `Umbgirth` (or both) significantly affects `Bodywt`
+
+--
+
+- Final conclusion: `\(\textbf{Model 4}\)` is preferred to `\(\textbf{Model 3}\)`.
+
+---
+
+## Comparison of nested models
+
+
+```r
+anova(fit3, fit4)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: Bodywt ~ Length + Height
+## Model 2: Bodywt ~ Length + Height + Heartgirth + Umbgirth
+##   Res.Df   RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1    383 79036                                  
+## 2    381 34132  2     44904 250.62 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+
+## Comparison of nested models: exercise
+
+Suppose that there is reason to believe that powers of `Length` have something to do with `Bodywt`: 
+
+`$$\textbf{Model 5: } \texttt{Bodywt}=\beta_0+\beta_1\texttt{Length}+\beta_2\texttt{Length}^2,$$`
+`$$\textbf{Model 6: } \texttt{Bodywt}=\beta_0+\beta_1\texttt{Length}+\beta_2\texttt{Length}^2+\beta_3\texttt{Length}^3,$$`
+`$$\textbf{Model 7: } \texttt{Bodywt}=\beta_0+\beta_1\texttt{Length}+\beta_2\texttt{Length}^2+\beta_3\texttt{Length}^3+\beta_4\texttt{Length}^4.$$`
+
+---
+
+## Comparison of nested models: exercise
+
+
+```r
+donkey &lt;- donkey %&gt;%
+  mutate(Length2 = Length^2) %&gt;%
+  mutate(Length3 = Length^3) %&gt;%
+  mutate(Length4 = Length^4)
+
+head(donkey)
+```
+
+```
+##   Donkey  Sex Age Bodywt Heartgirth Umbgirth Length Height Length2 Length3
+## 1     s1 male 3.5    128        111      126     95    106    9025  857375
+## 2     s2 male 2.0    102        106      120     75    101    5625  421875
+## 3     s3 male 3.0    100        103      125     76    101    5776  438976
+## 4     s4 male 3.0     92        102      121     73    101    5329  389017
+## 5     s5 male 3.0     98        105      121     70    101    4900  343000
+## 6     s6 male 4.0    110        101      126     80    101    6400  512000
+##    Length4
+## 1 81450625
+## 2 31640625
+## 3 33362176
+## 4 28398241
+## 5 24010000
+## 6 40960000
+```
+
+---
+
+## Comparison of nested models: exercise
+
+
+```r
+fit5 &lt;- lm(Bodywt ~ Length + Length2, data = donkey) ## Model 5
+fit6 &lt;- lm(Bodywt ~ Length + Length2 + Length3, 
+           data = donkey) ## Model 6
+fit7 &lt;- lm(Bodywt ~ Length + Length2 + Length3 + Length4,
+           data = donkey) ## Model 7
+```
+
+Note that `\(\textbf{Model 5}\)` is nested within `\(\textbf{Model 6}\)`, which is in turn nested within `\(\textbf{Model 7}\)`.
+
+---
+
+## Comparison of nested models: exercise
+
+- Compare `\(\textbf{Model 6}\)` and `\(\textbf{Model 7}\)`.
+
+
+```r
+anova(fit6, fit7)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: Bodywt ~ Length + Length2 + Length3
+## Model 2: Bodywt ~ Length + Length2 + Length3 + Length4
+##   Res.Df   RSS Df Sum of Sq      F   Pr(&gt;F)   
+## 1    382 95410                                
+## 2    381 92830  1      2580 10.589 0.001239 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+Small `\(p\)`-value indicates that `Length4` significantly improves model, so `\(\textbf{Model 7}\)` is preferred to `\(\textbf{Model 6}\)`.
+
+---
+
+## Comparison of nested models: exercise
+
+- Compare `\(\textbf{Model 5}\)` and `\(\textbf{Model 7}\)`.
+
+
+```r
+anova(fit5, fit7)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: Bodywt ~ Length + Length2
+## Model 2: Bodywt ~ Length + Length2 + Length3 + Length4
+##   Res.Df   RSS Df Sum of Sq      F   Pr(&gt;F)   
+## 1    383 95774                                
+## 2    381 92830  2    2943.6 6.0407 0.002614 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+Small `\(p\)`-value indicates that having both `Length3` and `Length4` significantly improves model, so `\(\textbf{Model 7}\)` is preferred to `\(\textbf{Model 5}\)`.
+
+---
+
+## Comparison of nested models: exercise
+
+- Compare `\(\textbf{Model 5}\)` and `\(\textbf{Model 6}\)`.
+
+
+```r
+anova(fit5, fit6)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: Bodywt ~ Length + Length2
+## Model 2: Bodywt ~ Length + Length2 + Length3
+##   Res.Df   RSS Df Sum of Sq      F Pr(&gt;F)
+## 1    383 95774                           
+## 2    382 95410  1    363.58 1.4557 0.2284
+```
+
+`\(p\)`-value of 0.2284 indicates that additionally having `Length3` does not significantly improve model, so `\(\textbf{Model 5}\)` is preferred to `\(\textbf{Model 6}\)`.
+
+---
+
+## lm(), revisited
+
+Recall `\(\textbf{Model 4}\)`:
+
+`\begin{align}
+\textbf{Model 4: } \texttt{Bodywt} = &amp; \beta_0 +  \beta_1\texttt{Length} + \beta_2\texttt{Height} \\
+  &amp; +\beta_3\texttt{Heartgirth} + \beta_4\texttt{Umbgirth}
+\end{align}`
+
+
+```r
+summary(fit4)$coefficients
+```
+
+```
+##                 Estimate Std. Error    t value      Pr(&gt;|t|)
+## (Intercept) -221.2572185 7.40488722 -29.879890 6.788815e-102
+## Length         0.8760877 0.11517236   7.606753  2.221185e-13
+## Height         0.2237929 0.10781836   2.075647  3.859693e-02
+## Heartgirth     1.7814379 0.11573493  15.392396  6.462162e-42
+## Umbgirth       0.3731892 0.06712885   5.559297  5.102423e-08
+```
+
+What is the meaning of the `\(p\)`-value `\(2.22\times 10^{-13}\)` for `Length`?
+
+---
+
+## lm(), revisited
+
+
+```r
+fit_no_Length &lt;- lm(Bodywt ~ Height + Heartgirth + Umbgirth, 
+                    data = donkey) ## model without Length
+anova(fit_no_Length, fit4)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: Bodywt ~ Height + Heartgirth + Umbgirth
+## Model 2: Bodywt ~ Length + Height + Heartgirth + Umbgirth
+##   Res.Df   RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1    382 39316                                  
+## 2    381 34132  1    5183.7 57.863 2.221e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+--
+
+- The meaning of the `\(p\)`-value `\(2.22\times 10^{-13}\)`: does adding `Length` to  
+$$\texttt{Bodywt} = \beta_0 + \beta_1\texttt{Height} + \beta_2\texttt{Heartgirth} +\beta_3 \texttt{Umbgirth} $$
+improve the model?
+
+--
+
+- Small `\(p\)`-value indicates that `Length` does improve the model.
+
+---
+
+## Comparison of non-nested models
+
+- Compare `\(\textbf{Model 1}\)` and `\(\textbf{Model 2}\)`:
+
+`$$\textbf{Model 1: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Length}.$$`
+
+`$$\textbf{Model 2: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Height}.$$`
+
+
+```r
+anova(fit1, fit2) ## This is not so right
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: Bodywt ~ Length
+## Model 2: Bodywt ~ Height
+##   Res.Df    RSS Df Sum of Sq F Pr(&gt;F)
+## 1    384  96140                      
+## 2    384 104303  0   -8162.7
+```
+
+This does not make sense because the models are not nested. 
+
+---
+
+## Comparison of non-nested models
+
+- AIC (Akaike information criterion) deals with the trade-off between the goodness-of-fit and the complexity of a model.
+
+--
+
+- AIC can be used to compare models that are not nested within each other
+
+--
+
+- A model with smaller AIC score is better.
+
+
+```r
+AIC(fit1, fit2)
+```
+
+```
+##      df      AIC
+## fit1  3 3231.263
+## fit2  3 3262.719
+```
+
+`\(\textbf{Model 1}\)` is preferred. 
+
+---
+
+## Comparison of non-nested models
+
+- AIC can be used to compare nested models, too
+
+
+```r
+AIC(fit5, fit6, fit7)
+```
+
+```
+##      df      AIC
+## fit5  4 3231.789
+## fit6  5 3232.321
+## fit7  6 3223.739
+```
+
+--
+
+- BIC (Bayesian information criterion) is also used to compare non-nested models. 
+
+--
+
+- A model with smaller BIC score is better.
+
+
+```r
+BIC(fit5, fit6, fit7)
+```
+
+```
+##      df      BIC
+## fit5  4 3247.612
+## fit6  5 3252.100
+## fit7  6 3247.474
+```
+
+---
+
+## Automatic Model Selection
+
+There are several ways to find the best model: 
+
+- Forward selection: start with the single explanatory variable that contributes the most to the explained variation in `\(y\)`, and include more variables in the modelling equation, progressively, until the addition of an extra variable does not significantly improve the situation. 
+
+--
+
+- Backward elimination: start with all the variables, and take them away sequentially, starting with the variable that contributes the least, until the deletion of a variable does not significantly reduce the amount of explained variation in `\(y\)`. 
+
+--
+
+- Both
+
+--
+
+- `step()` in R can be used to automatically find the best model. 
+
+---
+
+## Automatic Model Selection
+
+&lt;style type="text/css"&gt;
+.tiny .remark-code { /*Change made here*/
+  font-size: 90% !important;
+}
+&lt;/style&gt;
+
+
+```r
+fit_full &lt;- lm(Bodywt ~ Age + Length + Length2 + Height + 
+                 Heartgirth + Umbgirth, data = donkey)
+step(fit_full)
+```
+
+.tiny[
+
+```
+## Start:  AIC=1726.16
+## Bodywt ~ Age + Length + Length2 + Height + Heartgirth + Umbgirth
+## 
+##              Df Sum of Sq   RSS    AIC
+## - Height      1       2.4 32584 1724.2
+## &lt;none&gt;                    32581 1726.2
+## - Age         1     483.8 33065 1729.8
+## - Length      1     714.7 33296 1732.5
+## - Length2     1    1223.2 33804 1738.4
+## - Umbgirth    1    2408.2 34989 1751.7
+## - Heartgirth  1   21930.4 54511 1922.8
+## 
+## Step:  AIC=1724.19
+## Bodywt ~ Age + Length + Length2 + Heartgirth + Umbgirth
+## 
+##              Df Sum of Sq   RSS    AIC
+## &lt;none&gt;                    32584 1724.2
+## - Age         1     496.3 33080 1728.0
+## - Length      1     876.7 33460 1732.4
+## - Length2     1    1563.5 34147 1740.3
+## - Umbgirth    1    2413.7 34997 1749.8
+## - Heartgirth  1   26794.4 59378 1953.8
+```
+
+```
+## 
+## Call:
+## lm(formula = Bodywt ~ Age + Length + Length2 + Heartgirth + Umbgirth, 
+##     data = donkey)
+## 
+## Coefficients:
+## (Intercept)          Age       Length      Length2   Heartgirth  
+##   -55.42638      0.42784     -2.88210      0.02257      1.89461  
+##    Umbgirth  
+##     0.34975
+```
+]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
