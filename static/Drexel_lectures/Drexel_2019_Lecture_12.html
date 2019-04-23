@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Lecture 12</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jung-Jin Lee" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Drexel.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 12
+### Jung-Jin Lee
+### Apr 23, 2019
+
+---
+
+ 
+
+
+## Review: model comparison
+
+- Nested models: `anova()`
+
+  - Small `\(p\)`-value `\(\Rightarrow\)` larger model is preferred.
+  
+  - Large `\(p\)`-value `\(\Rightarrow\)` simpler model is preferred.
+
+--
+
+- Non-nested models: `AIC()` or `BIC()`
+
+  - The model with smaller AIC (or BIC) is preferred.
+  
+---
+
+## Review: model comparison
+
+
+```r
+donkey &lt;- read.table("donkey.tsv", header = T, sep = "\t") 
+dim(donkey)
+```
+
+```
+## [1] 386   8
+```
+
+```r
+head(donkey)
+```
+
+```
+##   Donkey  Sex Age Bodywt Heartgirth Umbgirth Length Height
+## 1     s1 male 3.5    128        111      126     95    106
+## 2     s2 male 2.0    102        106      120     75    101
+## 3     s3 male 3.0    100        103      125     76    101
+## 4     s4 male 3.0     92        102      121     73    101
+## 5     s5 male 3.0     98        105      121     70    101
+## 6     s6 male 4.0    110        101      126     80    101
+```
+
+---
+
+## Review: model comparison
+
+`$$\textbf{Model 1: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Length}$$`
+
+`$$\textbf{Model 2: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Height}$$`
+
+`$$\textbf{Model 3: } \texttt{Bodywt}=\beta_0+\beta_1\texttt{Length}+\beta_2\texttt{Height}$$`
+
+`\begin{align}
+\textbf{Model 4: } \texttt{Bodywt} =&amp; \beta_0 +  \beta_1\texttt{Length} + \beta_2\texttt{Height} \\
+  &amp; +\beta_3\texttt{Heartgirth} + \beta_4\texttt{Umbgirth}
+\end{align}`
+
+
+```r
+fit1 &lt;- lm(Bodywt ~ Length, data = donkey) ## Model 1
+fit2 &lt;- lm(Bodywt ~ Height, data = donkey) ## Model 2
+fit3 &lt;- lm(Bodywt ~ Length + Height, data = donkey) ## Model 3
+fit4 &lt;- lm(Bodywt ~ Length + Height + Heartgirth + Umbgirth, 
+           data = donkey) ## Model 4
+```
+
+---
+
+## Review: model comparison
+
+
+```r
+anova(fit1, fit3, fit4)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: Bodywt ~ Length
+## Model 2: Bodywt ~ Length + Height
+## Model 3: Bodywt ~ Length + Height + Heartgirth + Umbgirth
+##   Res.Df   RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1    384 96140                                  
+## 2    383 79036  1     17104 190.92 &lt; 2.2e-16 ***
+## 3    381 34132  2     44904 250.62 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+`\(\textbf{Model 3}\)` is preferred to `\(\textbf{Model 1}\)`, and `\(\textbf{Model 4}\)` is preferred to `\(\textbf{Model 3}\)`.
+
+---
+
+## Review: model comparison
+
+
+```r
+AIC(fit1, fit2)
+```
+
+```
+##      df      AIC
+## fit1  3 3231.263
+## fit2  3 3262.719
+```
+
+--
+
+
+```r
+BIC(fit1, fit2)
+```
+
+```
+##      df      BIC
+## fit1  3 3243.131
+## fit2  3 3274.587
+```
+
+`\(\textbf{Model 1}\)` is preferred to `\(\textbf{Model 2}\)`.
+
+---
+
+## Introduction to factors
+
+- Factor is a data type for categorical data in R. 
+
+- A factor variable has a level, a collection of unique values in the variable with a certain order. 
+
+- Each level in a factor variable is internally treated as an integer in R.
+
+--
+
+
+```r
+vec &lt;- c("red", "blue", "orange", "red", "red", "blue", "green", 
+         "orange", "brown", "blue")
+print(vec)
+```
+
+```
+##  [1] "red"    "blue"   "orange" "red"    "red"    "blue"   "green" 
+##  [8] "orange" "brown"  "blue"
+```
+
+--
+
+
+```r
+fac1 &lt;- factor(vec)
+print(fac1)
+```
+
+```
+##  [1] red    blue   orange red    red    blue   green  orange brown  blue  
+## Levels: blue brown green orange red
+```
+
+---
+
+## Introduction to factors
+
+- One can control the order of levels
+
+
+```r
+fac2 &lt;- factor(vec, 
+*              levels = c("green", "orange", "red", "blue", "brown"))
+print(fac2)
+```
+
+```
+##  [1] red    blue   orange red    red    blue   green  orange brown  blue  
+## Levels: green orange red blue brown
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+`str()` shows type of variables in a data frame:
+
+
+```r
+str(donkey)
+```
+
+```
+## 'data.frame':	386 obs. of  8 variables:
+##  $ Donkey    : Factor w/ 386 levels "s1","s10","s100",..: 1 112 223 321 332 343 354 365 376 2 ...
+##  $ Sex       : Factor w/ 2 levels "female","male": 2 2 2 2 2 2 2 2 2 1 ...
+##  $ Age       : num  3.5 2 3 3 3 4 4 3 6 5 ...
+##  $ Bodywt    : int  128 102 100 92 98 110 110 122 116 100 ...
+##  $ Heartgirth: int  111 106 103 102 105 101 110 115 112 107 ...
+##  $ Umbgirth  : int  126 120 125 121 121 126 125 128 124 122 ...
+##  $ Length    : int  95 75 76 73 70 80 80 82 85 77 ...
+##  $ Height    : int  106 101 101 101 101 101 106 103 111 105 ...
+```
+
+`str()` can be applied to individual variables:
+
+
+```r
+str(donkey$Sex)
+```
+
+```
+##  Factor w/ 2 levels "female","male": 2 2 2 2 2 2 2 2 2 1 ...
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+
+```r
+fit &lt;- lm(Bodywt ~ Sex, data = donkey)
+summary(fit)
+```
+
+```
+## 
+## Call:
+## lm(formula = Bodywt ~ Sex, data = donkey)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -71.541 -15.541  -3.387  11.997  98.459 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  121.387      1.916  63.344   &lt;2e-16 ***
+## Sexmale        2.154      2.550   0.845    0.399    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 24.84 on 384 degrees of freedom
+## Multiple R-squared:  0.001855,	Adjusted R-squared:  -0.0007439 
+## F-statistic: 0.7138 on 1 and 384 DF,  p-value: 0.3987
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+- Interpretation of 2.154 after `Sexmale`: when `Sex` changes from `female` to `male`, `Bodywt` increases by 2.154. 
+
+--
+
+- `female` is the reference level in `Sex` variable, which can be changed using `levels` in `factor()`.
+
+
+```r
+donkey_new &lt;- donkey %&gt;%
+  mutate(Sex = factor(Sex, levels = c("male", "female")))
+str(donkey_new$Sex)
+```
+
+```
+##  Factor w/ 2 levels "male","female": 1 1 1 1 1 1 1 1 1 2 ...
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+
+```r
+fit_new &lt;- lm(Bodywt ~ Sex, data = donkey_new)
+summary(fit_new)
+```
+
+```
+## 
+## Call:
+## lm(formula = Bodywt ~ Sex, data = donkey_new)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -71.541 -15.541  -3.387  11.997  98.459 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  123.541      1.682  73.438   &lt;2e-16 ***
+## Sexfemale     -2.154      2.550  -0.845    0.399    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 24.84 on 384 degrees of freedom
+## Multiple R-squared:  0.001855,	Adjusted R-squared:  -0.0007439 
+## F-statistic: 0.7138 on 1 and 384 DF,  p-value: 0.3987
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+.pull-left[
+
+```r
+donkey %&gt;% 
+  ggplot(aes(Sex, Bodywt)) + 
+  geom_boxplot()
+```
+
+&lt;img src="Drexel_2019_Lecture_12_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+```r
+donkey_new %&gt;% 
+  ggplot(aes(Sex, Bodywt)) + 
+  geom_boxplot()
+```
+
+&lt;img src="Drexel_2019_Lecture_12_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Categorical variable as a predictor in regression
+
+
+```r
+crabs &lt;- read.table("crabs.tsv", header = T, sep = "\t")
+crabs &lt;- crabs %&gt;%
+  mutate(color = factor(color)) %&gt;%
+  mutate(spine = factor(spine))
+str(crabs)
+```
+
+```
+## 'data.frame':	173 obs. of  5 variables:
+##  $ color : Factor w/ 4 levels "2","3","4","5": 2 3 1 3 3 2 1 3 2 3 ...
+##  $ spine : Factor w/ 3 levels "1","2","3": 3 3 1 3 3 3 1 2 1 3 ...
+##  $ width : num  28.3 22.5 26 24.8 26 23.8 26.5 24.7 23.7 25.6 ...
+##  $ satell: int  8 0 9 0 4 0 0 0 0 0 ...
+##  $ weight: int  3050 1550 2300 2100 2600 2100 2350 1900 1950 2150 ...
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+
+```r
+ggplot(crabs, aes(spine, weight)) +
+  geom_boxplot()
+```
+
+&lt;img src="Drexel_2019_Lecture_12_files/figure-html/unnamed-chunk-18-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Categorical variable as a predictor in regression
+
+&lt;style type="text/css"&gt;
+.small80 .remark-code { /*Change made here*/
+  font-size: 80% !important;
+}
+&lt;/style&gt;
+
+
+```r
+fit_spine &lt;- lm(weight ~ spine, data = crabs)
+summary(fit_spine)
+```
+
+.small80[
+
+```
+## 
+## Call:
+## lm(formula = weight ~ spine, data = crabs)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1379.05  -373.42   -54.05   401.58  2520.95 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  2679.05      92.41  28.991  &lt; 2e-16 ***
+## spine2       -525.72     172.06  -3.055  0.00261 ** 
+## spine3       -280.63     105.60  -2.658  0.00862 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 562.1 on 170 degrees of freedom
+## Multiple R-squared:  0.06207,	Adjusted R-squared:  0.05104 
+## F-statistic: 5.626 on 2 and 170 DF,  p-value: 0.004308
+```
+]
+
+---
+
+## Categorical variable as a predictor in regression
+
+- Interpretation: 
+
+  - when `spine` changes from `1` to `2`, corresponding `weight` decreases by 525.72.
+  
+  - when `spine` changes from `1` to `3`, corresponding `weight` decreases by 280.63.
+
+--
+
+**Exercise**: change the reference level of `spine` from `1` to `3`.  
+
+---
+
+## Prep for Final
+
+Suppose we want to determine how fuel consumption varies as a function of state characteristics. Download a tab-delimited file [fuel.tsv](fuel.tsv). 
+
+
+```r
+fuel &lt;- read.table("fuel.tsv", header = T, sep = "\t")
+dim(fuel)
+```
+
+```
+## [1] 51 11
+```
+
+
+```r
+head(fuel)
+```
+
+&lt;style type="text/css"&gt;
+.small70 .remark-code { /*Change made here*/
+  font-size: 70% !important;
+}
+&lt;/style&gt;
+
+.small70[
+
+```
+##    Drivers    FuelC Income  Miles      MPC      Pop  Tax State      Dlic
+## 1  3559897  2382507  23471  94440 12737.00  3451586 18.0    AL 1031.3801
+## 2   472211   235400  30064  13628  7639.16   457728  8.0    AK 1031.6411
+## 3  3550367  2428430  25578  55245  9411.55  3907526 18.0    AZ  908.5972
+## 4  1961883  1358174  22257  98132 11268.40  2072622 21.7    AR  946.5706
+## 5 21623793 14691753  32275 168771  8923.89 25599275 18.0    CA  844.7033
+## 6  3287922  2048664  32949  85854  9722.73  3322455 22.0    CO  989.6062
+##       Fuel  LogMiles
+## 1 690.2644 11.455720
+## 2 514.2792  9.519882
+## 3 621.4751 10.919533
+## 4 655.2927 11.494069
+## 5 573.9129 12.036298
+## 6 616.6115 11.360403
+```
+]
+
+---
+
+## Prep for Final
+
+A brief explanation of variables:
+
+- `Drivers`: Number of licensed drivers in the state.
+- `FuelC`: Gasoline sold for road use, thousands of gallons.
+- `Income`: Per person personal income for the year 2000, in thousands of dollars.
+- `Miles`: Miles of Federal-aid highway miles in the state.
+- `MPC`: Estimated miles driven per capita.
+- `Pop`: 2001 population age 16 and over.
+- `Tax`: Gasoline state tax rate, cents per gallon.
+- `State`: State (including DC) names.
+
+The following additional variables were generated from other variables:
+- `Dlic`: `\(1000\times\)` `Drivers` / `Pop`.
+- `Fuel`: `\(1000\times\)` `FuelC` / `Pop`.
+- `LogMiles`: `\(\log\)` (`Miles`).
+
+---
+
+## Prep for Final
+
+1. Perform a simple linear regression on `LogMiles`: 
+`$$\textbf{Model 1: } \texttt{Fuel}=\beta_0+\beta_1 \texttt{LogMiles}.$$`
+Generate a scatter plot (`Fuel` vs `LogMiles`), find the best fitting line and overlay it to the previous scatter plot, find the estimators `\(\hat{\beta_0}\)` and `\(\hat{\beta_1}\)`, and compute RSS.
+
+2. Perform a multiple linear regression on `LogMiles`, `Pop`, and `Income`: 
+`$$\textbf{Model 2: } \texttt{Fuel}=\beta_0+\beta_1 \texttt{LogMiles}+\beta_2 \texttt{Pop}+\beta_3 \texttt{Income}.$$`
+Find the estimators `\(\hat{\beta_0}\)`, `\(\hat{\beta_1}\)`, `\(\hat{\beta_2}\)`, `\(\hat{\beta_3}\)` and give an interpretation of these estimators. Compute RSS. 
+
+3. Which model do you prefer, `\(\textbf{Model 1}\)` or `\(\textbf{Model 2}\)`? Justify your answer using `anova()`.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

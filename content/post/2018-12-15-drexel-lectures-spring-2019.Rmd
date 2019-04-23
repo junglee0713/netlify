@@ -39,3 +39,4 @@ tags: []
 
 [Lecture 11](/Drexel_lectures/Drexel_2019_Lecture_11.html)
 
+[Lecture 12](/Drexel_lectures/Drexel_2019_Lecture_12.html)

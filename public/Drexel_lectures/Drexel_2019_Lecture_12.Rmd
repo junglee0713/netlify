@@ -1,0 +1,328 @@
+---
+title: "Lecture 12"
+author: "Jung-Jin Lee"
+date: "Apr 23, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Drexel.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+library(latex2exp)
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## Review: model comparison
+
+- Nested models: `anova()`
+
+  - Small $p$-value $\Rightarrow$ larger model is preferred.
+  
+  - Large $p$-value $\Rightarrow$ simpler model is preferred.
+
+--
+
+- Non-nested models: `AIC()` or `BIC()`
+
+  - The model with smaller AIC (or BIC) is preferred.
+  
+---
+
+## Review: model comparison
+
+```{r}
+donkey <- read.table("donkey.tsv", header = T, sep = "\t") 
+dim(donkey)
+head(donkey)
+```
+
+---
+
+## Review: model comparison
+
+$$\textbf{Model 1: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Length}$$
+
+$$\textbf{Model 2: } \texttt{Bodywt}=\beta_0+\beta_1 \texttt{Height}$$
+
+$$\textbf{Model 3: } \texttt{Bodywt}=\beta_0+\beta_1\texttt{Length}+\beta_2\texttt{Height}$$
+
+\begin{align}
+\textbf{Model 4: } \texttt{Bodywt} =& \beta_0 +  \beta_1\texttt{Length} + \beta_2\texttt{Height} \\
+  & +\beta_3\texttt{Heartgirth} + \beta_4\texttt{Umbgirth}
+\end{align}
+
+```{r}
+fit1 <- lm(Bodywt ~ Length, data = donkey) ## Model 1
+fit2 <- lm(Bodywt ~ Height, data = donkey) ## Model 2
+fit3 <- lm(Bodywt ~ Length + Height, data = donkey) ## Model 3
+fit4 <- lm(Bodywt ~ Length + Height + Heartgirth + Umbgirth, 
+           data = donkey) ## Model 4
+```
+
+---
+
+## Review: model comparison
+
+```{r}
+anova(fit1, fit3, fit4)
+```
+
+$\textbf{Model 3}$ is preferred to $\textbf{Model 1}$, and $\textbf{Model 4}$ is preferred to $\textbf{Model 3}$.
+
+---
+
+## Review: model comparison
+
+```{r}
+AIC(fit1, fit2)
+```
+
+--
+
+```{r}
+BIC(fit1, fit2)
+```
+
+$\textbf{Model 1}$ is preferred to $\textbf{Model 2}$.
+
+---
+
+## Introduction to factors
+
+- Factor is a data type for categorical data in R. 
+
+- A factor variable has a level, a collection of unique values in the variable with a certain order. 
+
+- Each level in a factor variable is internally treated as an integer in R.
+
+--
+
+```{r}
+vec <- c("red", "blue", "orange", "red", "red", "blue", "green", 
+         "orange", "brown", "blue")
+print(vec)
+```
+
+--
+
+```{r}
+fac1 <- factor(vec)
+print(fac1)
+```
+
+---
+
+## Introduction to factors
+
+- One can control the order of levels
+
+```{r}
+fac2 <- factor(vec, 
+               levels = c("green", "orange", "red", "blue", "brown")) #<<
+print(fac2)
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+`str()` shows type of variables in a data frame:
+
+```{r}
+str(donkey)
+```
+
+`str()` can be applied to individual variables:
+
+```{r}
+str(donkey$Sex)
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+```{r}
+fit <- lm(Bodywt ~ Sex, data = donkey)
+summary(fit)
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+- Interpretation of `r round(fit$coefficient[2], 3)` after `Sexmale`: when `Sex` changes from `female` to `male`, `Bodywt` increases by `r round(fit$coefficient[2], 3)`. 
+
+--
+
+- `female` is the reference level in `Sex` variable, which can be changed using `levels` in `factor()`.
+
+```{r}
+donkey_new <- donkey %>%
+  mutate(Sex = factor(Sex, levels = c("male", "female")))
+str(donkey_new$Sex)
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+```{r}
+fit_new <- lm(Bodywt ~ Sex, data = donkey_new)
+summary(fit_new)
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+.pull-left[
+```{r}
+donkey %>% 
+  ggplot(aes(Sex, Bodywt)) + 
+  geom_boxplot()
+```
+]
+
+.pull-right[
+```{r}
+donkey_new %>% 
+  ggplot(aes(Sex, Bodywt)) + 
+  geom_boxplot()
+```
+]
+
+---
+
+## Categorical variable as a predictor in regression
+
+```{r}
+crabs <- read.table("crabs.tsv", header = T, sep = "\t")
+crabs <- crabs %>%
+  mutate(color = factor(color)) %>%
+  mutate(spine = factor(spine))
+str(crabs)
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+```{r, out.width = "50%"}
+ggplot(crabs, aes(spine, weight)) +
+  geom_boxplot()
+```
+
+---
+
+## Categorical variable as a predictor in regression
+
+```{css, echo = FALSE}
+.small80 .remark-code { /*Change made here*/
+  font-size: 80% !important;
+}
+```
+
+```{r, eval = F}
+fit_spine <- lm(weight ~ spine, data = crabs)
+summary(fit_spine)
+```
+
+.small80[
+```{r, echo = F}
+summary(fit_spine)
+```
+]
+
+---
+
+## Categorical variable as a predictor in regression
+
+- Interpretation: 
+
+  - when `spine` changes from `1` to `2`, corresponding `weight` decreases by 525.72.
+  
+  - when `spine` changes from `1` to `3`, corresponding `weight` decreases by 280.63.
+
+--
+
+**Exercise**: change the reference level of `spine` from `1` to `3`.  
+
+---
+
+## Prep for Final
+
+Suppose we want to determine how fuel consumption varies as a function of state characteristics. Download a tab-delimited file [fuel.tsv](fuel.tsv). 
+
+```{r}
+fuel <- read.table("fuel.tsv", header = T, sep = "\t")
+dim(fuel)
+```
+
+```{r, eval = F}
+head(fuel)
+```
+
+```{css, echo = FALSE}
+.small70 .remark-code { /*Change made here*/
+  font-size: 70% !important;
+}
+```
+
+.small70[
+```{r, echo = F}
+head(fuel)
+```
+]
+
+---
+
+## Prep for Final
+
+A brief explanation of variables:
+
+- `Drivers`: Number of licensed drivers in the state.
+- `FuelC`: Gasoline sold for road use, thousands of gallons.
+- `Income`: Per person personal income for the year 2000, in thousands of dollars.
+- `Miles`: Miles of Federal-aid highway miles in the state.
+- `MPC`: Estimated miles driven per capita.
+- `Pop`: 2001 population age 16 and over.
+- `Tax`: Gasoline state tax rate, cents per gallon.
+- `State`: State (including DC) names.
+
+The following additional variables were generated from other variables:
+- `Dlic`: $1000\times$ `Drivers` / `Pop`.
+- `Fuel`: $1000\times$ `FuelC` / `Pop`.
+- `LogMiles`: $\log$ (`Miles`).
+
+---
+
+## Prep for Final
+
+1. Perform a simple linear regression on `LogMiles`: 
+$$\textbf{Model 1: } \texttt{Fuel}=\beta_0+\beta_1 \texttt{LogMiles}.$$
+Generate a scatter plot (`Fuel` vs `LogMiles`), find the best fitting line and overlay it to the previous scatter plot, find the estimators $\hat{\beta_0}$ and $\hat{\beta_1}$, and compute RSS.
+
+2. Perform a multiple linear regression on `LogMiles`, `Pop`, and `Income`: 
+$$\textbf{Model 2: } \texttt{Fuel}=\beta_0+\beta_1 \texttt{LogMiles}+\beta_2 \texttt{Pop}+\beta_3 \texttt{Income}.$$
+Find the estimators $\hat{\beta_0}$, $\hat{\beta_1}$, $\hat{\beta_2}$, $\hat{\beta_3}$ and give an interpretation of these estimators. Compute RSS. 
+
+3. Which model do you prefer, $\textbf{Model 1}$ or $\textbf{Model 2}$? Justify your answer using `anova()`.

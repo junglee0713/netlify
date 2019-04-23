@@ -28,15 +28,34 @@ y <- c(36.69, 6.39, 49.59, 45.65, 52.18, 27.66, 79.35, 54.10, 71.01, 34.60, 61.1
 
 **1.** (a) Create a scatter plot to visualize the data (_Hint_: you may want to start with making a data frame and then use `geom_point()`). Do you think there is a strong linear association between `x` and `y`? 
 
+```{r, echo = F, eval = F}
+df <- data.frame(x, y)
+g <- ggplot(df, aes(x, y)) + geom_point()
+print(g)
+```
+
 (b) Compute the sample correlation coefficient between `x` and `y`. Is your result consistent with your answer in (a)?
+
+```{r, echo = F, eval = F}
+cor(x, y)
+```
 
 \bigskip
 
 **2.** (a) Assume that `y` is an outcome in a certain experiment, and `x` is a predictor. Find the best fitting
 line describing the association between `x` and `y` by specifying its $y$-intercept ($\beta_0$) and slope ($\beta_1$).
 
+```{r, echo = F, eval = F}
+fit <- lm(y ~ x)
+fit$coefficients
+```
+
 (b) Suppose that a new `x` value came in, say 13. Estimate the corresponding `y` value using the best fitting
 line you obtained in part (a) above.
+
+```{r, echo = F, eval = F}
+fit$coefficients[1] + fit$coefficients[2]*13
+```
 
 \bigskip
 \bigskip
@@ -47,11 +66,29 @@ line you obtained in part (a) above.
 
 **3.** Read in the data set and draw the scatter plots of `photo` (response) vs `obs1` (explanatory) and `photo` (response) vs `obs2` (explanatory).
 
+```{r, echo = F, eval = F}
+df <- read_tsv("snowgeese.tsv")
+ggplot(df, aes(obs1, photo)) + geom_point()
+ggplot(df, aes(obs2, photo)) + geom_point()
+```
+
 \bigskip
 
 **4.** Compute the regression of `photo` on `obs1` using `lm()` (That is, find the best fitting line).
 Overlay the best fitting line to the scatter plot.
 
+```{r, echo = F, eval = F}
+fit1 <- lm(photo ~ obs1, data = df)
+ggplot(df, aes(obs1, photo)) + 
+  geom_point() +
+  geom_abline(intercept = fit1$coefficients[1], slope = fit1$coefficients[2], color = "red")
+```
+
 \bigskip
 
 **5.** Suppose that observer 2 made a count of 55 in an additional aerial survey performed later. What is your best guess for the actual count?
+
+```{r, echo = F, eval = F}
+fit2 <- lm(photo ~ obs2, data = df)
+fit2$coefficients[1] + fit2$coefficients[2]*55
+```
