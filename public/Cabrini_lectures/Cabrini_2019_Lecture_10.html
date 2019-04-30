@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Lecture 10</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jung-Jin Lee" />
+    <meta name="date" content="2019-05-01" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Cabrini.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 10
+### Jung-Jin Lee
+### May 1, 2019
+
+---
+
+ 
+
+
+## Simple linear regression
+
+- In simple linear regression, we describe the relationship between two numerical variables, `\(x\)` and `\(y\)`, by determining the straight line that approximates the data points on a scatter diagram most closely. 
+
+--
+
+- We call `\(y\)` the **outcome**, **dependent**, or **response** variable and we represent this on the vertical axis of the scatter diagram.
+
+--
+
+- We call `\(x\)` the **explanatory**, **independent**, or **predictor** variable, or **regressor**.
+
+---
+
+## Simple linear regression
+
+- We regard the `\(x\)` variable as one whose values can be measured without error. On the other hand, the `\(y\)` variable is a random variable which is subject to experimental variation. 
+
+--
+
+- To be more precise, we assume that `\(y_i=\beta_0+\beta_1 x_i+e_i\)`, where `\(e_i\)` is a random variable following `\(N(0,\sigma^2)\)`. 
+
+--
+
+- Roughly speaking, simple linear regression is a combination of parameter estimation and best fitting line. 
+
+--
+
+-  We will estimate the unknown true parameters `\(\beta_0\)`, `\(\beta_1\)`, and `\(\sigma^2\)` based on our sample, just like we estimate the population mean `\(\mu\)` and population variance `\(\sigma^2\)` with the sample mean `\(\bar{X}\)` and the sample variance `\(S^2\)`, respectively.
+
+---
+
+## Least square line
+
+
+```r
+x &lt;- c(2, 4, 5, 9, 12); y &lt;- c(3, 2, 4, 6, 5)
+```
+
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-3-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+Want to find the line that best describes the trend
+
+---
+
+## Least square line
+
+.pull-left[
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+## Least square line
+
+.pull-left[
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
+]
+
+Determine the `\(y\)`-intercept and slope so that the sum of squares of the &lt;font color="blue"&gt; blue dashed line segment &lt;/font&gt; is minimized.
+
+---
+
+## Fitting with `lm()`
+
+
+```r
+fit &lt;- lm(y ~ x)
+summary(fit)
+```
+
+```
+## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##       1       2       3       4       5 
+##  0.3497 -1.2638  0.4294  1.2025 -0.7178 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept)   2.0368     1.0330   1.972    0.143
+## x             0.3067     0.1406   2.182    0.117
+## 
+## Residual standard error: 1.135 on 3 degrees of freedom
+## Multiple R-squared:  0.6135,	Adjusted R-squared:  0.4847 
+## F-statistic: 4.762 on 1 and 3 DF,  p-value: 0.1171
+```
+
+---
+
+## Fitting with `lm()`
+
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-9-1.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Interpretation of `lm()` output
+
+`lm()` returns lots of information regarding the regression model:
+
+
+```r
+names(fit)
+```
+
+```
+##  [1] "coefficients"  "residuals"     "effects"       "rank"         
+##  [5] "fitted.values" "assign"        "qr"            "df.residual"  
+##  [9] "xlevels"       "call"          "terms"         "model"
+```
+
+These _names_ can be extracted using `$` sign, e.g. `fit$residuals`.
+
+---
+
+## Interpretation of `lm()` output
+
+- `\(\hat{\beta}_0\)`: fitted intercept
+
+- `\(\hat{\beta}_1\)`: fitted slope
+
+
+```r
+*fit$coefficients
+```
+
+```
+## (Intercept)           x 
+##   2.0368098   0.3067485
+```
+
+```r
+beta0 &lt;- fit$coefficients[1]; beta1 &lt;- fit$coefficients[2]
+beta0
+```
+
+```
+## (Intercept) 
+##     2.03681
+```
+
+```r
+beta1
+```
+
+```
+##         x 
+## 0.3067485
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- `\(\hat{y}_i\)`: fitted value
+`$$\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i\quad\text{for each }i$$`
+
+
+```r
+fitted_values &lt;- beta0 + beta1*x
+fitted_values
+```
+
+```
+## [1] 2.650307 3.263804 3.570552 4.797546 5.717791
+```
+
+--
+
+
+```r
+*fit$fitted.values
+```
+
+```
+##        1        2        3        4        5 
+## 2.650307 3.263804 3.570552 4.797546 5.717791
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- Residual: the difference between observation and fitted value (blue dashed lines):
+`$$r_i = y_i- \hat{y}_i = y_i - (\hat{\beta}_0 + \hat{\beta}_1 x_i)\quad\text{for each }i$$`
+
+
+```r
+residuals &lt;- y - fitted_values
+residuals
+```
+
+```
+## [1]  0.3496933 -1.2638037  0.4294479  1.2024540 -0.7177914
+```
+
+--
+
+
+```r
+*fit$residuals
+```
+
+```
+##          1          2          3          4          5 
+##  0.3496933 -1.2638037  0.4294479  1.2024540 -0.7177914
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- RSS (residual sum of squares): sum of the squares of residuals:
+`$$RSS=\sum_i r_i^2 = \sum_i\left[y_i - \underbrace{(\hat{\beta}_0 + \hat{\beta}_1 x_i)}_{\text{fitted value}}\right]^2$$`
+
+
+```r
+rss &lt;- sum(fit$residuals^2)
+rss
+```
+
+```
+## [1] 3.865031
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- SSreg (regression sum of squares): sum of squares of the difference between fitted value and `\(\bar{y}\)`:
+`$$SSreg = \sum_i \left[(\hat{\beta}_0 + \hat{\beta}_1 x_i)-\bar{y}\right]^2$$`
+
+
+```r
+ssreg &lt;- sum((fit$fitted.values-mean(y))^2)
+ssreg
+```
+
+```
+## [1] 6.134969
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- TSS (total sum of squares): sum of the squares of the difference between each `\(y_i\)` value and the mean `\(\bar{y}\)`:
+`$$TSS=\sum_i\left(y_i-\bar{y}\right)^2$$`
+
+
+```r
+tss &lt;- sum((y-mean(y))^2)
+tss
+```
+
+```
+## [1] 10
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- It is known that RSS + SSreg = TSS: https://en.wikipedia.org/wiki/Partition_of_sums_of_squares
+
+
+```r
+rss + ssreg
+```
+
+```
+## [1] 10
+```
+
+```r
+tss
+```
+
+```
+## [1] 10
+```
+
+--
+
+- `\(R^2\)` (R-squared or coefficient of determination): 
+`$$R^2 = \frac{SSreg}{TSS} = 1 - \frac{RSS}{TSS}$$`
+
+--
+
+- `\(R^2\)` is a measure of goodness of model (model is good if `\(R^2\)` is close to 1, bad if `\(R^2\)` is close to 0)
+
+---
+
+## Interpretation of `lm()` output
+
+
+```r
+r2 &lt;- ssreg/tss
+r2
+```
+
+```
+## [1] 0.6134969
+```
+
+--
+
+
+```r
+names(summary(fit))
+```
+
+```
+##  [1] "call"          "terms"         "residuals"     "coefficients" 
+##  [5] "aliased"       "sigma"         "df"            "r.squared"    
+##  [9] "adj.r.squared" "fstatistic"    "cov.unscaled"
+```
+
+--
+
+
+```r
+summary(fit)$r.squared
+```
+
+```
+## [1] 0.6134969
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- Estimate of `\(\sigma\)`: it is well known that `$$\frac{RSS}{n-2}$$` is an _unbiased_ estimator of `\(\sigma^2\)`, where `\(n\)` is the sample size.
+
+--
+
+
+```r
+sqrt(rss/(length(x)-2))
+```
+
+```
+## [1] 1.135052
+```
+
+--
+
+
+```r
+summary(fit)$sigma
+```
+
+```
+## [1] 1.135052
+```
+
+---
+
+## Example: weight/girth of sheep
+
+Download a tab-delimited file [sheep.tsv](sheep.tsv). It consists of 66 observations and 2 variables. 
+
+
+```r
+sheep &lt;- read.table("sheep.tsv", header = T, sep = "\t") 
+dim(sheep)
+```
+
+```
+## [1] 66  2
+```
+
+.pull-left[
+
+```r
+head(sheep)
+```
+
+```
+##   weight girth
+## 1     30    76
+## 2     24    71
+## 3     20    63
+## 4     25    69
+## 5     25    67
+## 6     19    62
+```
+]
+
+.pull-right[
+- `weight`: live weight of a sheep (in kg)
+
+- `girth`: chest girth (in cm)
+]
+
+---
+
+## Example: weight/girth of sheep
+
+Strong linear trend is visible:
+
+
+```r
+ggplot(sheep, aes(girth, weight)) +
+  geom_point()
+```
+
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-27-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Example: weight/girth of sheep
+
+- Find the best fitting line and overlay onto the scatter plot using `geom_abline()`
+
+--
+
+
+```r
+fit &lt;- lm(sheep$weight ~ sheep$girth) 
+# or fit &lt;- lm(weight ~ girth, data = sheep)
+```
+
+--
+
+
+```r
+fit$coefficients
+```
+
+```
+## (Intercept) sheep$girth 
+##  -46.041373    1.043237
+```
+
+--
+
+
+```r
+beta0 &lt;- fit$coefficients[1]; beta1 &lt;- fit$coefficients[2]
+beta0; beta1
+```
+
+```
+## (Intercept) 
+##   -46.04137
+```
+
+```
+## sheep$girth 
+##    1.043237
+```
+
+---
+
+## Example: weight/girth of sheep
+
+
+```r
+ggplot(sheep, aes(girth, weight)) +
+  geom_point() +
+  geom_abline(intercept = beta0, slope = beta1, color = "red")
+```
+
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-31-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Example: weight/girth of sheep
+
+- Find RSS, SSreg, and TSS
+
+--
+
+
+```r
+rss &lt;- sum((fit$residuals)^2)
+rss
+```
+
+```
+## [1] 452.3425
+```
+
+--
+
+
+```r
+ssreg &lt;- sum((fit$fitted.values - mean(sheep$weight))^2)
+ssreg
+```
+
+```
+## [1] 3972.93
+```
+
+--
+
+
+```r
+tss &lt;- rss + ssreg
+# or tss &lt;- sum((sheep$weight - mean(sheep$weight))^2)
+tss
+```
+
+```
+## [1] 4425.273
+```
+
+---
+
+## Example: weight/girth of sheep
+
+- Compute `\(R^2\)`
+
+--
+
+
+```r
+r2 &lt;- ssreg/tss; print(r2)
+```
+
+```
+## [1] 0.897782
+```
+
+```r
+# or alternatively
+summary(fit)$r.squared
+```
+
+```
+## [1] 0.897782
+```
+
+--
+
+- Estimate `\(\sigma\)`
+
+--
+
+
+```r
+sqrt(rss/(length(sheep$girth)-2))
+```
+
+```
+## [1] 2.658543
+```
+
+```r
+summary(fit)$sigma # alternatively 
+```
+
+```
+## [1] 2.658543
+```
+
+---
+
+## Example: weight/girth of sheep
+
+- The best fitting line equation: 
+`$$y = -46.041 + 1.043x$$`
+
+--
+
+- Interpretation: the live weight of a sheep with `\(x\)` cm chest girth is approximately `\(-46.041 + 1.043x\)` kg. 
+
+--
+
+- For example, if there is a sheep of which chest girth is 85 cm, we can predict that its live weight would be approximately 
+ $$-46.041 + 1.043 \times 85 = 42.614 \text{ kg} $$
+
+--
+
+- What if there is another sheep with chest girth 86 cm? The corresponding live weight is approximately
+$$-46.041 + 1.043 \times 86 = 43.657 \text{ kg} $$
+which is 1.043 more than previous. 
+
+--
+
+- In general `\(\hat{\beta}_1\)` is interpreted as: a unit increase in `\(x\)` results in the increase of `\(y\)` by `\(\hat{\beta}_1\)`. 
+
+---
+
+## Making inference on `\(\beta_0\)` and `\(\beta_1\)`
+
+- Point estimates of `\(\beta_0\)` and `\(\beta_1\)` were already covered:
+
+```r
+fit$coefficients
+```
+
+```
+## (Intercept) sheep$girth 
+##  -46.041373    1.043237
+```
+
+--
+
+- How about 95% confidence of `\(\beta_0\)` and `\(\beta_1\)`?
+
+
+```r
+*confint(fit)
+```
+
+```
+##                  2.5 %     97.5 %
+## (Intercept) -52.596253 -39.486493
+## sheep$girth   0.955333   1.131141
+```
+
+--
+
+We are 95% certain that `\(\beta_1\)` is between 0.955333 and 1.1311406.
+
+---
+
+## Making inference on `\(\beta_0\)` and `\(\beta_1\)`
+
+- Statistical test on `\(\beta_1\)`
+  - `\(H_0\)`: `\(\beta_1=0\)`
+  - `\(p\)`-value is obtained from `coefficients` of `summary` of `lm` output
+  
+
+```r
+summary(fit)$coefficients
+```
+
+```
+##               Estimate Std. Error   t value     Pr(&gt;|t|)
+## (Intercept) -46.041373 3.28116478 -14.03202 3.364110e-21
+## sheep$girth   1.043237 0.04400187  23.70892 2.112011e-33
+```
+
+- With an extremely small `\(p\)`-value `\(2.1120107\times 10^{-33}\)`, we conclude that `\(\beta_1\neq 0\)`.
+  - Interpretation of this conclusion will be explained later
+
+---
+
+## Multiple linear regression
+
+Read in data set [donkey.tsv](donkey.tsv). 
+
+
+```r
+donkey &lt;- read.table("donkey.tsv", header = T, sep = "\t") 
+dim(donkey)
+```
+
+```
+## [1] 386   8
+```
+
+```r
+head(donkey)
+```
+
+```
+##   Donkey  Sex Age Bodywt Heartgirth Umbgirth Length Height
+## 1     s1 male 3.5    128        111      126     95    106
+## 2     s2 male 2.0    102        106      120     75    101
+## 3     s3 male 3.0    100        103      125     76    101
+## 4     s4 male 3.0     92        102      121     73    101
+## 5     s5 male 3.0     98        105      121     70    101
+## 6     s6 male 4.0    110        101      126     80    101
+```
+
+---
+
+## Multiple linear regression
+
+- Donkey: donkey ID
+
+- Sex: sex
+
+- Age: age in years
+
+- Bodywt: body weight in kg
+
+- Heartgirth: girth at the level of the heart (cm)
+
+- Umbgirth: girth at the umbilicus (cm)
+
+- Length: length from the olecranon to the tuber ischii (cm)
+
+- Height: height at the withers (cm)
+
+--
+
+Researchers were interested in estimating the **weight** of donkeys using other measurements that can be obtained more easily such as girth at the level of the heart (cm), girth at the umbilicus (cm), length from the olecranon to the tuber ischii (cm), height at the withers (cm), and the age (years) and sex.
+
+---
+
+## Multiple linear regression
+
+- Simple linear regression using Length
+
+
+```r
+ggplot(donkey, aes(Length, Bodywt)) + geom_point()
+```
+
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-41-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Multiple linear regression
+
+
+```r
+fit_Length &lt;- lm(Bodywt ~ Length, data = donkey)
+summary(fit_Length)
+```
+
+```
+## 
+## Call:
+## lm(formula = Bodywt ~ Length, data = donkey)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -45.243 -10.584  -1.357  10.625  62.075 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -115.0015    10.0375  -11.46   &lt;2e-16 ***
+## Length         2.8940     0.1219   23.75   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 15.82 on 384 degrees of freedom
+## Multiple R-squared:  0.5949,	Adjusted R-squared:  0.5939 
+## F-statistic:   564 on 1 and 384 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+## Multiple linear regression
+
+
+```r
+ggplot(donkey, aes(Length, Bodywt)) + geom_point() +
+  geom_smooth(method = "lm", se = F)
+```
+
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-43-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Multiple linear regression
+
+- Simple linear regression using Height
+
+
+```r
+ggplot(donkey, aes(Height, Bodywt)) + geom_point()
+```
+
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-44-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Multiple linear regression
+
+
+```r
+fit_Height &lt;- lm(Bodywt ~ Height, data = donkey)
+summary(fit_Height)
+```
+
+```
+## 
+## Call:
+## lm(formula = Bodywt ~ Height, data = donkey)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -105.241   -9.825   -0.825    8.505   75.131 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -137.2379    11.7708  -11.66   &lt;2e-16 ***
+## Height         2.5055     0.1132   22.13   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 16.48 on 384 degrees of freedom
+## Multiple R-squared:  0.5605,	Adjusted R-squared:  0.5594 
+## F-statistic: 489.8 on 1 and 384 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+## Multiple linear regression
+
+
+```r
+ggplot(donkey, aes(Height, Bodywt)) + geom_point() +
+  geom_smooth(method = "lm", se = F)
+```
+
+&lt;img src="Cabrini_2019_Lecture_10_files/figure-html/unnamed-chunk-46-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Multiple linear regression
+
+- In multiple linear regression, we use more than one explanatory variables. 
+
+--
+
+- For example, we assume that 
+`$$Bodywt_i=\beta_0+\beta_1 Length_i +\beta_2 Heartgirth_i +\beta_3 Height_i + e_i,$$` where `\(e_i\)` is a random variable following `\(N(0,\sigma^2)\)`. 
+
+--
+
+- Again `lm()` is used for fitting
+
+---
+
+## Multiple linear regression
+
+
+```r
+fit &lt;- lm(Bodywt ~ Length + Heartgirth + Height, data = donkey)
+summary(fit)$coefficients
+```
+
+```
+##                 Estimate Std. Error    t value     Pr(&gt;|t|)
+## (Intercept) -217.7061239  7.6606181 -28.418872 2.913804e-96
+## Length         0.9163415  0.1193591   7.677181 1.375154e-13
+## Heartgirth     2.1241803  0.1017086  20.884954 3.681853e-65
+## Height         0.2608338  0.1117453   2.334182 2.010392e-02
+```
+
+--
+
+Based on the output, we conclude that 
+
+`\begin{align}
+Bodywt = &amp;-217.706 \\
+  &amp;+0.916 \times Length    \\
+  &amp;+2.124 \times Heartgirth    \\
+  &amp;+0.261 \times Height  
+\end{align}`
+
+Interpretation: 0.916 represents the change in Bodywt for a unit change in Length, when **the other explanatory variables, Heartgirth and Height, are held constant** (i.e. after controlling for these variables)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

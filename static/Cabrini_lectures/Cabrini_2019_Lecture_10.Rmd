@@ -1,0 +1,632 @@
+---
+title: "Lecture 10"
+author: "Jung-Jin Lee"
+date: "May 1, 2019"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts", "Cabrini.css"] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+ 
+```{r, message = F, echo = F, warning = F}
+library(tidyverse) 
+library(gridExtra)
+library(knitr) 
+opts_chunk$set(
+  tidy = FALSE,
+  cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  dpi = 300,
+  fig.align = "center",
+  fig.width = 4,
+  fig.height = 4
+  )
+```
+
+## Simple linear regression
+
+- In simple linear regression, we describe the relationship between two numerical variables, $x$ and $y$, by determining the straight line that approximates the data points on a scatter diagram most closely. 
+
+--
+
+- We call $y$ the **outcome**, **dependent**, or **response** variable and we represent this on the vertical axis of the scatter diagram.
+
+--
+
+- We call $x$ the **explanatory**, **independent**, or **predictor** variable, or **regressor**.
+
+---
+
+## Simple linear regression
+
+- We regard the $x$ variable as one whose values can be measured without error. On the other hand, the $y$ variable is a random variable which is subject to experimental variation. 
+
+--
+
+- To be more precise, we assume that $y_i=\beta_0+\beta_1 x_i+e_i$, where $e_i$ is a random variable following $N(0,\sigma^2)$. 
+
+--
+
+- Roughly speaking, simple linear regression is a combination of parameter estimation and best fitting line. 
+
+--
+
+-  We will estimate the unknown true parameters $\beta_0$, $\beta_1$, and $\sigma^2$ based on our sample, just like we estimate the population mean $\mu$ and population variance $\sigma^2$ with the sample mean $\bar{X}$ and the sample variance $S^2$, respectively.
+
+---
+
+## Least square line
+
+```{r}
+x <- c(2, 4, 5, 9, 12); y <- c(3, 2, 4, 6, 5)
+```
+
+```{r, echo = F, out.width = "50%"}
+label_x <- paste0("x[", 1:5, "]"); label_y <- paste0("y[", 1:5, "]")
+label <- paste0("phantom()(", label_x, ", ", label_y, ")")
+df <- data.frame(x, y)
+g0 <- ggplot(df, aes(x, y)) +
+  xlim(c(0, 13)) +
+  ylim(c(0, 7)) +
+  geom_point() +
+  geom_text(label = label, hjust = 0.5, vjust = 0.5*c(-1, 2.5, -1, -1, 2.5), parse = TRUE) + 
+  theme_bw() +
+  theme_classic()
+print(g0)
+```
+
+Want to find the line that best describes the trend
+
+---
+
+## Least square line
+
+.pull-left[
+```{r, echo = F}
+a <- 1.5; b <- 0.4
+g1 <- g0 + geom_abline(intercept = a, slope = b, color = "red")
+print(g1)
+```
+]
+
+.pull-right[
+```{r, echo = F}
+a <- 4; b <- -0.2
+g2 <- g0 + geom_abline(intercept = a, slope = b, color = "green")
+print(g2)
+```
+]
+
+---
+
+## Least square line
+
+.pull-left[
+```{r, echo = F}
+a <- 1.5; b <- 0.4
+g3 <- g0 + geom_abline(intercept = a, slope = b, color = "red") +
+  geom_segment(x = x, xend = x, y = y, yend = a + b*x, color = "blue", lty = "dashed")
+print(g3)
+```
+]
+
+.pull-right[
+```{r, echo = F}
+a <- 4; b <- -0.2
+g4 <- g0 + geom_abline(intercept = a, slope = b, color = "green") +
+  geom_segment(x = x, xend = x, y = y, yend = a + b*x, color = "blue", lty = "dashed")
+print(g4)
+```
+]
+
+Determine the $y$-intercept and slope so that the sum of squares of the <font color="blue"> blue dashed line segment </font> is minimized.
+
+---
+
+## Fitting with `lm()`
+
+```{r}
+fit <- lm(y ~ x)
+summary(fit)
+```
+
+---
+
+## Fitting with `lm()`
+
+```{r, fig.height = 3.3, echo = F, out.width = "80%"}
+beta0 <- 2.0368; beta1 <- 0.3067
+
+df <- data.frame(x = x, y = y, fitted = beta0 + beta1*x)
+
+df_long <- df %>%
+  gather(key = y_type, value = height, -x)
+
+ggplot() + 
+  geom_point(data = df_long, aes(x, height, shape = y_type), size = 2) +
+  geom_abline(intercept = beta0, slope = beta1, color = "red") +
+  geom_hline(yintercept = mean(y)) +
+  scale_shape_manual(values = c("y" = 19, "fitted" = 8)) +
+  labs(shape = "", y = "y") +
+  geom_segment(data = df, x = x, xend = x, y = y, yend = beta0 + beta1*x,
+               color = "blue", lty = "dashed")
+```
+
+---
+
+## Interpretation of `lm()` output
+
+`lm()` returns lots of information regarding the regression model:
+
+```{r}
+names(fit)
+```
+
+These _names_ can be extracted using `$` sign, e.g. `fit$residuals`.
+
+---
+
+## Interpretation of `lm()` output
+
+- $\hat{\beta}_0$: fitted intercept
+
+- $\hat{\beta}_1$: fitted slope
+
+```{r}
+fit$coefficients #<<
+beta0 <- fit$coefficients[1]; beta1 <- fit$coefficients[2]
+beta0
+beta1
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- $\hat{y}_i$: fitted value
+$$\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i\quad\text{for each }i$$
+
+```{r}
+fitted_values <- beta0 + beta1*x
+fitted_values
+```
+
+--
+
+```{r}
+fit$fitted.values #<<
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- Residual: the difference between observation and fitted value (blue dashed lines):
+$$r_i = y_i- \hat{y}_i = y_i - (\hat{\beta}_0 + \hat{\beta}_1 x_i)\quad\text{for each }i$$
+
+```{r}
+residuals <- y - fitted_values
+residuals
+```
+
+--
+
+```{r}
+fit$residuals #<<
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- RSS (residual sum of squares): sum of the squares of residuals:
+$$RSS=\sum_i r_i^2 = \sum_i\left[y_i - \underbrace{(\hat{\beta}_0 + \hat{\beta}_1 x_i)}_{\text{fitted value}}\right]^2$$
+
+```{r}
+rss <- sum(fit$residuals^2)
+rss
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- SSreg (regression sum of squares): sum of squares of the difference between fitted value and $\bar{y}$:
+$$SSreg = \sum_i \left[(\hat{\beta}_0 + \hat{\beta}_1 x_i)-\bar{y}\right]^2$$
+
+```{r}
+ssreg <- sum((fit$fitted.values-mean(y))^2)
+ssreg
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- TSS (total sum of squares): sum of the squares of the difference between each $y_i$ value and the mean $\bar{y}$:
+$$TSS=\sum_i\left(y_i-\bar{y}\right)^2$$
+
+```{r}
+tss <- sum((y-mean(y))^2)
+tss
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- It is known that RSS + SSreg = TSS: https://en.wikipedia.org/wiki/Partition_of_sums_of_squares
+
+```{r}
+rss + ssreg
+tss
+```
+
+--
+
+- $R^2$ (R-squared or coefficient of determination): 
+$$R^2 = \frac{SSreg}{TSS} = 1 - \frac{RSS}{TSS}$$
+
+--
+
+- $R^2$ is a measure of goodness of model (model is good if $R^2$ is close to 1, bad if $R^2$ is close to 0)
+
+---
+
+## Interpretation of `lm()` output
+
+```{r}
+r2 <- ssreg/tss
+r2
+```
+
+--
+
+```{r}
+names(summary(fit))
+```
+
+--
+
+```{r}
+summary(fit)$r.squared
+```
+
+---
+
+## Interpretation of `lm()` output
+
+- Estimate of $\sigma$: it is well known that $$\frac{RSS}{n-2}$$ is an _unbiased_ estimator of $\sigma^2$, where $n$ is the sample size.
+
+--
+
+```{r}
+sqrt(rss/(length(x)-2))
+```
+
+--
+
+```{r}
+summary(fit)$sigma
+```
+
+---
+
+## Example: weight/girth of sheep
+
+Download a tab-delimited file [sheep.tsv](sheep.tsv). It consists of 66 observations and 2 variables. 
+
+```{r}
+sheep <- read.table("sheep.tsv", header = T, sep = "\t") 
+dim(sheep)
+```
+
+.pull-left[
+```{r}
+head(sheep)
+```
+]
+
+.pull-right[
+- `weight`: live weight of a sheep (in kg)
+
+- `girth`: chest girth (in cm)
+]
+
+---
+
+## Example: weight/girth of sheep
+
+Strong linear trend is visible:
+
+```{r, out.width = "50%"}
+ggplot(sheep, aes(girth, weight)) +
+  geom_point()
+```
+
+---
+
+## Example: weight/girth of sheep
+
+- Find the best fitting line and overlay onto the scatter plot using `geom_abline()`
+
+--
+
+```{r}
+fit <- lm(sheep$weight ~ sheep$girth) 
+# or fit <- lm(weight ~ girth, data = sheep)
+```
+
+--
+
+```{r}
+fit$coefficients
+```
+
+--
+
+```{r}
+beta0 <- fit$coefficients[1]; beta1 <- fit$coefficients[2]
+beta0; beta1
+```
+
+---
+
+## Example: weight/girth of sheep
+
+```{r, out.width = "50%"}
+ggplot(sheep, aes(girth, weight)) +
+  geom_point() +
+  geom_abline(intercept = beta0, slope = beta1, color = "red")
+```
+
+---
+
+## Example: weight/girth of sheep
+
+- Find RSS, SSreg, and TSS
+
+--
+
+```{r}
+rss <- sum((fit$residuals)^2)
+rss
+```
+
+--
+
+```{r}
+ssreg <- sum((fit$fitted.values - mean(sheep$weight))^2)
+ssreg
+```
+
+--
+
+```{r}
+tss <- rss + ssreg
+# or tss <- sum((sheep$weight - mean(sheep$weight))^2)
+tss
+```
+
+---
+
+## Example: weight/girth of sheep
+
+- Compute $R^2$
+
+--
+
+```{r}
+r2 <- ssreg/tss; print(r2)
+# or alternatively
+summary(fit)$r.squared
+```
+
+--
+
+- Estimate $\sigma$
+
+--
+
+```{r}
+sqrt(rss/(length(sheep$girth)-2))
+summary(fit)$sigma # alternatively 
+```
+
+---
+
+## Example: weight/girth of sheep
+
+- The best fitting line equation: 
+$$y = `r round(beta0, 3)` + `r round(beta1, 3)`x$$
+
+--
+
+- Interpretation: the live weight of a sheep with $x$ cm chest girth is approximately $`r round(beta0, 3)` + `r round(beta1, 3)`x$ kg. 
+
+--
+
+- For example, if there is a sheep of which chest girth is 85 cm, we can predict that its live weight would be approximately 
+ $$`r round(beta0, 3)` + `r round(beta1, 3)` \times 85 = `r round(beta0, 3) + round(beta1, 3)*85` \text{ kg} $$
+
+--
+
+- What if there is another sheep with chest girth 86 cm? The corresponding live weight is approximately
+$$`r round(beta0, 3)` + `r round(beta1, 3)` \times 86 = `r round(beta0, 3) + round(beta1, 3)*86` \text{ kg} $$
+which is 1.043 more than previous. 
+
+--
+
+- In general $\hat{\beta}_1$ is interpreted as: a unit increase in $x$ results in the increase of $y$ by $\hat{\beta}_1$. 
+
+---
+
+## Making inference on $\beta_0$ and $\beta_1$
+
+- Point estimates of $\beta_0$ and $\beta_1$ were already covered:
+```{r}
+fit$coefficients
+```
+
+--
+
+- How about 95% confidence of $\beta_0$ and $\beta_1$?
+
+```{r}
+confint(fit) #<<
+```
+
+--
+
+We are 95% certain that $\beta_1$ is between `r confint(fit)[2,1]` and `r confint(fit)[2,2]`.
+
+---
+
+## Making inference on $\beta_0$ and $\beta_1$
+
+- Statistical test on $\beta_1$
+  - $H_0$: $\beta_1=0$
+  - $p$-value is obtained from `coefficients` of `summary` of `lm` output
+  
+```{r}
+summary(fit)$coefficients
+```
+
+- With an extremely small $p$-value $`r summary(fit)$coefficients[2,4]`$, we conclude that $\beta_1\neq 0$.
+  - Interpretation of this conclusion will be explained later
+
+---
+
+## Multiple linear regression
+
+Read in data set [donkey.tsv](donkey.tsv). 
+
+```{r}
+donkey <- read.table("donkey.tsv", header = T, sep = "\t") 
+dim(donkey)
+head(donkey)
+```
+
+---
+
+## Multiple linear regression
+
+- Donkey: donkey ID
+
+- Sex: sex
+
+- Age: age in years
+
+- Bodywt: body weight in kg
+
+- Heartgirth: girth at the level of the heart (cm)
+
+- Umbgirth: girth at the umbilicus (cm)
+
+- Length: length from the olecranon to the tuber ischii (cm)
+
+- Height: height at the withers (cm)
+
+--
+
+Researchers were interested in estimating the **weight** of donkeys using other measurements that can be obtained more easily such as girth at the level of the heart (cm), girth at the umbilicus (cm), length from the olecranon to the tuber ischii (cm), height at the withers (cm), and the age (years) and sex.
+
+---
+
+## Multiple linear regression
+
+- Simple linear regression using Length
+
+```{r, out.width = "50%"}
+ggplot(donkey, aes(Length, Bodywt)) + geom_point()
+```
+
+---
+
+## Multiple linear regression
+
+```{r}
+fit_Length <- lm(Bodywt ~ Length, data = donkey)
+summary(fit_Length)
+```
+
+---
+
+## Multiple linear regression
+
+```{r, out.width = "50%"}
+ggplot(donkey, aes(Length, Bodywt)) + geom_point() +
+  geom_smooth(method = "lm", se = F)
+```
+
+---
+
+## Multiple linear regression
+
+- Simple linear regression using Height
+
+```{r, out.width = "50%"}
+ggplot(donkey, aes(Height, Bodywt)) + geom_point()
+```
+
+---
+
+## Multiple linear regression
+
+```{r}
+fit_Height <- lm(Bodywt ~ Height, data = donkey)
+summary(fit_Height)
+```
+
+---
+
+## Multiple linear regression
+
+```{r, out.width = "50%"}
+ggplot(donkey, aes(Height, Bodywt)) + geom_point() +
+  geom_smooth(method = "lm", se = F)
+```
+
+---
+
+## Multiple linear regression
+
+- In multiple linear regression, we use more than one explanatory variables. 
+
+--
+
+- For example, we assume that 
+$$Bodywt_i=\beta_0+\beta_1 Length_i +\beta_2 Heartgirth_i +\beta_3 Height_i + e_i,$$ where $e_i$ is a random variable following $N(0,\sigma^2)$. 
+
+--
+
+- Again `lm()` is used for fitting
+
+---
+
+## Multiple linear regression
+
+```{r}
+fit <- lm(Bodywt ~ Length + Heartgirth + Height, data = donkey)
+summary(fit)$coefficients
+```
+
+--
+
+Based on the output, we conclude that 
+
+\begin{align}
+Bodywt = &-217.706 \\
+  &+0.916 \times Length    \\
+  &+2.124 \times Heartgirth    \\
+  &+0.261 \times Height  
+\end{align}
+
+Interpretation: 0.916 represents the change in Bodywt for a unit change in Length, when **the other explanatory variables, Heartgirth and Height, are held constant** (i.e. after controlling for these variables)
+
