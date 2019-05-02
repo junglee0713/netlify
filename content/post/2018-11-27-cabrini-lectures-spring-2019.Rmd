@@ -33,3 +33,5 @@ slug: cabrini-lectures-spring-2019
 
 [Lecture 10](/Cabrini_lectures/Cabrini_2019_Lecture_10.html)
 
+[Homework 5](/Cabrini_lectures/HW5.pdf)
+
