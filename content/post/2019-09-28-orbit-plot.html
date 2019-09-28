@@ -7,11 +7,14 @@ slug: orbit-plot
 
 
 
-<div class="figure">
-<img src="/image/bob-ross.jpg" alt="We don’t make mistakes, just happy little accidents." />
-<p class="caption">We don’t make mistakes, just happy little accidents.</p>
+<div class="figure" style="text-align: center">
+<img src="/image/bob-ross.jpg" alt="We don't make mistakes, just happy little accidents." width="70%" />
+<p class="caption">
+We don’t make mistakes, just happy little accidents.
+</p>
 </div>
-<pre class="r"><code>library(tidyverse)
-a &lt;- 5
-a^2</code></pre>
-<pre><code>## [1] 25</code></pre>
+<p>First of all, download a publicly available dataset from kaggle <a href="https://www.kaggle.com/bbhatt001/human-microbiome-project" class="uri">https://www.kaggle.com/bbhatt001/human-microbiome-project</a></p>
+<pre class="r"><code>library(tidyverse)  
+df &lt;- read_csv(&quot;project_catalog.csv&quot;)
+dim(df)</code></pre>
+<pre><code>## [1] 2915   17</code></pre>

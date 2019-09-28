@@ -9,15 +9,21 @@ slug: orbit-plot
 knitr::opts_chunk$set(
   message = F,
   warning = F,
-  echo = T
+  echo = T,
+  fig.align = "center"
 )
+knitr::opts_knit$set(bookdown.internal.label = FALSE) # disable automatic figure/table numbering
 ```
 
-![We don't make mistakes, just happy little accidents.](/image/bob-ross.jpg)
+```{r out.width = "70%", fig.cap="We don't make mistakes, just happy little accidents.", echo = F}
+knitr::include_graphics("/image/bob-ross.jpg")
+``` 
+
+First of all, download a publicly available dataset from kaggle https://www.kaggle.com/bbhatt001/human-microbiome-project
 
 ```{r}
-library(tidyverse)
-a <- 5
-a^2
+library(tidyverse)  
+df <- read_csv("project_catalog.csv")
+dim(df)
 ```
 
