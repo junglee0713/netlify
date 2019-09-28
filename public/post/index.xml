@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Jung-Jin Lee&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 17 Mar 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 28 Sep 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>그림을 그립시다 The Joy of ggplotting: orbit plot</title>
+      <link>/2019/09/28/orbit-plot/</link>
+      <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/09/28/orbit-plot/</guid>
+      <description> We don’t make mistakes, just happy little accidents.
+ library(tidyverse) a &amp;lt;- 5 a^2 ## [1] 25 </description>
+    </item>
     
     <item>
       <title>anova( ) and Anova( )</title>
