@@ -1,0 +1,42 @@
+---
+title: '그림을 그립시다 The Joy of ggplotting: compositional bar plots'
+author: Jung-Jin Lee
+date: '2019-09-28'
+slug: compositional-bar-plots
+---
+
+```{r, message = F, warning = F, echo = F}
+knitr::opts_chunk$set(
+  message = F,
+  warning = F,
+  echo = T,
+  fig.align = "center"
+)
+knitr::opts_knit$set(bookdown.internal.label = FALSE) # disable automatic figure/table numbering
+```
+
+```{r out.width = "70%", fig.cap="We don't make mistakes, just happy little accidents.", echo = F}
+knitr::include_graphics("/bob-ross.jpg")
+``` 
+
+First of all, download a publicly available dataset from kaggle https://www.kaggle.com/bbhatt001/human-microbiome-project
+
+```{r}
+library(tidyverse)  
+d0 <- read_csv("project_catalog.csv")
+dim(d0)
+names(d0)
+table(d0$`HMP Isolation Body Site`) 
+```
+
+We subset the data to inlcude body sites with sufficient data:
+
+```{r}
+d <- d0 %>%
+  filter(`HMP Isolation Body Site` %in% c("airways", "gastrointestinal_tract",
+                                          "oral", "skin", "urogenital_tract")) %>%
+  mutate(`Body site` = factor(`HMP Isolation Body Site`)) %>%
+  mutate(Genus = str_extract(`Organism Name`, "^[^\\s]+")) # extract the string before the first space
+```
+
+To be continued...

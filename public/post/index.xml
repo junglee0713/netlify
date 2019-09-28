@@ -12,13 +12,13 @@
     
     
     <item>
-      <title>그림을 그립시다 The Joy of ggplotting: orbit plot</title>
-      <link>/2019/09/28/orbit-plot/</link>
+      <title>그림을 그립시다 The Joy of ggplotting: compositional bar plots</title>
+      <link>/2019/09/28/compositional-bar-plots/</link>
       <pubDate>Sat, 28 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>/2019/09/28/orbit-plot/</guid>
-      <description> We don’t make mistakes, just happy little accidents.  First of all, download a publicly available dataset from kaggle https://www.kaggle.com/bbhatt001/human-microbiome-project
-library(tidyverse) df &amp;lt;- read_csv(&amp;quot;project_catalog.csv&amp;quot;) dim(df) ## [1] 2915 17 </description>
+      <guid>/2019/09/28/compositional-bar-plots/</guid>
+      <description>We don’t make mistakes, just happy little accidents.  First of all, download a publicly available dataset from kaggle https://www.kaggle.com/bbhatt001/human-microbiome-project
+library(tidyverse) d0 &amp;lt;- read_csv(&amp;quot;project_catalog.csv&amp;quot;) dim(d0) ## [1] 2915 17 names(d0) ## [1] &amp;quot;HMP ID&amp;quot; &amp;quot;GOLD ID&amp;quot; ## [3] &amp;quot;Organism Name&amp;quot; &amp;quot;Domain&amp;quot; ## [5] &amp;quot;NCBI Superkingdom&amp;quot; &amp;quot;HMP Isolation Body Site&amp;quot; ## [7] &amp;quot;Project Status&amp;quot; &amp;quot;Current Finishing Level&amp;quot; ## [9] &amp;quot;NCBI Submission Status&amp;quot; &amp;quot;NCBI Project ID&amp;quot; ## [11] &amp;quot;Genbank ID&amp;quot; &amp;quot;Gene Count&amp;quot; ## [13] &amp;quot;IMG/HMP ID&amp;quot; &amp;quot;HOMD ID&amp;quot; ## [15] &amp;quot;Sequencing Center&amp;quot; &amp;quot;Funding Source&amp;quot; ## [17] &amp;quot;Strain Repository ID&amp;quot; table(d0$`HMP Isolation Body Site`)  ## ## airways blood bone ## 236 75 27 ## ear eye gastrointestinal_tract ## 4 8 745 ## heart liver lymph_nodes ## 2 1 1 ## nose oral other ## 2 347 13 ## skin unknown urogenital_tract ## 267 654 529 ## wound ## 4 We subset the data to inlcude body sites with sufficient data:</description>
     </item>
     
     <item>

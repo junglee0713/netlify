@@ -69,7 +69,7 @@
 
 
 <div class="figure" style="text-align: center">
-<img src="/bob-ross.jpg" alt="We don't make mistakes, just happy little accidents." width="50%" />
+<img src="/bob-ross.jpg" alt="We don't make mistakes, just happy little accidents." width="70%" />
 <p class="caption">
 We don’t make mistakes, just happy little accidents.
 </p>
@@ -107,7 +107,9 @@ dim(d0)</code></pre>
 <pre class="r"><code>d &lt;- d0 %&gt;%
   filter(`HMP Isolation Body Site` %in% c(&quot;airways&quot;, &quot;gastrointestinal_tract&quot;,
                                           &quot;oral&quot;, &quot;skin&quot;, &quot;urogenital_tract&quot;)) %&gt;%
-  mutate(`Body site` = factor(`HMP Isolation Body Site`))</code></pre>
+  mutate(`Body site` = factor(`HMP Isolation Body Site`)) %&gt;%
+  mutate(Genus = str_extract(`Organism Name`, &quot;^[^\\s]+&quot;)) # extract the string before the first space</code></pre>
+<p>To be continued…</p>
 
     </div>
   </article>
