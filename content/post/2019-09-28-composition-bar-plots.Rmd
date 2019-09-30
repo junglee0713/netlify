@@ -36,7 +36,42 @@ d <- d0 %>%
   filter(`HMP Isolation Body Site` %in% c("airways", "gastrointestinal_tract",
                                           "oral", "skin", "urogenital_tract")) %>%
   mutate(`Body site` = factor(`HMP Isolation Body Site`)) %>%
-  mutate(Genus = str_extract(`Organism Name`, "^[^\\s]+")) # extract the string before the first space
+  mutate(Genus = str_extract(`Organism Name`, "^[^\\s]+")) %>% # extract the string before the first space
+  count(`Body site`, Genus) %>%
+  pivot_wider(Genus, names_from = `Body site`, values_from = "n", values_fill = list(n = 0)) 
 ```
 
-To be continued...
+Proportion of genera in each body site:
+
+```{r}
+num_top <- 19 # plus "Other" will make 20
+prop <- d %>%
+  column_to_rownames("Genus") %>%
+  sweep(2, colSums(.), "/")
+
+meanProp <- apply(prop, 1, mean) %>% sort(decreasing = T) 
+topGenus <- names(meanProp[1:num_top])
+print(topGenus)
+
+d2 <- d %>%
+  mutate(Genus = ifelse(Genus %in% topGenus, Genus, "Other")) 
+
+propNew <- rowsum(d2 %>% select(-Genus), d2$Genus) %>%
+  sweep(2, colSums(.), "/") %>%
+  rownames_to_column("Genus") %>%
+  pivot_longer(-Genus, names_to = "Body site", values_to = "Proportion") %>%
+  mutate(Genus = fct_relevel(Genus, "Other", after = Inf)) 
+```
+
+Now fun part:
+
+```{r}
+library(ggsci)
+g <- propNew %>%
+  ggplot(aes(x = `Body site`, y = Proportion)) +
+  geom_col(aes(fill = Genus)) +
+  scale_fill_d3(palette = "category20")
+
+print(g)  
+```
+

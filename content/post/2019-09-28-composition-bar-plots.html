@@ -47,5 +47,39 @@ dim(d0)</code></pre>
   filter(`HMP Isolation Body Site` %in% c(&quot;airways&quot;, &quot;gastrointestinal_tract&quot;,
                                           &quot;oral&quot;, &quot;skin&quot;, &quot;urogenital_tract&quot;)) %&gt;%
   mutate(`Body site` = factor(`HMP Isolation Body Site`)) %&gt;%
-  mutate(Genus = str_extract(`Organism Name`, &quot;^[^\\s]+&quot;)) # extract the string before the first space</code></pre>
-<p>To be continued…</p>
+  mutate(Genus = str_extract(`Organism Name`, &quot;^[^\\s]+&quot;)) %&gt;% # extract the string before the first space
+  count(`Body site`, Genus) %&gt;%
+  pivot_wider(Genus, names_from = `Body site`, values_from = &quot;n&quot;, values_fill = list(n = 0)) </code></pre>
+<p>Proportion of genera in each body site:</p>
+<pre class="r"><code>num_top &lt;- 19 # plus &quot;Other&quot; will make 20
+prop &lt;- d %&gt;%
+  column_to_rownames(&quot;Genus&quot;) %&gt;%
+  sweep(2, colSums(.), &quot;/&quot;)
+
+meanProp &lt;- apply(prop, 1, mean) %&gt;% sort(decreasing = T) 
+topGenus &lt;- names(meanProp[1:num_top])
+print(topGenus)</code></pre>
+<pre><code>##  [1] &quot;Streptococcus&quot;     &quot;Staphylococcus&quot;    &quot;Propionibacterium&quot;
+##  [4] &quot;Corynebacterium&quot;   &quot;Neisseria&quot;         &quot;Lactobacillus&quot;    
+##  [7] &quot;Rothia&quot;            &quot;Prevotella&quot;        &quot;Enterococcus&quot;     
+## [10] &quot;Pseudomonas&quot;       &quot;Actinomyces&quot;       &quot;Helicobacter&quot;     
+## [13] &quot;Clostridium&quot;       &quot;Fusobacterium&quot;     &quot;Selenomonas&quot;      
+## [16] &quot;Treponema&quot;         &quot;Bacteroides&quot;       &quot;Bifidobacterium&quot;  
+## [19] &quot;Eubacterium&quot;</code></pre>
+<pre class="r"><code>d2 &lt;- d %&gt;%
+  mutate(Genus = ifelse(Genus %in% topGenus, Genus, &quot;Other&quot;)) 
+
+propNew &lt;- rowsum(d2 %&gt;% select(-Genus), d2$Genus) %&gt;%
+  sweep(2, colSums(.), &quot;/&quot;) %&gt;%
+  rownames_to_column(&quot;Genus&quot;) %&gt;%
+  pivot_longer(-Genus, names_to = &quot;Body site&quot;, values_to = &quot;Proportion&quot;) %&gt;%
+  mutate(Genus = fct_relevel(Genus, &quot;Other&quot;, after = Inf)) </code></pre>
+<p>Now fun part:</p>
+<pre class="r"><code>library(ggsci)
+g &lt;- propNew %&gt;%
+  ggplot(aes(x = `Body site`, y = Proportion)) +
+  geom_col(aes(fill = Genus)) +
+  scale_fill_d3(palette = &quot;category20&quot;)
+
+print(g)  </code></pre>
+<p><img src="/post/2019-09-28-composition-bar-plots_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
