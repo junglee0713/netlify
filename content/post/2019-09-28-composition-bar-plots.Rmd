@@ -29,7 +29,7 @@ names(d0)
 table(d0$`HMP Isolation Body Site`) 
 ```
 
-We subset the data to inlcude body sites with sufficient data:
+We subset the data to include only body sites with sufficient data:
 
 ```{r}
 d <- d0 %>%
@@ -70,7 +70,9 @@ library(ggsci)
 g <- propNew %>%
   ggplot(aes(x = `Body site`, y = Proportion)) +
   geom_col(aes(fill = Genus)) +
-  scale_fill_d3(palette = "category20")
+  scale_fill_d3(palette = "category20") +
+  scale_y_continuous(labels = scales::percent) +
+  theme_classic() 
 
 print(g)  
 ```

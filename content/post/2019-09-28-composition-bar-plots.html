@@ -42,7 +42,7 @@ dim(d0)</code></pre>
 ##                    267                    654                    529 
 ##                  wound 
 ##                      4</code></pre>
-<p>We subset the data to inlcude body sites with sufficient data:</p>
+<p>We subset the data to include only body sites with sufficient data:</p>
 <pre class="r"><code>d &lt;- d0 %&gt;%
   filter(`HMP Isolation Body Site` %in% c(&quot;airways&quot;, &quot;gastrointestinal_tract&quot;,
                                           &quot;oral&quot;, &quot;skin&quot;, &quot;urogenital_tract&quot;)) %&gt;%
@@ -79,7 +79,9 @@ propNew &lt;- rowsum(d2 %&gt;% select(-Genus), d2$Genus) %&gt;%
 g &lt;- propNew %&gt;%
   ggplot(aes(x = `Body site`, y = Proportion)) +
   geom_col(aes(fill = Genus)) +
-  scale_fill_d3(palette = &quot;category20&quot;)
+  scale_fill_d3(palette = &quot;category20&quot;) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_classic() 
 
 print(g)  </code></pre>
 <p><img src="/post/2019-09-28-composition-bar-plots_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
