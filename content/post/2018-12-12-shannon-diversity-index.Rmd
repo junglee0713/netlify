@@ -10,7 +10,7 @@ css: ["../../public/css/shannon.css"]
 
 In ecology, the Shannon diversity of a community is defined by
 $$H=-\sum_{i}^R p_i\log p_i,$$
-where $R$ is the number of distinct species and $p_i$ is the proportion of species $i$. The Shannon diversity measures richness (i.e. the number of distinct species in a community) and evenness (i.e. how evenly the proportions of species are spread). In the following illustration, each randomly generated dot represents a mock community: the horizontal coordinate shows the number of distinct species (richness) and the color shows the sample standard deviation of the proportions (evenness). The vertical coordinate gives the resulting Shannon diversity.
+where $R$ is the number of distinct species and $p_i$ is the proportion of species $i$. The Shannon diversity measures richness (i.e. the number of distinct species in a community) and evenness (i.e. how evenly the proportions of species are spread). In the following illustration, each randomly generated dot represents a mock community: the horizontal coordinate shows the number of distinct species (richness) and the color shows the various distributions of proportions given the number of distinct species. **Even distribution** means that the proportions are evenly distributed (thus giving the maximum possible Shannon diversity). **Proportion of most dominant species of 0.7**, for example, means that the community is dominated by a single species which takes up 70%, and the remaining species are evenly distributed. 
 
 <iframe width="100%" height="900" scrolling="no" frameborder="no" 
 src="https://junglee0713.shinyapps.io/ShannonCompare/"> </iframe>
