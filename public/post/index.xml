@@ -86,7 +86,7 @@ Lecture 12</description>
       <pubDate>Wed, 12 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>/2018/12/12/shannon-diversity-index/</guid>
-      <description>In ecology, the Shannon diversity of a community is defined by \[H=-\sum_{i}^R p_i\log p_i,\] where \(R\) is the number of distinct species and \(p_i\) is the proportion of species \(i\). The Shannon diversity measures richness (i.e. the number of distinct species in a community) and evenness (i.e. how evenly the proportions of species are spread). In the following illustration, each randomly generated dot represents a mock community: the horizontal coordinate shows the number of distinct species (richness) and the color shows the sample standard deviation of the proportions (evenness).</description>
+      <description>In ecology, the Shannon diversity of a community is defined by \[H=-\sum_{i}^R p_i\log p_i,\] where \(R\) is the number of distinct species and \(p_i\) is the proportion of species \(i\). The Shannon diversity measures richness (i.e. the number of distinct species in a community) and evenness (i.e. how evenly the proportions of species are spread). In the following illustration, each randomly generated dot represents a mock community: the horizontal coordinate shows the number of distinct species (richness) and the color shows the various distributions of proportions given the number of distinct species.</description>
     </item>
     
     <item>
