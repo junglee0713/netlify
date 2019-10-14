@@ -13,9 +13,9 @@ If $\{a,b,c,d,e\}$ is an increasing arithmetic sequence of five prime numbers, w
 
 Let's write the sequence as $\{a, a+k, a+2k, a+3k, a+4k\}$, where $k \in \mathbb{N}$. It is easy to see that $a\neq 2$. It is also easy to see that $k$ cannot be odd. 
 
-Consider the remainders of $\{a, a+2, a+4\}$ when divided by $3$. Since $a$ is prime, $a$ must be of the form $3m+1$ or $3m+2$ and this would imply that either $a+2$ or $a+4$ is prime. This shows that $k\neq 2$.
+Assume that $k=2$ and consider the remainders of $\{a, a+2, a+4, a+6, a+8\}$ when divided by $3$. Since $a$ cannot be $3$ (as $a+6$ is a prime), $a$ must be of the form $3m+1$ or $3m+2$ and this would imply that either $a+2$ or $a+4$ is prime. This contradiction comes from the assumption that $k=2$.
 
-Consider the remainders of $\{a, a+4, a+8, a+12, a+16\}$ when divided by $5$. Since $a$ is prime, $a$ must be of the form $5m \pm 1$ or $5m \pm 2$ and the same argument as above shows that $k\neq 4$. 
+Assume that $k=4$ and consider the remainders of $\{a, a+4, a+8, a+12, a+16\}$ when divided by $5$. Since $a$ cannot be $5$ (as $a+4$ is a prime), $a$ must be of the form $5m+1$, $5m+2$, $5m+3$, or $5m+4$ and the same argument as above shows that $k\neq 4$. 
 
 Now we know that $k\geq 6$. Indeed the least possible value of $k$ turns out to be $6$ because $\{5, 11, 17, 23, 29\}$ consists of primes. 
 
