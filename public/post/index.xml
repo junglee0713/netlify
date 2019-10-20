@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Jung-Jin Lee&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 28 Sep 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 20 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Exploring RStan</title>
+      <link>/2019/10/20/exploring-rstan/</link>
+      <pubDate>Sun, 20 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/10/20/exploring-rstan/</guid>
+      <description>Unit 1</description>
+    </item>
     
     <item>
       <title>그림을 그립시다 The Joy of ggplotting: compositional bar plots</title>

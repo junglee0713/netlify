@@ -1,0 +1,10 @@
+---
+title: Exploring RStan
+author: Jung-Jin Lee
+date: '2019-10-20'
+slug: exploring-rstan
+categories: []
+tags: []
+---
+
+[Unit 1](/Stan_study/Stan_Unit_1.html)
