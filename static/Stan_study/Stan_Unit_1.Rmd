@@ -181,8 +181,9 @@ Run `stan()` with options:
 fit_stan2 <- stan(file = 'simple_lm.stan', 
                  data = mtcarsData,
                  seed = 2019,
+                 chains = 5,
                  iter = 10000,
-                 warmup = 5000)
+                 warmup = 3000)
 ```
 
 ---
@@ -209,6 +210,7 @@ Output from `stan()` can be extracted:
 
 ```{r}
 df <- as.data.frame(fit_stan2)
+dim(df) # iter = 10000, warmup = 3000, chains = 5
 head(df)
 ```
 
