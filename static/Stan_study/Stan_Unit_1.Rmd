@@ -205,7 +205,7 @@ traceplot(fit_stan2)
 
 ## Example: simple linear regression
 
-Output from `stan` can be extracted:
+Output from `stan()` can be extracted:
 
 ```{r}
 df <- as.data.frame(fit_stan2)
