@@ -1,0 +1,115 @@
+---
+title: Distance between groups
+author: Jung-Jin Lee
+date: '2019-10-25'
+slug: distance-between-groups
+categories: []
+tags: []
+---
+
+```{r, message = FALSE}
+library(usedist)
+library(tidyverse)
+library(ggforce)
+library(ggsci)
+library(gt)
+```
+
+First, we make a fake data set:
+
+```{r}
+set.seed(2019)
+n <- 6
+ADf <- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)),
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = "A")
+BDf <- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), 
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = "B")
+CDf <- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), 
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = "C")
+DDf <- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), 
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = "D")
+EDf <- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), 
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = "E")
+df <- bind_rows(ADf, BDf, CDf, DDf, EDf) %>%
+  group_by(group) %>%
+  mutate(SampleID = paste0(group, 1:n())) %>%
+  ungroup()
+```
+
+Visualization of the data:
+
+```{r}
+ggplot(df, aes(x, y)) + 
+  geom_point(aes(color = group), show.legend = FALSE) +
+  geom_mark_hull(aes(label = group, fill = group), 
+                 show.legend = FALSE) +
+  scale_color_d3() +
+  scale_fill_d3() +
+  theme_void() 
+```
+
+Make a `distance` object:
+
+```{r}
+Dist <- dist(df %>% 
+               select(-group) %>% 
+               column_to_rownames("SampleID")) ## euclidean
+```
+
+Which samples are in which group?
+
+```{r}
+Gr <- df$group
+names(Gr) <- df$SampleID
+```
+
+Make sure the order of the grouping is the same as `Dist`:
+
+```{r}
+Gr <- Gr[colnames(as.matrix(Dist))]
+```
+
+Create a data frame of distances between groups of items using `dist_groups` from `usedist` package (https://github.com/kylebittinger/usedist):
+
+```{r}
+Dist_Gr <- dist_groups(Dist, Gr)
+Dist_Gr %>%
+  head() %>%
+  gt()
+```
+
+What are the distances between groups?
+
+```{r}
+dist_func_list <- list(min = min, mean = mean, max = max)
+dist_func <- dist_func_list$min
+Dist_Between_Groups <- Dist_Gr %>%
+  group_by(Label, Group1, Group2) %>%
+  summarize(Distance = dist_func(Distance)) %>%
+  mutate(Distance = ifelse(str_detect(Label, "^Within "), 0, Distance)) %>% # distance between the same groups should be 0
+  arrange(Label, Distance) %>%
+  ungroup() %>%
+  filter(!duplicated(Label)) %>%
+  mutate(rowItem = str_remove_all(Label, "^Between | and .+|^Within ")) %>%
+  mutate(colItem = str_remove_all(Label, "^.+ and |^Within ")) %>%
+  select(rowItem, colItem, Distance) %>%
+  pivot_wider(names_from = "colItem", values_from = "Distance", values_fill = list(Distance = 0)) %>%
+  column_to_rownames("rowItem")
+
+Dist_Between_Groups <- Dist_Between_Groups[, rownames(Dist_Between_Groups)] # arrange columns
+Dist_Between_Groups <- Dist_Between_Groups + t(Dist_Between_Groups) # make a symmetric matrix
+```
+
+Now distances between groups are:
+
+```{r}
+Dist_Between_Groups %>%
+  rownames_to_column() %>%
+  gt(rowname_col = "rowname")
+```
+

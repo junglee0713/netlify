@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Jung-Jin Lee&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 20 Oct 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 25 Oct 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Distance between groups</title>
+      <link>/2019/10/25/distance-between-groups/</link>
+      <pubDate>Fri, 25 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/2019/10/25/distance-between-groups/</guid>
+      <description>library(usedist) library(tidyverse) library(ggforce) library(ggsci) library(gt) First, we make a fake data set:
+set.seed(2019) n &amp;lt;- 6 ADf &amp;lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), y = rnorm(n, sample(10, 1), sample(2, 1)), group = &amp;quot;A&amp;quot;) BDf &amp;lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), y = rnorm(n, sample(10, 1), sample(2, 1)), group = &amp;quot;B&amp;quot;) CDf &amp;lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), y = rnorm(n, sample(10, 1), sample(2, 1)), group = &amp;quot;C&amp;quot;) DDf &amp;lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), y = rnorm(n, sample(10, 1), sample(2, 1)), group = &amp;quot;D&amp;quot;) EDf &amp;lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), y = rnorm(n, sample(10, 1), sample(2, 1)), group = &amp;quot;E&amp;quot;) df &amp;lt;- bind_rows(ADf, BDf, CDf, DDf, EDf) %&amp;gt;% group_by(group) %&amp;gt;% mutate(SampleID = paste0(group, 1:n())) %&amp;gt;% ungroup() Visualization of the data:</description>
+    </item>
     
     <item>
       <title>Exploring RStan</title>

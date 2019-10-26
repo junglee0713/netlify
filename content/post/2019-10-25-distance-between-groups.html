@@ -1,0 +1,795 @@
+---
+title: Distance between groups
+author: Jung-Jin Lee
+date: '2019-10-25'
+slug: distance-between-groups
+categories: []
+tags: []
+---
+
+
+
+<pre class="r"><code>library(usedist)
+library(tidyverse)
+library(ggforce)
+library(ggsci)
+library(gt)</code></pre>
+<p>First, we make a fake data set:</p>
+<pre class="r"><code>set.seed(2019)
+n &lt;- 6
+ADf &lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)),
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = &quot;A&quot;)
+BDf &lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), 
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = &quot;B&quot;)
+CDf &lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), 
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = &quot;C&quot;)
+DDf &lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), 
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = &quot;D&quot;)
+EDf &lt;- tibble(x = rnorm(n, sample(10, 1), sample(2, 1)), 
+              y = rnorm(n, sample(10, 1), sample(2, 1)), 
+              group = &quot;E&quot;)
+df &lt;- bind_rows(ADf, BDf, CDf, DDf, EDf) %&gt;%
+  group_by(group) %&gt;%
+  mutate(SampleID = paste0(group, 1:n())) %&gt;%
+  ungroup()</code></pre>
+<p>Visualization of the data:</p>
+<pre class="r"><code>ggplot(df, aes(x, y)) + 
+  geom_point(aes(color = group), show.legend = FALSE) +
+  geom_mark_hull(aes(label = group, fill = group), 
+                 show.legend = FALSE) +
+  scale_color_d3() +
+  scale_fill_d3() +
+  theme_void() </code></pre>
+<p><img src="/post/2019-10-25-distance-between-groups_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Make a <code>distance</code> object:</p>
+<pre class="r"><code>Dist &lt;- dist(df %&gt;% 
+               select(-group) %&gt;% 
+               column_to_rownames(&quot;SampleID&quot;)) ## euclidean</code></pre>
+<p>Which samples are in which group?</p>
+<pre class="r"><code>Gr &lt;- df$group
+names(Gr) &lt;- df$SampleID</code></pre>
+<p>Make sure the order of the grouping is the same as <code>Dist</code>:</p>
+<pre class="r"><code>Gr &lt;- Gr[colnames(as.matrix(Dist))]</code></pre>
+<p>Create a data frame of distances between groups of items using <code>dist_groups</code> from <code>usedist</code> package (<a href="https://github.com/kylebittinger/usedist" class="uri">https://github.com/kylebittinger/usedist</a>):</p>
+<pre class="r"><code>Dist_Gr &lt;- dist_groups(Dist, Gr)
+Dist_Gr %&gt;%
+  head() %&gt;%
+  gt()</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#zrbggzrzjo .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  background-color: #FFFFFF;
+  /* table.background.color */
+  width: auto;
+  /* table.width */
+  border-top-style: solid;
+  /* table.border.top.style */
+  border-top-width: 2px;
+  /* table.border.top.width */
+  border-top-color: #A8A8A8;
+  /* table.border.top.color */
+  border-bottom-style: solid;
+  /* table.border.bottom.style */
+  border-bottom-width: 2px;
+  /* table.border.bottom.width */
+  border-bottom-color: #A8A8A8;
+  /* table.border.bottom.color */
+}
+
+#zrbggzrzjo .gt_heading {
+  background-color: #FFFFFF;
+  /* heading.background.color */
+  border-bottom-color: #FFFFFF;
+}
+
+#zrbggzrzjo .gt_title {
+  color: #333333;
+  font-size: 125%;
+  /* heading.title.font.size */
+  padding-top: 4px;
+  /* heading.top.padding - not yet used */
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#zrbggzrzjo .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  /* heading.subtitle.font.size */
+  padding-top: 0;
+  padding-bottom: 4px;
+  /* heading.bottom.padding - not yet used */
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#zrbggzrzjo .gt_bottom_border {
+  border-bottom-style: solid;
+  /* heading.border.bottom.style */
+  border-bottom-width: 2px;
+  /* heading.border.bottom.width */
+  border-bottom-color: #D3D3D3;
+  /* heading.border.bottom.color */
+}
+
+#zrbggzrzjo .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#zrbggzrzjo .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  /* column_labels.background.color */
+  font-size: 16px;
+  /* column_labels.font.size */
+  font-weight: initial;
+  /* column_labels.font.weight */
+  vertical-align: middle;
+  padding: 5px;
+  margin: 10px;
+  overflow-x: hidden;
+}
+
+#zrbggzrzjo .gt_columns_top_border {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#zrbggzrzjo .gt_columns_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zrbggzrzjo .gt_sep_right {
+  border-right: 5px solid #FFFFFF;
+}
+
+#zrbggzrzjo .gt_group_heading {
+  padding: 8px;
+  /* row_group.padding */
+  color: #333333;
+  background-color: #FFFFFF;
+  /* row_group.background.color */
+  font-size: 16px;
+  /* row_group.font.size */
+  font-weight: initial;
+  /* row_group.font.weight */
+  border-top-style: solid;
+  /* row_group.border.top.style */
+  border-top-width: 2px;
+  /* row_group.border.top.width */
+  border-top-color: #D3D3D3;
+  /* row_group.border.top.color */
+  border-bottom-style: solid;
+  /* row_group.border.bottom.style */
+  border-bottom-width: 2px;
+  /* row_group.border.bottom.width */
+  border-bottom-color: #D3D3D3;
+  /* row_group.border.bottom.color */
+  vertical-align: middle;
+}
+
+#zrbggzrzjo .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  /* row_group.background.color */
+  font-size: 16px;
+  /* row_group.font.size */
+  font-weight: initial;
+  /* row_group.font.weight */
+  border-top-style: solid;
+  /* row_group.border.top.style */
+  border-top-width: 2px;
+  /* row_group.border.top.width */
+  border-top-color: #D3D3D3;
+  /* row_group.border.top.color */
+  border-bottom-style: solid;
+  /* row_group.border.bottom.style */
+  border-bottom-width: 2px;
+  /* row_group.border.bottom.width */
+  border-bottom-color: #D3D3D3;
+  /* row_group.border.bottom.color */
+  vertical-align: middle;
+}
+
+#zrbggzrzjo .gt_striped {
+  background-color: #8080800D;
+}
+
+#zrbggzrzjo .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#zrbggzrzjo .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#zrbggzrzjo .gt_row {
+  padding: 8px;
+  /* row.padding */
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#zrbggzrzjo .gt_stub {
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#zrbggzrzjo .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  /* summary_row.background.color */
+  padding: 8px;
+  /* summary_row.padding */
+  text-transform: inherit;
+  /* summary_row.text_transform */
+}
+
+#zrbggzrzjo .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  /* grand_summary_row.background.color */
+  padding: 8px;
+  /* grand_summary_row.padding */
+  text-transform: inherit;
+  /* grand_summary_row.text_transform */
+}
+
+#zrbggzrzjo .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#zrbggzrzjo .gt_first_grand_summary_row {
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#zrbggzrzjo .gt_table_body {
+  border-top-style: solid;
+  /* table_body.border.top.style */
+  border-top-width: 2px;
+  /* table_body.border.top.width */
+  border-top-color: #D3D3D3;
+  /* table_body.border.top.color */
+  border-bottom-style: solid;
+  /* table_body.border.bottom.style */
+  border-bottom-width: 2px;
+  /* table_body.border.bottom.width */
+  border-bottom-color: #D3D3D3;
+  /* table_body.border.bottom.color */
+}
+
+#zrbggzrzjo .gt_footnotes {
+  border-top-style: solid;
+  /* footnotes.border.top.style */
+  border-top-width: 2px;
+  /* footnotes.border.top.width */
+  border-top-color: #D3D3D3;
+  /* footnotes.border.top.color */
+}
+
+#zrbggzrzjo .gt_footnote {
+  font-size: 90%;
+  /* footnote.font.size */
+  margin: 0px;
+  padding: 4px;
+  /* footnote.padding */
+}
+
+#zrbggzrzjo .gt_sourcenotes {
+  border-top-style: solid;
+  /* sourcenotes.border.top.style */
+  border-top-width: 2px;
+  /* sourcenotes.border.top.width */
+  border-top-color: #D3D3D3;
+  /* sourcenotes.border.top.color */
+}
+
+#zrbggzrzjo .gt_sourcenote {
+  font-size: 90%;
+  /* sourcenote.font.size */
+  padding: 4px;
+  /* sourcenote.padding */
+}
+
+#zrbggzrzjo .gt_center {
+  text-align: center;
+}
+
+#zrbggzrzjo .gt_left {
+  text-align: left;
+}
+
+#zrbggzrzjo .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#zrbggzrzjo .gt_font_normal {
+  font-weight: normal;
+}
+
+#zrbggzrzjo .gt_font_bold {
+  font-weight: bold;
+}
+
+#zrbggzrzjo .gt_font_italic {
+  font-style: italic;
+}
+
+#zrbggzrzjo .gt_super {
+  font-size: 65%;
+}
+
+#zrbggzrzjo .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="zrbggzrzjo" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <tr>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">Item1</th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">Item2</th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">Group1</th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">Group2</th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">Label</th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">Distance</th>
+  </tr>
+  <body class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_center">A1</td>
+      <td class="gt_row gt_center">A2</td>
+      <td class="gt_row gt_center">A</td>
+      <td class="gt_row gt_center">A</td>
+      <td class="gt_row gt_center">Within A</td>
+      <td class="gt_row gt_right">2.597939</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_center gt_striped">A1</td>
+      <td class="gt_row gt_center gt_striped">A3</td>
+      <td class="gt_row gt_center gt_striped">A</td>
+      <td class="gt_row gt_center gt_striped">A</td>
+      <td class="gt_row gt_center gt_striped">Within A</td>
+      <td class="gt_row gt_right gt_striped">2.884004</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_center">A1</td>
+      <td class="gt_row gt_center">A4</td>
+      <td class="gt_row gt_center">A</td>
+      <td class="gt_row gt_center">A</td>
+      <td class="gt_row gt_center">Within A</td>
+      <td class="gt_row gt_right">6.262525</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_center gt_striped">A1</td>
+      <td class="gt_row gt_center gt_striped">A5</td>
+      <td class="gt_row gt_center gt_striped">A</td>
+      <td class="gt_row gt_center gt_striped">A</td>
+      <td class="gt_row gt_center gt_striped">Within A</td>
+      <td class="gt_row gt_right gt_striped">1.457591</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_center">A1</td>
+      <td class="gt_row gt_center">A6</td>
+      <td class="gt_row gt_center">A</td>
+      <td class="gt_row gt_center">A</td>
+      <td class="gt_row gt_center">Within A</td>
+      <td class="gt_row gt_right">3.458273</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_center gt_striped">A1</td>
+      <td class="gt_row gt_center gt_striped">B1</td>
+      <td class="gt_row gt_center gt_striped">A</td>
+      <td class="gt_row gt_center gt_striped">B</td>
+      <td class="gt_row gt_center gt_striped">Between A and B</td>
+      <td class="gt_row gt_right gt_striped">4.746163</td>
+    </tr>
+  </body>
+  
+  
+</table></div>
+<p>What are the distances between groups?</p>
+<pre class="r"><code>dist_func_list &lt;- list(min = min, mean = mean, max = max)
+dist_func &lt;- dist_func_list$min
+Dist_Between_Groups &lt;- Dist_Gr %&gt;%
+  group_by(Label, Group1, Group2) %&gt;%
+  summarize(Distance = dist_func(Distance)) %&gt;%
+  mutate(Distance = ifelse(str_detect(Label, &quot;^Within &quot;), 0, Distance)) %&gt;% # distance between the same groups should be 0
+  arrange(Label, Distance) %&gt;%
+  ungroup() %&gt;%
+  filter(!duplicated(Label)) %&gt;%
+  mutate(rowItem = str_remove_all(Label, &quot;^Between | and .+|^Within &quot;)) %&gt;%
+  mutate(colItem = str_remove_all(Label, &quot;^.+ and |^Within &quot;)) %&gt;%
+  select(rowItem, colItem, Distance) %&gt;%
+  pivot_wider(names_from = &quot;colItem&quot;, values_from = &quot;Distance&quot;, values_fill = list(Distance = 0)) %&gt;%
+  column_to_rownames(&quot;rowItem&quot;)
+
+Dist_Between_Groups &lt;- Dist_Between_Groups[, rownames(Dist_Between_Groups)] # arrange columns
+Dist_Between_Groups &lt;- Dist_Between_Groups + t(Dist_Between_Groups) # make a symmetric matrix</code></pre>
+<p>Now distances between groups are:</p>
+<pre class="r"><code>Dist_Between_Groups %&gt;%
+  rownames_to_column() %&gt;%
+  gt(rowname_col = &quot;rowname&quot;)</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#wnkldmgxyx .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  background-color: #FFFFFF;
+  /* table.background.color */
+  width: auto;
+  /* table.width */
+  border-top-style: solid;
+  /* table.border.top.style */
+  border-top-width: 2px;
+  /* table.border.top.width */
+  border-top-color: #A8A8A8;
+  /* table.border.top.color */
+  border-bottom-style: solid;
+  /* table.border.bottom.style */
+  border-bottom-width: 2px;
+  /* table.border.bottom.width */
+  border-bottom-color: #A8A8A8;
+  /* table.border.bottom.color */
+}
+
+#wnkldmgxyx .gt_heading {
+  background-color: #FFFFFF;
+  /* heading.background.color */
+  border-bottom-color: #FFFFFF;
+}
+
+#wnkldmgxyx .gt_title {
+  color: #333333;
+  font-size: 125%;
+  /* heading.title.font.size */
+  padding-top: 4px;
+  /* heading.top.padding - not yet used */
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#wnkldmgxyx .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  /* heading.subtitle.font.size */
+  padding-top: 0;
+  padding-bottom: 4px;
+  /* heading.bottom.padding - not yet used */
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#wnkldmgxyx .gt_bottom_border {
+  border-bottom-style: solid;
+  /* heading.border.bottom.style */
+  border-bottom-width: 2px;
+  /* heading.border.bottom.width */
+  border-bottom-color: #D3D3D3;
+  /* heading.border.bottom.color */
+}
+
+#wnkldmgxyx .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#wnkldmgxyx .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  /* column_labels.background.color */
+  font-size: 16px;
+  /* column_labels.font.size */
+  font-weight: initial;
+  /* column_labels.font.weight */
+  vertical-align: middle;
+  padding: 5px;
+  margin: 10px;
+  overflow-x: hidden;
+}
+
+#wnkldmgxyx .gt_columns_top_border {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#wnkldmgxyx .gt_columns_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wnkldmgxyx .gt_sep_right {
+  border-right: 5px solid #FFFFFF;
+}
+
+#wnkldmgxyx .gt_group_heading {
+  padding: 8px;
+  /* row_group.padding */
+  color: #333333;
+  background-color: #FFFFFF;
+  /* row_group.background.color */
+  font-size: 16px;
+  /* row_group.font.size */
+  font-weight: initial;
+  /* row_group.font.weight */
+  border-top-style: solid;
+  /* row_group.border.top.style */
+  border-top-width: 2px;
+  /* row_group.border.top.width */
+  border-top-color: #D3D3D3;
+  /* row_group.border.top.color */
+  border-bottom-style: solid;
+  /* row_group.border.bottom.style */
+  border-bottom-width: 2px;
+  /* row_group.border.bottom.width */
+  border-bottom-color: #D3D3D3;
+  /* row_group.border.bottom.color */
+  vertical-align: middle;
+}
+
+#wnkldmgxyx .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  /* row_group.background.color */
+  font-size: 16px;
+  /* row_group.font.size */
+  font-weight: initial;
+  /* row_group.font.weight */
+  border-top-style: solid;
+  /* row_group.border.top.style */
+  border-top-width: 2px;
+  /* row_group.border.top.width */
+  border-top-color: #D3D3D3;
+  /* row_group.border.top.color */
+  border-bottom-style: solid;
+  /* row_group.border.bottom.style */
+  border-bottom-width: 2px;
+  /* row_group.border.bottom.width */
+  border-bottom-color: #D3D3D3;
+  /* row_group.border.bottom.color */
+  vertical-align: middle;
+}
+
+#wnkldmgxyx .gt_striped {
+  background-color: #8080800D;
+}
+
+#wnkldmgxyx .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#wnkldmgxyx .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#wnkldmgxyx .gt_row {
+  padding: 8px;
+  /* row.padding */
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#wnkldmgxyx .gt_stub {
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#wnkldmgxyx .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  /* summary_row.background.color */
+  padding: 8px;
+  /* summary_row.padding */
+  text-transform: inherit;
+  /* summary_row.text_transform */
+}
+
+#wnkldmgxyx .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  /* grand_summary_row.background.color */
+  padding: 8px;
+  /* grand_summary_row.padding */
+  text-transform: inherit;
+  /* grand_summary_row.text_transform */
+}
+
+#wnkldmgxyx .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#wnkldmgxyx .gt_first_grand_summary_row {
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#wnkldmgxyx .gt_table_body {
+  border-top-style: solid;
+  /* table_body.border.top.style */
+  border-top-width: 2px;
+  /* table_body.border.top.width */
+  border-top-color: #D3D3D3;
+  /* table_body.border.top.color */
+  border-bottom-style: solid;
+  /* table_body.border.bottom.style */
+  border-bottom-width: 2px;
+  /* table_body.border.bottom.width */
+  border-bottom-color: #D3D3D3;
+  /* table_body.border.bottom.color */
+}
+
+#wnkldmgxyx .gt_footnotes {
+  border-top-style: solid;
+  /* footnotes.border.top.style */
+  border-top-width: 2px;
+  /* footnotes.border.top.width */
+  border-top-color: #D3D3D3;
+  /* footnotes.border.top.color */
+}
+
+#wnkldmgxyx .gt_footnote {
+  font-size: 90%;
+  /* footnote.font.size */
+  margin: 0px;
+  padding: 4px;
+  /* footnote.padding */
+}
+
+#wnkldmgxyx .gt_sourcenotes {
+  border-top-style: solid;
+  /* sourcenotes.border.top.style */
+  border-top-width: 2px;
+  /* sourcenotes.border.top.width */
+  border-top-color: #D3D3D3;
+  /* sourcenotes.border.top.color */
+}
+
+#wnkldmgxyx .gt_sourcenote {
+  font-size: 90%;
+  /* sourcenote.font.size */
+  padding: 4px;
+  /* sourcenote.padding */
+}
+
+#wnkldmgxyx .gt_center {
+  text-align: center;
+}
+
+#wnkldmgxyx .gt_left {
+  text-align: left;
+}
+
+#wnkldmgxyx .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#wnkldmgxyx .gt_font_normal {
+  font-weight: normal;
+}
+
+#wnkldmgxyx .gt_font_bold {
+  font-weight: bold;
+}
+
+#wnkldmgxyx .gt_font_italic {
+  font-style: italic;
+}
+
+#wnkldmgxyx .gt_super {
+  font-size: 65%;
+}
+
+#wnkldmgxyx .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="wnkldmgxyx" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <tr>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_left" rowspan="1" colspan="1"></th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_left" rowspan="1" colspan="1">A</th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">B</th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">C</th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">D</th>
+    <th class="gt_col_heading gt_columns_bottom_border gt_columns_top_border gt_center" rowspan="1" colspan="1">E</th>
+  </tr>
+  <body class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left gt_stub">A</td>
+      <td class="gt_row gt_right">0.000000</td>
+      <td class="gt_row gt_right">3.2739052</td>
+      <td class="gt_row gt_right">1.1348300</td>
+      <td class="gt_row gt_right">1.0844749</td>
+      <td class="gt_row gt_right">2.7477679</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">B</td>
+      <td class="gt_row gt_right gt_striped">3.273905</td>
+      <td class="gt_row gt_right gt_striped">0.0000000</td>
+      <td class="gt_row gt_right gt_striped">0.5067407</td>
+      <td class="gt_row gt_right gt_striped">4.8572852</td>
+      <td class="gt_row gt_right gt_striped">4.0505295</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">C</td>
+      <td class="gt_row gt_right">1.134830</td>
+      <td class="gt_row gt_right">0.5067407</td>
+      <td class="gt_row gt_right">0.0000000</td>
+      <td class="gt_row gt_right">3.4722629</td>
+      <td class="gt_row gt_right">3.5756031</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">D</td>
+      <td class="gt_row gt_right gt_striped">1.084475</td>
+      <td class="gt_row gt_right gt_striped">4.8572852</td>
+      <td class="gt_row gt_right gt_striped">3.4722629</td>
+      <td class="gt_row gt_right gt_striped">0.0000000</td>
+      <td class="gt_row gt_right gt_striped">0.2894509</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">E</td>
+      <td class="gt_row gt_right">2.747768</td>
+      <td class="gt_row gt_right">4.0505295</td>
+      <td class="gt_row gt_right">3.5756031</td>
+      <td class="gt_row gt_right">0.2894509</td>
+      <td class="gt_row gt_right">0.0000000</td>
+    </tr>
+  </body>
+  
+  
+</table></div>

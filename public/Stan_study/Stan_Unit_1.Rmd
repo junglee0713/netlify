@@ -1,7 +1,7 @@
 ---
 title: "Unit 1"
 author: "Jung-Jin Lee"
-date: "Laste modified: `r format(Sys.Date(), '%b %d, %Y')`"
+date: "Last modified: `r format(Sys.Date(), '%b %d, %Y')`"
 output:
   xaringan::moon_reader:
     css: ["default", "default-fonts", "Stan.css"] 
@@ -137,11 +137,10 @@ cat simple_lm.stan
 
 Data need to be provided:
 
-```{r}
+```{r stan, cache = T}
 mtcarsData <- list(N = nrow(mtcars),
                    y = mtcars$mpg,
                    x = mtcars$wt)
-set.seed(2019)
 fit_stan <- stan(file = 'simple_lm.stan', data = mtcarsData)
 ```
 
@@ -170,5 +169,48 @@ confint(fit) %>%
 
 ```{r, comment = ""}
 print(fit_stan)
+```
+
+---
+
+## Example: simple linear regression
+
+Run `stan()` with options:
+
+```{r stan2, cache = T}
+fit_stan2 <- stan(file = 'simple_lm.stan', 
+                 data = mtcarsData,
+                 seed = 2019,
+                 chains = 5,
+                 iter = 10000,
+                 warmup = 3000)
+```
+
+---
+
+## Example: simple linear regression
+
+```{r, comment = ""}
+print(fit_stan2)
+```
+
+---
+
+## Example: simple linear regression
+
+```{r, comment = "", out.width = "60%"}
+traceplot(fit_stan2)
+```
+
+---
+
+## Example: simple linear regression
+
+Output from `stan()` can be extracted:
+
+```{r}
+df <- as.data.frame(fit_stan2)
+dim(df) # iter = 10000, warmup = 3000, chains = 5
+head(df)
 ```
 
