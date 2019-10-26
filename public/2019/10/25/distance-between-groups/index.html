@@ -55,7 +55,7 @@
 
   <article class="article">
     
-    <span class="article-duration">8 min read</span>
+    <span class="article-duration">9 min read</span>
     
 
     <h1 class="article-title">Distance between groups</h1>
@@ -72,7 +72,8 @@
 library(tidyverse)
 library(ggforce)
 library(ggsci)
-library(gt)</code></pre>
+library(gt)
+library(ggrepel)</code></pre>
 <p>First, we make a fake data set:</p>
 <pre class="r"><code>set.seed(2019)
 n &lt;- 6
@@ -97,11 +98,10 @@ df &lt;- bind_rows(ADf, BDf, CDf, DDf, EDf) %&gt;%
   ungroup()</code></pre>
 <p>Visualization of the data:</p>
 <pre class="r"><code>ggplot(df, aes(x, y)) + 
-  geom_point(aes(color = group), show.legend = FALSE) +
+  geom_point(aes(shape = group), show.legend = FALSE) +
   geom_mark_hull(aes(label = group, fill = group), 
                  show.legend = FALSE) +
-  scale_color_d3() +
-  scale_fill_d3() +
+  scale_fill_npg() +
   theme_void() </code></pre>
 <p><img src="/post/2019-10-25-distance-between-groups_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Make a <code>distance</code> object:</p>
@@ -479,25 +479,23 @@ Dist_Gr %&gt;%
   
 </table></div>
 <p>What are the distances between groups?</p>
-<pre class="r"><code>dist_func &lt;- min # function to be used to define the distance between groups
-
-Dist_Between_Groups &lt;- Dist_Gr %&gt;%
-  group_by(Label, Group1, Group2) %&gt;%
-  summarize(Distance = dist_func(Distance)) %&gt;%
-  mutate(Distance = ifelse(str_detect(Label, &quot;^Within &quot;), 0, Distance)) %&gt;% # distance between the same groups should be 0
+<pre class="r"><code>Dist_Between_Groups &lt;- Dist_Gr %&gt;%
   arrange(Label, Distance) %&gt;%
-  ungroup() %&gt;%
   filter(!duplicated(Label)) %&gt;%
+  mutate(Distance = ifelse(str_detect(Label, &quot;^Within &quot;), 0, Distance)) %&gt;%
   mutate(rowItem = str_remove_all(Label, &quot;^Between | and .+|^Within &quot;)) %&gt;%
   mutate(colItem = str_remove_all(Label, &quot;^.+ and |^Within &quot;)) %&gt;%
-  select(rowItem, colItem, Distance) %&gt;%
+  select(Item1, Item2, rowItem, colItem, Label, Distance) 
+
+Dist_Matix &lt;- Dist_Between_Groups %&gt;%
+  select(-Item1, -Item2, -Label) %&gt;%
   pivot_wider(names_from = &quot;colItem&quot;, values_from = &quot;Distance&quot;, values_fill = list(Distance = 0)) %&gt;%
   column_to_rownames(&quot;rowItem&quot;)
 
-Dist_Between_Groups &lt;- Dist_Between_Groups[, rownames(Dist_Between_Groups)] # arrange columns
-Dist_Between_Groups &lt;- Dist_Between_Groups + t(Dist_Between_Groups) # make a symmetric matrix</code></pre>
+Dist_Matix &lt;- Dist_Matix[, rownames(Dist_Matix)] # arrange columns
+Dist_Matix &lt;- Dist_Matix + t(Dist_Matix) # make a symmetric matrix</code></pre>
 <p>Now distances between groups are:</p>
-<pre class="r"><code>Dist_Between_Groups %&gt;%
+<pre class="r"><code>Dist_Matix %&gt;%
   rownames_to_column() %&gt;%
   gt(rowname_col = &quot;rowname&quot;)</code></pre>
 <style>html {
@@ -852,6 +850,36 @@ Dist_Between_Groups &lt;- Dist_Between_Groups + t(Dist_Between_Groups) # make a 
   
   
 </table></div>
+<p>Which samples achiecve the minimum distances?</p>
+<pre class="r"><code>whichSamplesFirst &lt;- Dist_Between_Groups %&gt;%
+  select(Item1, Label) %&gt;%
+  mutate(Item1 = as.character(Item1)) %&gt;%
+  left_join(df %&gt;% select(-group), by = c(&quot;Item1&quot; = &quot;SampleID&quot;)) %&gt;%
+  rename(x1 = x, y1 = y)
+
+whichSamplesSecond &lt;- Dist_Between_Groups %&gt;%
+  select(Item2, Label) %&gt;%
+  mutate(Item2 = as.character(Item2)) %&gt;%
+  left_join(df %&gt;% select(-group), by = c(&quot;Item2&quot; = &quot;SampleID&quot;)) %&gt;%
+  rename(x2 = x, y2 = y)
+
+whichSampleCombined &lt;- whichSamplesFirst %&gt;%
+  left_join(whichSamplesSecond, by = &quot;Label&quot;) %&gt;%
+  filter(str_detect(Label, &quot;^Between &quot;))</code></pre>
+<pre class="r"><code>df %&gt;% 
+  mutate(repel_label = ifelse(SampleID %in% c(whichSampleCombined$Item1, whichSampleCombined$Item2),
+                              SampleID, &quot;&quot;)) %&gt;%
+  ggplot(aes(x, y)) + 
+  geom_point(aes(shape = group), show.legend = FALSE) +
+  geom_mark_hull(aes(label = group, fill = group), 
+                 show.legend = FALSE) +
+  scale_color_d3() +
+  scale_fill_npg() +
+  geom_text_repel(aes(label = repel_label)) +
+  geom_segment(data = whichSampleCombined, 
+               aes(x = x1, y = y1, xend = x2, yend = y2, color = Label)) +
+  theme_void() </code></pre>
+<p><img src="/post/2019-10-25-distance-between-groups_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 
     </div>
   </article>
