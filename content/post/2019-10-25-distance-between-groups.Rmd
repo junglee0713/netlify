@@ -86,8 +86,8 @@ Dist_Gr %>%
 What are the distances between groups?
 
 ```{r}
-dist_func_list <- list(min = min, mean = mean, max = max)
-dist_func <- dist_func_list$min
+dist_func <- min # function to be used to define the distance between groups
+
 Dist_Between_Groups <- Dist_Gr %>%
   group_by(Label, Group1, Group2) %>%
   summarize(Distance = dist_func(Distance)) %>%

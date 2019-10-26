@@ -420,8 +420,8 @@ Dist_Gr %&gt;%
   
 </table></div>
 <p>What are the distances between groups?</p>
-<pre class="r"><code>dist_func_list &lt;- list(min = min, mean = mean, max = max)
-dist_func &lt;- dist_func_list$min
+<pre class="r"><code>dist_func &lt;- min # function to be used to define the distance between groups
+
 Dist_Between_Groups &lt;- Dist_Gr %&gt;%
   group_by(Label, Group1, Group2) %&gt;%
   summarize(Distance = dist_func(Distance)) %&gt;%
