@@ -14,7 +14,8 @@ library(tidyverse)
 library(ggforce)
 library(ggsci)
 library(gt)
-library(ggrepel)</code></pre>
+library(ggrepel)
+library(ggdendro)</code></pre>
 <p>First, we make a fake data set:</p>
 <pre class="r"><code>set.seed(2019)
 n &lt;- 6
@@ -791,7 +792,7 @@ Dist_Matix &lt;- Dist_Matix + t(Dist_Matix) # make a symmetric matrix</code></pr
   
   
 </table></div>
-<p>Which samples achiecve the minimum distances?</p>
+<p>Which samples achieve the minimum distances?</p>
 <pre class="r"><code>whichSamplesFirst &lt;- Dist_Between_Groups %&gt;%
   select(Item1, Label) %&gt;%
   mutate(Item1 = as.character(Item1)) %&gt;%
@@ -821,3 +822,19 @@ whichSampleCombined &lt;- whichSamplesFirst %&gt;%
                aes(x = x1, y = y1, xend = x2, yend = y2, color = Label)) +
   theme_void() </code></pre>
 <p><img src="/post/2019-10-25-distance-between-groups_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Dendrogram:</p>
+<pre class="r"><code>hc &lt;- hclust(as.dist(Dist_Matix))
+hcdata &lt;- dendro_data(hc, type = &quot;rectangle&quot;)
+segment(hcdata) %&gt;%
+  ggplot() + 
+  geom_segment(aes(x, y, xend = xend, yend = yend)) +
+  geom_text(data = hcdata$labels, aes(x, y, label = label),
+            hjust = -1, size = 3) +
+  coord_flip() + 
+  scale_y_reverse() +
+  theme_classic() +
+  theme(axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title = element_blank())</code></pre>
+<p><img src="/post/2019-10-25-distance-between-groups_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>

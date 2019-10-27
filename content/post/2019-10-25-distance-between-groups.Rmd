@@ -14,6 +14,7 @@ library(ggforce)
 library(ggsci)
 library(gt)
 library(ggrepel)
+library(ggdendro)
 ```
 
 First, we make a fake data set:
@@ -111,7 +112,7 @@ Dist_Matix %>%
   gt(rowname_col = "rowname")
 ```
 
-Which samples achiecve the minimum distances?
+Which samples achieve the minimum distances?
 
 ```{r}
 whichSamplesFirst <- Dist_Between_Groups %>%
@@ -146,3 +147,23 @@ df %>%
                aes(x = x1, y = y1, xend = x2, yend = y2, color = Label)) +
   theme_void() 
 ```
+
+Dendrogram:
+
+```{r}
+hc <- hclust(as.dist(Dist_Matix))
+hcdata <- dendro_data(hc, type = "rectangle")
+segment(hcdata) %>%
+  ggplot() + 
+  geom_segment(aes(x, y, xend = xend, yend = yend)) +
+  geom_text(data = hcdata$labels, aes(x, y, label = label),
+            hjust = -1, size = 3) +
+  coord_flip() + 
+  scale_y_reverse() +
+  theme_classic() +
+  theme(axis.line.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title = element_blank())
+```
+
