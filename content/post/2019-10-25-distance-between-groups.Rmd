@@ -150,7 +150,7 @@ df %>%
 
 Dendrogram:
 
-```{r}
+```{r, fig.height = 2, fig.width = 3.8, fig.align = "center"}
 hc <- hclust(as.dist(Dist_Matix))
 hcdata <- dendro_data(hc, type = "rectangle")
 segment(hcdata) %>%
