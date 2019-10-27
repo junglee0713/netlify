@@ -851,7 +851,7 @@ Dist_Matix &lt;- Dist_Matix + t(Dist_Matix) # make a symmetric matrix</code></pr
   
   
 </table></div>
-<p>Which samples achieve the minimum distances?</p>
+<p>Which samples achieve the minimum distances? How about dendrogram?</p>
 <pre class="r"><code>whichSamplesFirst &lt;- Dist_Between_Groups %&gt;%
   select(Item1, Label) %&gt;%
   mutate(Item1 = as.character(Item1)) %&gt;%
@@ -866,8 +866,9 @@ whichSamplesSecond &lt;- Dist_Between_Groups %&gt;%
 
 whichSampleCombined &lt;- whichSamplesFirst %&gt;%
   left_join(whichSamplesSecond, by = &quot;Label&quot;) %&gt;%
-  filter(str_detect(Label, &quot;^Between &quot;))</code></pre>
-<pre class="r"><code>df %&gt;% 
+  filter(str_detect(Label, &quot;^Between &quot;))
+
+g_distance &lt;- df %&gt;% 
   mutate(repel_label = ifelse(SampleID %in% c(whichSampleCombined$Item1, whichSampleCombined$Item2),
                               SampleID, &quot;&quot;)) %&gt;%
   ggplot(aes(x, y)) + 
@@ -879,12 +880,12 @@ whichSampleCombined &lt;- whichSamplesFirst %&gt;%
   geom_text_repel(aes(label = repel_label)) +
   geom_segment(data = whichSampleCombined, 
                aes(x = x1, y = y1, xend = x2, yend = y2, color = Label)) +
-  theme_void() </code></pre>
-<p><img src="/post/2019-10-25-distance-between-groups_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p>Dendrogram:</p>
-<pre class="r"><code>hc &lt;- hclust(as.dist(Dist_Matix))
+  theme_void() 
+
+hc &lt;- hclust(as.dist(Dist_Matix))
 hcdata &lt;- dendro_data(hc, type = &quot;rectangle&quot;)
-segment(hcdata) %&gt;%
+
+g_dendro &lt;- segment(hcdata) %&gt;%
   ggplot() + 
   geom_segment(aes(x, y, xend = xend, yend = yend)) +
   geom_text(data = hcdata$labels, aes(x, y, label = label),
@@ -896,6 +897,9 @@ segment(hcdata) %&gt;%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title = element_blank())</code></pre>
+<pre class="r"><code>g_distance</code></pre>
+<p><img src="/post/2019-10-25-distance-between-groups_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>g_dendro</code></pre>
 <p><img src="/post/2019-10-25-distance-between-groups_files/figure-html/unnamed-chunk-12-1.png" width="364.8" style="display: block; margin: auto;" /></p>
 
     </div>

@@ -112,7 +112,7 @@ Dist_Matix %>%
   gt(rowname_col = "rowname")
 ```
 
-Which samples achieve the minimum distances?
+Which samples achieve the minimum distances? How about dendrogram?
 
 ```{r}
 whichSamplesFirst <- Dist_Between_Groups %>%
@@ -130,10 +130,8 @@ whichSamplesSecond <- Dist_Between_Groups %>%
 whichSampleCombined <- whichSamplesFirst %>%
   left_join(whichSamplesSecond, by = "Label") %>%
   filter(str_detect(Label, "^Between "))
-```
 
-```{r}
-df %>% 
+g_distance <- df %>% 
   mutate(repel_label = ifelse(SampleID %in% c(whichSampleCombined$Item1, whichSampleCombined$Item2),
                               SampleID, "")) %>%
   ggplot(aes(x, y)) + 
@@ -146,14 +144,11 @@ df %>%
   geom_segment(data = whichSampleCombined, 
                aes(x = x1, y = y1, xend = x2, yend = y2, color = Label)) +
   theme_void() 
-```
 
-Dendrogram:
-
-```{r, fig.height = 2, fig.width = 3.8, fig.align = "center"}
 hc <- hclust(as.dist(Dist_Matix))
 hcdata <- dendro_data(hc, type = "rectangle")
-segment(hcdata) %>%
+
+g_dendro <- segment(hcdata) %>%
   ggplot() + 
   geom_segment(aes(x, y, xend = xend, yend = yend)) +
   geom_text(data = hcdata$labels, aes(x, y, label = label),
@@ -165,5 +160,13 @@ segment(hcdata) %>%
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title = element_blank())
+```
+
+```{r}
+g_distance
+```
+
+```{r, fig.height = 2, fig.width = 3.8, fig.align = "center"}
+g_dendro
 ```
 
