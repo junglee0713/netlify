@@ -216,14 +216,14 @@ head(df)
 
 ---
 
-## Example: simple logistic regression
+## Example: logistic regression
 
 ```{r}
 # virginica or not
 dIris <- iris %>%
   mutate(IsVirginica = ifelse(Species == "virginica", 1, 0))
 
-fit <- glm(IsVirginica ~ Sepal.Length, 
+fit <- glm(IsVirginica ~ Sepal.Length + Sepal.Width, 
            data = dIris,
            family = binomial(link = "logit"))
 
@@ -236,7 +236,7 @@ tidy(fit) %>%
 
 ---
 
-## Example: simple logistic regression
+## Example: logistic regression
 
 ```{r}
 confint(fit) %>%
@@ -249,23 +249,24 @@ confint(fit) %>%
 
 ---
 
-## Example: simple logistic regression
+## Example: logistic regression
 
-The following model is saved as `simple_logistic.stan`:
+The following model is saved as `logistic_2.stan`:
 
 ```{bash, comment = ""}
-cat simple_logistic.stan
+cat logistic_2.stan
 ```
 
 ---
 
-## Example: simple logistic regression
+## Example: logistic regression
 
 ```{r logit, cache = T}
 irisData <- list(N = nrow(dIris),
                  y = dIris$IsVirginica,
-                 x = dIris$Sepal.Length)
-fit_logit <- stan(file = 'simple_logistic.stan',
+                 x1 = dIris$Sepal.Length,
+                 x2 = dIris$Sepal.Width)
+fit_logit <- stan(file = 'logistic_2.stan',
                   data = irisData,
                   seed = 2019,
                   chains = 5,
@@ -275,7 +276,7 @@ fit_logit <- stan(file = 'simple_logistic.stan',
 
 ---
 
-## Example: simple logistic regression
+## Example: logistic regression
 
 ```{r, comment = ""}
 print(fit_logit)
@@ -283,7 +284,7 @@ print(fit_logit)
 
 ---
 
-## Example: simple logistic regression
+## Example: logistic regression
 
 ```{r, comment = "", out.width = "60%"}
 traceplot(fit_logit)
