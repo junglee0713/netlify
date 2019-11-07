@@ -1,0 +1,45 @@
+.title-slide {
+  background-color: #fff;
+  color: #000;
+  background-image: url(DU_logo.png);
+	background-position: center bottom 30px;
+	background-size: 15%;
+	text-shadow: 0 0 20px #fff
+}
+
+.title-slide h1, .title-slide h2, .title-slide h3 {
+  color: #000;
+}
+
+.small { 
+  padding-top: 20px;
+  padding-left: 80px;
+  padding-right: 80px;
+  padding-bottom: 25px;
+  font-size: 70%; }
+  
+.tiny { font-size: 50%; }
+
+.large { font-size: 140%; }
+
+.pull-left-code {
+  float: left;
+  width: 57%;
+}
+
+.pull-right-plot {
+  float: right;
+  width: 37%;
+}
+
+.pull-left-80 {
+  float: left;
+  width: 77%;
+}
+
+.pull-right-20 {
+  float: left;
+  width: 17%;
+}
+
+

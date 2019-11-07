@@ -214,3 +214,78 @@ dim(df) # iter = 10000, warmup = 3000, chains = 5
 head(df)
 ```
 
+---
+
+## Example: logistic regression
+
+```{r}
+# virginica or not
+dIris <- iris %>%
+  mutate(IsVirginica = ifelse(Species == "virginica", 1, 0))
+
+fit <- glm(IsVirginica ~ Sepal.Length + Sepal.Width, 
+           data = dIris,
+           family = binomial(link = "logit"))
+
+tidy(fit) %>% 
+  gt(rowname_col = "term") %>%
+  fmt_number(columns = vars(estimate, std.error, statistic), 
+             decimals = 2) %>%
+  fmt_scientific(columns = vars(p.value), decimals = 2)
+```
+
+---
+
+## Example: logistic regression
+
+```{r}
+confint(fit) %>%
+  as.data.frame() %>%
+  rownames_to_column("term") %>%
+  gt(rowname_col = "term") %>%
+  fmt_number(columns = everything(), 
+             decimals = 2)
+```
+
+---
+
+## Example: logistic regression
+
+The following model is saved as `logistic_2.stan`:
+
+```{bash, comment = ""}
+cat logistic_2.stan
+```
+
+---
+
+## Example: logistic regression
+
+```{r logit, cache = T}
+irisData <- list(N = nrow(dIris),
+                 y = dIris$IsVirginica,
+                 x1 = dIris$Sepal.Length,
+                 x2 = dIris$Sepal.Width)
+fit_logit <- stan(file = 'logistic_2.stan',
+                  data = irisData,
+                  seed = 2019,
+                  chains = 5,
+                  iter = 10000,
+                  warmup = 3000)
+```
+
+---
+
+## Example: logistic regression
+
+```{r, comment = ""}
+print(fit_logit)
+```
+
+---
+
+## Example: logistic regression
+
+```{r, comment = "", out.width = "60%"}
+traceplot(fit_logit)
+```
