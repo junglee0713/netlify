@@ -45,7 +45,7 @@ easy descriptions or inferences of the data
 
 - Many packages have been developed and are available
 
-- Excellent graphics
+- Excellent support for data visualization
 
 - Free!
 
@@ -70,38 +70,7 @@ easy descriptions or inferences of the data
 
 ---
 
-## R project setup
-
-- Make a directory to be used for class (e.g. /Users/leej39/MLAS_2020)
-
-- File `\(\rightarrow\)` New Project `\(\rightarrow\)` Existing Directory `\(\rightarrow\)` Create Project from Existing Directory `\(\rightarrow\)` Choose /Users/leej39/MLAS_2020  
-
-- Start R by opening the .Rproj file
-
-- To create a new .Rmd file, File `\(\rightarrow\)` New File `\(\rightarrow\)` R Markdown `\(\rightarrow\)` (HTML/PDF/Word)
-
-- To produce pdf output, run following (it may take some time):
-
-```r
-install.packages("tinytex")
-tinytex::install_tinytex()
-```
-- Useful chunk options: `message = F, echo = F, eval = F`
-
-- Inline coding can be done using a pair of backticks and `r`: ` `r 2+3`\`
-
----
-
-## Inline/Console output control
-
-&lt;p align = "center"&gt; 
-  &lt;img src = chunk_output_inline.png width = "400"&gt;
-&lt;/p&gt;
----
-
-## R as a calculator
-
-Use R console:
+## Using R console as a calculator
 
 
 ```r
@@ -140,6 +109,56 @@ Use R console:
 ```
 ## [1] 9
 ```
+
+---
+
+## Using R script / Rmd files / Others
+
+- File `\(\rightarrow\)` New File `\(\rightarrow\)` R Script for a plain R script
+
+  - A part of an R script is copied into the R console and run
+  - Saved for future use
+
+- File `\(\rightarrow\)` New File `\(\rightarrow\)` R Markdown for an R markdown files
+
+  - Mixture of plan text and R codes (called *chunks*)
+  - Great for generating report (preferred for **homework submission!**)
+  
+- There are also other options for presentation, web application (Shiny)
+
+  - Not covered in this course
+
+---
+
+## R project setup
+
+- Make a directory to be used for class (e.g. /Users/leej39/MLAS_530S_2020)
+
+- File `\(\rightarrow\)` New Project `\(\rightarrow\)` Existing Directory `\(\rightarrow\)` Create Project from Existing Directory `\(\rightarrow\)` Choose /Users/leej39/MLAS_530S_2020
+
+- Start RStudio by opening the .Rproj file
+
+- To create a new .Rmd file, File `\(\rightarrow\)` New File `\(\rightarrow\)` R Markdown `\(\rightarrow\)` (HTML/PDF/Word)
+
+- To produce pdf output, run following (it may take some time):
+
+
+```r
+install.packages("tinytex")
+tinytex::install_tinytex()
+```
+
+- Useful chunk options: `message = F, echo = F, eval = F`
+
+- Inline coding can be done using a pair of backticks and `r`: ` `r 2+3`\`
+
+---
+
+## Inline/Console output control
+
+&lt;p align = "center"&gt; 
+  &lt;img src = chunk_output_inline.png width = "400"&gt;
+&lt;/p&gt;
 
 ---
 
