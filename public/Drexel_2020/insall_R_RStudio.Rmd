@@ -29,11 +29,15 @@ opts_chunk$set(
 
 ![](left_cran.png){width=75%}
 
+\newpage
+
 3. Choose any mirror site (usually closer sites tend to be better), e.g. http://lib.stat.cmu.edu/R/CRAN/ (see below)
 
 ![](mirror.png){width=75%}
 
-\newpage
+\bigskip
+\bigskip
+\bigskip
 
 4. Choose a package corresponding to your operating system (see below). R supports Windows, Mac, and Linux. Follow instructions and install R.
 
@@ -49,6 +53,10 @@ opts_chunk$set(
 
 ![](rstudio_down.png){width=75%}
 
+\bigskip
+\bigskip
+\bigskip
+
 3. Choose an installer for your operating system and follow instructions (see below)
 
 ![](installer.png){width=75%}
@@ -61,6 +69,10 @@ opts_chunk$set(
 
 ![](initial_open.png){width=75%}
 
+\bigskip
+\bigskip
+\bigskip
+
 2. Install a package called `tidyverse` by typing `install.packages("tidyverse")` and hitting enter (see below). This may take a while. 
 
 ![](tidyverse.png){width=75%}
@@ -71,6 +83,16 @@ opts_chunk$set(
 
 ![](tinytex.png){width=75%}
 
+\bigskip
+\bigskip
+\bigskip
+
 4. Type `tinytex::install_tinytex()` (note the double colons :: between `tinytex` and `install_tinytex()`) and hit enter (see below. Your screen may look different) 
 
 ![](install_tiny.png){width=75%}
+
+\newpage
+
+5. From RStudio menu, choose Tools $\rightarrow$ Global Options. Click on Sweave on the left and change PDF generation options to `knitr` (see below. Your screen may look different). 
+
+![](Sweave_knitr.png){width=75%}
