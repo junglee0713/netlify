@@ -345,6 +345,21 @@ sum(vec4) # in R, TRUE is 1, FALSE is 0
 
 ---
 
+## Named vector
+
+Each member of a vector can be given a name: 
+
+```{r}
+age_Simpsons <- c(36, 34, 10, 8, 1)
+print(age_Simpsons)
+names(age_Simpsons) # currently no names are given to each component
+# Now assign names to each member of the vector
+names(age_Simpsons) <- c("Homer", "Marge", "Bart", "Lisa", "Maggie")
+print(age_Simpsons)
+```
+
+---
+
 ## Vector manipulation
 
 Use brackets `[]` to extract components of a vector.
@@ -369,6 +384,29 @@ print(dm)
 vec1[length(vec1)]
 ```
 
+---
+
+## Vector manipulation, continued
+
+Recall the named vector, `age_Simpsons`:
+
+```{r}
+print(age_Simpsons)
+```
+
+What are the ages of the kids?
+
+--
+
+```{r}
+age_Simpsons[c(3, 4, 5)]
+```
+
+--
+
+```{r}
+age_Simpsons[c("Bart", "Lisa", "Maggie")]
+```
 ---
 
 ## Special vectors -- part I

@@ -537,6 +537,41 @@ sum(vec4) # in R, TRUE is 1, FALSE is 0
 
 ---
 
+## Named vector
+
+Each member of a vector can be given a name: 
+
+
+```r
+age_Simpsons &lt;- c(36, 34, 10, 8, 1)
+print(age_Simpsons)
+```
+
+```
+## [1] 36 34 10  8  1
+```
+
+```r
+names(age_Simpsons) # currently no names are given to each component
+```
+
+```
+## NULL
+```
+
+```r
+# Now assign names to each member of the vector
+names(age_Simpsons) &lt;- c("Homer", "Marge", "Bart", "Lisa", "Maggie")
+print(age_Simpsons)
+```
+
+```
+##  Homer  Marge   Bart   Lisa Maggie 
+##     36     34     10      8      1
+```
+
+---
+
 ## Vector manipulation
 
 Use brackets `[]` to extract components of a vector.
@@ -576,6 +611,47 @@ vec1[length(vec1)]
 ## [1] 4
 ```
 
+---
+
+## Vector manipulation, continued
+
+Recall the named vector, `age_Simpsons`:
+
+
+```r
+print(age_Simpsons)
+```
+
+```
+##  Homer  Marge   Bart   Lisa Maggie 
+##     36     34     10      8      1
+```
+
+What are the ages of the kids?
+
+--
+
+
+```r
+age_Simpsons[c(3, 4, 5)]
+```
+
+```
+##   Bart   Lisa Maggie 
+##     10      8      1
+```
+
+--
+
+
+```r
+age_Simpsons[c("Bart", "Lisa", "Maggie")]
+```
+
+```
+##   Bart   Lisa Maggie 
+##     10      8      1
+```
 ---
 
 ## Special vectors -- part I
@@ -920,7 +996,7 @@ print(g1)
 ]
 
 .pull-right-plot[
-&lt;img src="Drexel_2020_Lecture_1_files/figure-html/unnamed-chunk-49-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="Drexel_2020_Lecture_1_files/figure-html/unnamed-chunk-53-1.png" style="display: block; margin: auto;" /&gt;
 ]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
