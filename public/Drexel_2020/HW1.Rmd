@@ -1,0 +1,68 @@
+---
+title: "Homework 1"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+\bigskip
+
+1. Compute
+$$1^2+2^2+3^2+\cdots+99^2+100^2$$
+
+```{r, echo = F, eval = F}
+vec <- 1:100
+sum(vec^2)
+```
+
+\bigskip
+
+2. How many digits does $N=1234567891011121314...9998999910000$ have, where $N$ is formed by concatenating $1,2,3,\ldots,9999,10000$? (_Hint_: you might want to look up the functions \texttt{nchar(), as.character(), paste()})
+
+```{r, echo = F, eval = F}
+vec_char <- as.character(1:10000) # to use paste, turn numeric to character
+vec_collapse <- paste(vec_char, collapse = "")
+print(nchar(vec_collapse))
+```
+
+\bigskip
+
+`iris` is a dataset that comes with base R. It consists of `r nrow(iris)` observations with `r ncol(iris)` columns, `r names(iris)`, which are features related with Iris flowers. You can view the first few rows using `head()`:
+
+```{r}
+head(iris)
+```
+
+3. Compute the sample mean, sample variance, and 90% quantile of `Sepal.Length`.
+
+```{r, echo = F, eval = F}
+sl <- iris$Sepal.Length
+mean(sl); var(sl); quantile(sl, prob = 0.9)
+```
+
+4. What is the _fifth_ smallest value of `Sepal.Length`?
+
+```{r, echo = F, eval = F}
+sort(sl, T)[5]
+```
+
+
+5. Obtain the following plots that describe the histogram of `Sepal.Length` by `Species`. 
+
+```{r, echo = F, message = F, fig.height = 3}
+g <- ggplot(iris, aes(Sepal.Length)) + 
+  geom_histogram() +
+  facet_wrap(~Species) 
+ 
+print(g)
+```
+
+
+
+
