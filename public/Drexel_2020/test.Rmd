@@ -1,0 +1,19 @@
+---
+title: "Homework 1"
+author: "Jane Doe"
+date: "1/14/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse) ## <- this is added in the chunk to load tidyverse library
+```
+
+# Problem 1
+
+...
+
+# Problem 2 
+
+...

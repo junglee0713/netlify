@@ -1,0 +1,141 @@
+---
+title: "Lecture 2 in class"
+author: "Jung-Jin Lee"
+date: "1/14/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+first_name <- c("Lisa", "John", "Chuck", "Matt")
+last_name <- c("Simpson", "Smith", "Williams", "June")
+age_yrs <- c(8, 42, 81, 23)
+
+length(first_name)
+last_name[3]
+last_name[c(3, 4)]
+
+book <- data.frame(first = first_name, 
+                   last = last_name,
+                   age = age_yrs)
+
+dim(book)
+
+nrow(book)
+ncol(book)
+
+dim(book)
+
+book[2, 2]
+
+book$age
+
+book[, 3]
+
+book[1:3, 2:3]
+```
+
+
+```{r}
+gender <- c("Female", "Male", "Male", "Unknown")
+book$sex <- gender
+
+book$remark <- "friend"
+
+book$extra <- c("A", "B")
+
+df <- data.frame(a = 1:6, b = "some random")
+
+df$third <- c("aa", "bb", "cc")
+
+df$fourth <- c("xxx", "zzz")
+
+```
+
+```{r}
+d <- read.table(file = "heights.txt", header = TRUE, sep = " ")
+```
+
+```{r}
+dim(d)
+
+names(d)
+
+head(d)
+tail(d)
+
+vec <- 1:100
+head(vec)
+tail(vec)
+```
+
+\newpage
+
+## Some sentence
+
+
+
+### Another sentence
+
+```{r, message = F}
+library(tidyverse)
+
+g1 <- ggplot(d, aes(x = Mheight)) + 
+  geom_histogram() +
+  theme_classic() +
+  ggtitle("Some fancy title") +
+  xlab("some x axis name") +
+  ylab("my first y axis name")
+
+print(g1)
+```
+
+```{r}
+library(tidyverse)
+
+df <- diamonds ## diamonds comes with ggplot2
+dim(df)
+```
+
+```{r}
+g <- ggplot(data = df, aes(x = cut)) + 
+  geom_bar() + 
+  ggtitle("Whatever you like as a title") +
+  xlab("Diamond cuts") +
+  ylab("Number (Frequency)") 
+
+print(g)
+```
+
+```{r}
+ggplot(data = df, aes(x = color)) + geom_bar() 
+
+ggplot(df, aes(cut)) + ## can omit 'data = ' and 'x = '
+  geom_bar() +
+  facet_wrap(~color)
+```
+
+
+```{r}
+ggplot(df, aes(cut, fill = clarity)) + ## can omit 'data = ' and 'x = '
+  geom_bar() +
+  facet_wrap(~color) +
+  theme(axis.text.x = element_text(angle = -90, hjust = 0))
+```
+
+
+```{r}
+ggplot(df, aes(carat)) +
+  geom_histogram(bins = 30)
+
+?quantile
+
+sqrt(5.546511)
+```
+
+
+
+

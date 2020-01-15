@@ -1,5 +1,6 @@
 ---
 title: "Homework 1"
+subtitle: "due Jan 21, 2020"
 output:
   pdf_document: default
   html_document:
@@ -11,11 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-\bigskip
-
 1. Compute
 $$2^2+4^2+6^2+\cdots+998^2+1000^2,$$
-the sum of squares of all even numbers from 2 to 1000.
+the sum of squares of all _even_ numbers from 2 to 1000.
 
 ```{r, echo = F, eval = F}
 vec <- 2*(1:500)
@@ -24,7 +23,7 @@ sum(vec^2)
 
 \bigskip
 
-2. How many digits does $N=1234567891011121314...9998999910000$ have, where $N$ is formed by concatenating $1,2,3,\ldots,9999,10000$? (_Hint_: you might want to look up the functions \texttt{nchar(), paste()})
+2. How many digits does $N=1234567891011121314...9998999910000$ have, where $N$ is formed by concatenating $1,2,3,\ldots,9999,10000$? (_Hint_: you might want to look up the functions `paste()` and `nchar()`)
 
 ```{r, echo = F, eval = F}
 vec_char <- 1:10000 # to use paste, turn numeric to character
