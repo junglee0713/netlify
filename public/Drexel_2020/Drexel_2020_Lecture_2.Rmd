@@ -10,6 +10,8 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+editor_options: 
+  chunk_output_type: console
 ---
  
 ```{r, message = F, echo = F, warning = F}
@@ -27,6 +29,7 @@ opts_chunk$set(
   fig.width = 4,
   fig.height = 4
   )
+options(width = 65) # controls console (and slide) output width
 ```
 
 ## Type of data
@@ -56,6 +59,7 @@ head(df)
 
 ```{r}
 names(df)
+letters[1:26] 
 ```
 
 ---

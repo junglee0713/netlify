@@ -1,7 +1,7 @@
 ---
 title: "Lecture 3"
 author: "Jung-Jin Lee"
-date: "Jan 21, 2019"
+date: "Jan 21, 2020"
 output:
   xaringan::moon_reader:
     css: ["default", "default-fonts", "Drexel.css"] 
@@ -27,6 +27,7 @@ opts_chunk$set(
   fig.width = 4,
   fig.height = 4
   )
+options(width = 70) # controls console (and slide) output width
 ```
 
 ## Exploring data
@@ -204,9 +205,8 @@ table(f6$Species)
 **Example**: create a new variable `Sepal.Sum` which is defined as `Sepal.Length` + `Sepal.Width`.
 
 ```{r}
-m1 <- mutate(d, Sepal.Sum = Sepal.Length + Sepal.Width)
-dim(m1)
-head(m1)
+m1 <- mutate(d, Sepal.Sum = Sepal.Length + Sepal.Width); dim(m1)
+head(m1, n = 8) # showing 8 rows using "n = 8"
 ```
 
 ---
@@ -371,13 +371,14 @@ $$\begin{array}{c|c|c} \text{subject} & \text{meal} & \text{calorie} \\ \hline
 
 ## Wide and long form of data
 
-`gather()` transforms wide format into long format:
+`pivot_longer()` transforms wide format into long format:
 
 ```{r}
 cal_long <- cal_wide %>%
-  gather(key = meal, value = calorie, breakfast, lunch, dinner) %>%
+  pivot_longer(cols = c("breakfast", "lunch", "dinner"), 
+               names_to = "meal", 
+               values_to = "calorie") %>%
   arrange(subject)
-
 head(cal_long)
 ```
 
@@ -385,13 +386,14 @@ head(cal_long)
 
 ## Wide and long form of data
 
-`gather()` can be used in a way excluding column(s) not to be transformed into `key`:
+`pivot_longer()` can be used in a way excluding column(s) not to be transformed:
 
 ```{r}
 cal_long_2 <- cal_wide %>%
-  gather(key = meal, value = calorie, -subject) %>%
+  pivot_longer(cols = -c("subject"), # note the use of -
+               names_to = "meal", 
+               values_to = "calorie") %>%
   arrange(subject)
-
 head(cal_long_2)
 ```
 
@@ -399,11 +401,11 @@ head(cal_long_2)
 
 ## Wide and long form of data
 
-`spread()` transforms long format to wide format:
+`pivot_wider()` transforms long format to wide format:
 
 ```{r}
 cal_wide_2 <- cal_long %>%
-  spread(key = meal, value = calorie)
+  pivot_wider(names_from = "meal", values_from = "calorie")
 
 head(cal_wide_2)
 ```
@@ -483,6 +485,7 @@ print(g)
 ## Scatter plots, continued
 
 ```{r, out.width = "60%"}
-g2 <- g + theme(aspect.ratio = 1)
+g2 <- g + theme(aspect.ratio = 1) +
+  ggtitle("A better shape") # additional features can be added
 print(g2)
 ```

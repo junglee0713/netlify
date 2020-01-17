@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 
 # Lecture 3
 ### Jung-Jin Lee
-### Jan 21, 2019
+### Jan 21, 2020
 
 ---
 
@@ -345,8 +345,7 @@ table(f6$Species)
 
 
 ```r
-m1 &lt;- mutate(d, Sepal.Sum = Sepal.Length + Sepal.Width)
-dim(m1)
+m1 &lt;- mutate(d, Sepal.Sum = Sepal.Length + Sepal.Width); dim(m1)
 ```
 
 ```
@@ -354,7 +353,7 @@ dim(m1)
 ```
 
 ```r
-head(m1)
+head(m1, n = 8) # showing 8 rows using "n = 8"
 ```
 
 ```
@@ -365,6 +364,8 @@ head(m1)
 ## 4          4.6         3.1          1.5         0.2  setosa       7.7
 ## 5          5.0         3.6          1.4         0.2  setosa       8.6
 ## 6          5.4         3.9          1.7         0.4  setosa       9.3
+## 7          4.6         3.4          1.4         0.3  setosa       8.0
+## 8          5.0         3.4          1.5         0.2  setosa       8.4
 ```
 
 ---
@@ -654,72 +655,80 @@ At times, _long_ format of data is more convenient to deal with:
 
 ## Wide and long form of data
 
-`gather()` transforms wide format into long format:
+`pivot_longer()` transforms wide format into long format:
 
 
 ```r
 cal_long &lt;- cal_wide %&gt;%
-  gather(key = meal, value = calorie, breakfast, lunch, dinner) %&gt;%
+  pivot_longer(cols = c("breakfast", "lunch", "dinner"), 
+               names_to = "meal", 
+               values_to = "calorie") %&gt;%
   arrange(subject)
-
 head(cal_long)
 ```
 
 ```
-##    subject      meal calorie
+## # A tibble: 6 x 3
+##   subject  meal      calorie
+##   &lt;fct&gt;    &lt;chr&gt;       &lt;dbl&gt;
 ## 1 Patient1 breakfast     300
-## 2 Patient1     lunch     500
-## 3 Patient1    dinner     600
+## 2 Patient1 lunch         500
+## 3 Patient1 dinner        600
 ## 4 Patient2 breakfast     350
-## 5 Patient2     lunch     500
-## 6 Patient2    dinner     650
+## 5 Patient2 lunch         500
+## 6 Patient2 dinner        650
 ```
 
 ---
 
 ## Wide and long form of data
 
-`gather()` can be used in a way excluding column(s) not to be transformed into `key`:
+`pivot_longer()` can be used in a way excluding column(s) not to be transformed:
 
 
 ```r
 cal_long_2 &lt;- cal_wide %&gt;%
-  gather(key = meal, value = calorie, -subject) %&gt;%
+  pivot_longer(cols = -c("subject"), # note the use of -
+               names_to = "meal", 
+               values_to = "calorie") %&gt;%
   arrange(subject)
-
 head(cal_long_2)
 ```
 
 ```
-##    subject      meal calorie
+## # A tibble: 6 x 3
+##   subject  meal      calorie
+##   &lt;fct&gt;    &lt;chr&gt;       &lt;dbl&gt;
 ## 1 Patient1 breakfast     300
-## 2 Patient1     lunch     500
-## 3 Patient1    dinner     600
+## 2 Patient1 lunch         500
+## 3 Patient1 dinner        600
 ## 4 Patient2 breakfast     350
-## 5 Patient2     lunch     500
-## 6 Patient2    dinner     650
+## 5 Patient2 lunch         500
+## 6 Patient2 dinner        650
 ```
 
 ---
 
 ## Wide and long form of data
 
-`spread()` transforms long format to wide format:
+`pivot_wider()` transforms long format to wide format:
 
 
 ```r
 cal_wide_2 &lt;- cal_long %&gt;%
-  spread(key = meal, value = calorie)
+  pivot_wider(names_from = "meal", values_from = "calorie")
 
 head(cal_wide_2)
 ```
 
 ```
-##    subject breakfast dinner lunch
-## 1 Patient1       300    600   500
-## 2 Patient2       350    650   500
-## 3 Patient3       300    450   500
-## 4 Patient4       250    500   450
+## # A tibble: 4 x 4
+##   subject  breakfast lunch dinner
+##   &lt;fct&gt;        &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1 Patient1       300   500    600
+## 2 Patient2       350   500    650
+## 3 Patient3       300   500    450
+## 4 Patient4       250   450    500
 ```
 
 ---
@@ -807,7 +816,8 @@ print(g)
 
 
 ```r
-g2 &lt;- g + theme(aspect.ratio = 1)
+g2 &lt;- g + theme(aspect.ratio = 1) +
+  ggtitle("A better shape") # additional features can be added
 print(g2)
 ```
 
